@@ -19,7 +19,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Shed.Domain\Shed.Domain.fsproj" />
+    <ProjectReference Include="..\Shelter.Domain\Shelter.Domain.fsproj" />
+    <ProjectReference Include="..\Shelter.Domain\Shelter.Domain.fsproj" />
   </ItemGroup>
 
   <ItemGroup>

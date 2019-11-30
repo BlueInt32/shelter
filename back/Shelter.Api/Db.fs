@@ -7,7 +7,8 @@ open Shed.Domain
 open System.Data
 
 // https://github.com/mausch/FsSql  //
-let databaseFilename = __SOURCE_DIRECTORY__ + @"\..\shed.db"
+let databaseFilename = __SOURCE_DIRECTORY__ + @"\..\shelter.db"
+databaseFilename.
 let connectionStringFile = sprintf "Data Source=%s;Version=3;New=False;Compress=True;" databaseFilename  
 
 // type Person = { Name : string; Age : int }
