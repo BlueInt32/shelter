@@ -8,7 +8,6 @@ open System.Data
 
 // https://github.com/mausch/FsSql  //
 let databaseFilename = __SOURCE_DIRECTORY__ + @"\..\shelter.db"
-databaseFilename.
 let connectionStringFile = sprintf "Data Source=%s;Version=3;New=False;Compress=True;" databaseFilename  
 
 // type Person = { Name : string; Age : int }
@@ -27,19 +26,19 @@ let exec sql = execNonQuery sql []
 
 let getPostsNumber (): int64 = 
     // let filteredSql = "select * From Posts " 
-    execScalar "select count(*) from posts" [] |> Option.get 
+    execScalar "select count(*) from gems" [] |> Option.get 
 
-let getPosts () = 
-    execReader "select * from posts" [] 
+let getGems () = 
+    execReader "select * from gems" [] 
     |> Seq.ofDataReader
     |> Seq.map (fun dr -> 
     // |> Seq.iter (fun dr -> 
         let id = (dr?Id).Value 
-        let title = (dr?Title).Value 
+        let title = dr?Title 
         let creationDate = 
             match dr?CreationDate with 
             | None -> DateTime.MinValue 
             | Some x -> DateTime.Parse(x) 
         // printfn "Id: ?; Name: %s; Address: %s" name creationDate)
-        { Id=id; Title= Some title; CreationDate= creationDate; }
+        { Id=id; Title= title; CreationDate= creationDate; }
         )

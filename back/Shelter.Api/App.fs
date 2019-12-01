@@ -3,30 +3,34 @@ open Suave
 open Suave.Filters
 open Suave.Successful
 open Suave.Operators
-open Suave.RequestErrors
 open Suave.Json
-open System.Runtime.Serialization
-open Shed.Api.Rest
 open Shed.Domain
-
-let browse =
-    request (fun r ->
-        match r.queryParam "genre" with
-        | Choice1Of2 genre -> OK (sprintf "Genre: %s" genre)
-        | Choice2Of2 msg -> BAD_REQUEST msg)
+open Suave.Utils.Collections
 
 let createPost = (mapJson (fun (a:Foo) -> { bar = a.foo }))
 
+let config = 
+    { defaultConfig with
+        bindings = [ HttpBinding.createSimple HTTP "127.0.0.1" 5001 ]
+    }
+
+let greetings q =
+  defaultArg (Option.ofChoice (q ^^ "name")) "World" |> sprintf "Hello %s"
+
 let webPart = 
     choose [
-        path "/" >=> (OK "Home")
-        path "/posts" >=> choose [
-            GET >=> warbler (fun _ -> Db.getPosts () |> JSON)
+        path "/" >=> GET >=> warbler (fun _ -> Db.getGems () |> Api.toJson |> OK)
+        path "/gems" >=> choose [
             POST >=> createPost
         ]
-        pathScan "/posts/%d" 
+        path "/hello" >=> choose [
+            GET  >=> request (fun r -> OK (greetings r.query))
+            POST >=> request (fun r -> OK (greetings r.form))
+            RequestErrors.NOT_FOUND "Found no handlers" ]
+        pathScan "/gems/%d" 
             (fun id -> OK (sprintf "Post details: %d" id))
-        path "/store/browse" >=> browse
-    ]
 
-startWebServer defaultConfig webPart
+    ]
+    >=> Suave.Writers.setMimeType "application/json; charset=utf-8"
+
+startWebServer config webPart

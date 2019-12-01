@@ -13,7 +13,7 @@ type Tag = {
     Id:int; 
     Label:string; }
 
-type Post = { 
+type Gem = { 
     Id:int64; 
     Title: Option<string>;
     //FileType: FileType;
