@@ -1,7 +1,7 @@
 <template>
   <div class="gemsList">
-    <p v-for="gemCategory in gemCategories" :key="gemCategory.id">
-      {{ gemCategory.title }}
+    <p v-for="gemCategory in gemsCategories" :key="gemCategory.id">
+      {{ gemCategory.id }} - {{ gemCategory.title }}
     </p>
   </div>
 </template>
@@ -13,6 +13,10 @@ import { GemCategoryViewModel } from '../viewModels/GemCategoryViewModel';
 @Component
 export default class GemsList extends Vue {
   @Prop() private msg!: string;
-  @Prop() private gemCategories!: GemCategoryViewModel[];
+  @Prop() private gemsCategories!: GemCategoryViewModel[];
+
+  created() {
+    console.log(this.gemsCategories);
+  }
 }
 </script>

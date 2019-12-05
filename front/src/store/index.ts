@@ -10,6 +10,10 @@ export default new Vuex.Store({
       {
         id: 1,
         title: 'general'
+      },
+      {
+        id: 2,
+        title: 'sound design'
       }
     ]
   },
