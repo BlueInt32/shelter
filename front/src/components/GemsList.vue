@@ -1,22 +1,18 @@
 <template>
   <div class="gemsList">
-    <p v-for="gemCategory in gemsCategories" :key="gemCategory.id">
-      {{ gemCategory.id }} - {{ gemCategory.title }}
-    </p>
+    <p v-for="gem in gems" :key="gem.id">{{ gem.id }} - {{ gem.title }}</p>
   </div>
 </template>
 
 <script lang="ts">
 import { Component, Prop, Vue } from 'vue-property-decorator';
-import { GemCategoryViewModel } from '../viewModels/GemCategoryViewModel';
+import { Gem } from '../objects/Gem';
 
 @Component
 export default class GemsList extends Vue {
   @Prop() private msg!: string;
-  @Prop() private gemsCategories!: GemCategoryViewModel[];
+  @Prop() private gems!: Gem[];
 
-  created() {
-    console.log(this.gemsCategories);
-  }
+  created() {}
 }
 </script>

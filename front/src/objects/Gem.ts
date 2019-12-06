@@ -1,7 +1,7 @@
-export class GemCategoryViewModel {
+export class Gem {
   constructor() {
     this.id = 0;
-    this.title = "";
+    this.title = '';
   }
 
   public id: number;

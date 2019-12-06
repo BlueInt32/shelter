@@ -1,6 +1,5 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
-import { GemCategoryViewModel } from '@/viewModels/GemCategoryViewModel';
 
 Vue.use(Vuex);
 

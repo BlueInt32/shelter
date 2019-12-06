@@ -21,7 +21,6 @@ import GemsList from '@/components/GemsList.vue';
 export default class Home extends Vue {
   private gemsCategories = null;
   created() {
-    console.log(this.gemsCategories);
     this.gemsCategories = this.$store.state.gemsCategories;
   }
 }
