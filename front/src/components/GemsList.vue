@@ -6,7 +6,7 @@
 
 <script lang="ts">
 import { Component, Prop, Vue } from 'vue-property-decorator';
-import { Gem } from '../objects/Gem';
+import { Gem } from '@/objects/Gem';
 
 @Component
 export default class GemsList extends Vue {
