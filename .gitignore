@@ -47,3 +47,5 @@ photoshops/*.svg
 
 back/shelter.db
 back/shelter.db-journal
+
+asides/
