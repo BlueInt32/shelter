@@ -6,6 +6,7 @@ open Suave.Json
 open Shed.Domain
 open Suave.Utils.Collections
 open Suave.Writers
+open System.Runtime.Serialization
 
 let createGem = (mapJson (fun (a:string) -> { bar = a }))
 
@@ -21,6 +22,14 @@ let setCORSHeaders =
     setHeader "Access-Control-Allow-Origin" "*"
     >=> setHeader "Access-Control-Allow-Headers" "content-type"
 
+[<DataContract>]
+type GemInputModel =
+  { 
+    [<field: DataMember(Name = "title")>]
+    title : string 
+    [<field: DataMember(Name = "text")>]
+    text : string 
+  }
 
 //let allowCors : WebPart =
 //    choose [
@@ -31,7 +40,9 @@ let webPart =
         OPTIONS >=> setCORSHeaders >=> OK "CORS approved"
         path "/api" >=> GET >=> warbler (fun _ -> Db.getGems () |> Api.toJson |> OK)
         path "/api/gems" >=> choose [
-            POST >=> setCORSHeaders >=> createGem
+            POST 
+            >=> setCORSHeaders 
+            >=> (mapJson (fun (gemInputModel:GemInputModel) -> Db.createGem gemInputModel.title gemInputModel.text))
         ]
         path "/api/hello" >=> choose [
             GET  >=> request (fun r -> OK (greetings r.query))

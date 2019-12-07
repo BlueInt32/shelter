@@ -16,6 +16,7 @@ type Tag = {
 type Gem = { 
     Id:int64; 
     Title: Option<string>;
+    Text: Option<string>;
     //FileType: FileType;
     //FileData: FileData;
     CreationDate: DateTime;

@@ -23,6 +23,7 @@ let execReaderf sql = Sql.execReaderF connMgr sql
 let execNonQueryf sql = Sql.execNonQueryF connMgr sql 
 let execNonQuery sql p = Sql.execNonQuery connMgr sql p |> ignore 
 let exec sql = execNonQuery sql []
+let P = Sql.Parameter.make
 
 let getPostsNumber (): int64 = 
     // let filteredSql = "select * From Posts " 
@@ -35,10 +36,22 @@ let getGems () =
     // |> Seq.iter (fun dr -> 
         let id = (dr?Id).Value 
         let title = dr?Title 
+        let text = dr?Text 
         let creationDate = 
             match dr?CreationDate with 
             | None -> DateTime.MinValue 
             | Some x -> DateTime.Parse(x) 
         // printfn "Id: ?; Name: %s; Address: %s" name creationDate)
-        { Id=id; Title= title; CreationDate= creationDate; }
+        { Id=id; Title= title; Text = text; CreationDate= creationDate; }
         )
+
+let createGem (title:string) (text:string) = 
+    let creationDate = DateTime.Now
+    let lastUpdateDate = DateTime.Now
+
+    execNonQuery "insert into Gems (title, text, creationDate, lastUpdateDate) values (@title, @text, @creationDate, @lastUpdateDate)"
+                [P("@title", title); P("@text", text); P("@creationDate", DateTime.Now); P("@lastUpdateDate", DateTime.Now  )] 
+
+    let id = execScalar "select seq from sqlite_sequence where name='Gems'" [] |> Option.get
+
+    { Id=id; Title= Some title; Text = Some text; CreationDate= creationDate; }
