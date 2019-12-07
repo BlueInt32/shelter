@@ -1,22 +1,14 @@
 import Vue from 'vue';
-import Vuex from 'vuex';
+import Vuex, { StoreOptions } from 'vuex';
+import { RootState } from '@/objects/RootState';
 
 Vue.use(Vuex);
 
-export default new Vuex.Store({
-  state: {
-    gemsCategories: [
-      {
-        id: 1,
-        title: 'general'
-      },
-      {
-        id: 2,
-        title: 'sound design'
-      }
-    ]
-  },
-  mutations: {},
-  actions: {},
-  modules: {}
-});
+const store: StoreOptions<RootState> = {
+  modules: {
+    // why is this object empty ? Because modules are loaded dynamically !
+    // https://championswimmer.in/vuex-module-decorators/pages/advanced/dynamic.html#step-1-create-the-store
+  }
+};
+
+export default new Vuex.Store<RootState>(store);

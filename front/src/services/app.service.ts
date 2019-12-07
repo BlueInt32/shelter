@@ -28,7 +28,7 @@ export default class AppService {
   public getGems(gemSearchQuery: GemSearchApiModel): Promise<Gem[]> {
     return new Promise((resolve, reject) => {
       axios
-        .post(`${this.serviceRootUrl}/posts/search`, gemSearchQuery)
+        .post(`${this.serviceRootUrl}/gems/search`, gemSearchQuery)
         .then(response => {
           resolve(response.data);
         })
@@ -41,7 +41,7 @@ export default class AppService {
   public createGem(gemCreationApiModel: GemSaveApiModel) {
     return new Promise((resolve, reject) => {
       axios
-        .post(`${this.serviceRootUrl}/posts`, gemCreationApiModel)
+        .post(`${this.serviceRootUrl}/gems`, gemCreationApiModel)
         .then(response => {
           resolve(response.data);
         })
@@ -67,7 +67,7 @@ export default class AppService {
   public getGemById(gemId: number): Promise<Gem> {
     return new Promise((resolve, reject) => {
       axios
-        .get(`${this.serviceRootUrl}/posts/${gemId}`)
+        .get(`${this.serviceRootUrl}/gems/${gemId}`)
         .then(response => {
           resolve(response.data);
         })
@@ -79,7 +79,7 @@ export default class AppService {
   public deleteGem(gemId: number) {
     return new Promise((resolve, reject) => {
       axios
-        .delete(`${this.serviceRootUrl}/posts/${gemId}`)
+        .delete(`${this.serviceRootUrl}/gems/${gemId}`)
         .then(response => {
           resolve(response.data);
         })
