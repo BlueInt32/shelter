@@ -7,6 +7,7 @@ open Shed.Domain
 open Suave.Utils.Collections
 open Suave.Writers
 open System.Runtime.Serialization
+open DataAccess
 
 let createGem = (mapJson (fun (a:string) -> { bar = a }))
 
@@ -43,7 +44,7 @@ type GemInputModel =
 let webPart = 
     choose [
         OPTIONS >=> setCORSHeaders >=> OK "CORS approved"
-        path Path.Gems.overview >=> GET >=> warbler (fun _ -> Db.getGems () |> Api.toJson |> OK)
+        path Path.Gems.overview >=> GET >=> warbler (fun _ -> GemsAccess.getGems { Cool=None; Nice=None;} |> Api.toJson |> OK)
         path Path.Gems.creation >=> POST >=> setCORSHeaders 
             // >=> (mapJson (fun (gemInputModel:GemInputModel) -> Db.createGem gemInputModel.title gemInputModel.text) |> Api.toJson)
             // >=> request (Api.getResourceFromReq >> resource.Create >> JSON)
