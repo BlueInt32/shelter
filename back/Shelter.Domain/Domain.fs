@@ -13,12 +13,17 @@ type Tag = {
     Id:int; 
     Label:string; }
 
+[<DataContract>]
 type Gem = { 
+    [<field: DataMember(Name = "id")>]
     Id:int64; 
+    [<field: DataMember(Name = "title")>]
     Title: Option<string>;
+    [<field: DataMember(Name = "text")>]
     Text: Option<string>;
     //FileType: FileType;
     //FileData: FileData;
+    [<field: DataMember(Name = "creationDate")>]
     CreationDate: DateTime;
     //LastUpdateDate: DateTime;
     //Tags: Option<Tag[]>;

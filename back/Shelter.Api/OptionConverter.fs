@@ -4,6 +4,16 @@ open System
 open Microsoft.FSharp.Reflection
 open Newtonsoft.Json
 open Newtonsoft.Json.Converters
+open Suave
+open Suave
+open Suave
+open Newtonsoft.Json.Serialization
+open Newtonsoft.Json
+open Newtonsoft.Json.Serialization
+open Suave
+open Suave.Operators
+open Suave.Http
+open Suave.Successful
 
 
 type OptionConverter() =
@@ -36,3 +46,18 @@ jsonSerializerSettings.NullValueHandling <- NullValueHandling.Ignore
 
 let toJson output = 
     JsonConvert.SerializeObject(output,jsonSerializerSettings)
+let fromJson<'a> json =
+  JsonConvert.DeserializeObject(json, typeof<'a>) :?> 'a
+
+let getResourceFromReq<'a> (req : HttpRequest) =
+  let getString (rawForm:byte[]) =
+    System.Text.Encoding.UTF8.GetString(rawForm)
+  req.rawForm |> getString |> fromJson<'a>
+
+let JSON v =
+  let jsonSerializerSettings = new JsonSerializerSettings()
+  jsonSerializerSettings.ContractResolver <- new CamelCasePropertyNamesContractResolver()
+
+  JsonConvert.SerializeObject(v, jsonSerializerSettings)
+  |> OK
+  >=> Writers.setMimeType "application/json; charset=utf-8"

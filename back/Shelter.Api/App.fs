@@ -35,20 +35,23 @@ type GemInputModel =
 //    choose [
 //        POST >=> setCORSHeaders 
 //    ]
+//let handleCreation request = 
+//    (gemInputModel:GemInputModel)
+//    // Api.fromJson request.
+//    Db.createGem gemInputModel.title gemInputModel.text |> Api.toJson
+//    OK "right"
 let webPart = 
     choose [
         OPTIONS >=> setCORSHeaders >=> OK "CORS approved"
-        path "/api" >=> GET >=> warbler (fun _ -> Db.getGems () |> Api.toJson |> OK)
-        path "/api/gems" >=> choose [
-            POST 
-            >=> setCORSHeaders 
-            >=> (mapJson (fun (gemInputModel:GemInputModel) -> Db.createGem gemInputModel.title gemInputModel.text))
-        ]
-        path "/api/hello" >=> choose [
-            GET  >=> request (fun r -> OK (greetings r.query))
-            POST >=> request (fun r -> OK (greetings r.form))
-            RequestErrors.NOT_FOUND "Found no handlers" ]
-        pathScan "/api/gems/%d" 
+        path Path.Gems.overview >=> GET >=> warbler (fun _ -> Db.getGems () |> Api.toJson |> OK)
+        path Path.Gems.creation >=> POST >=> setCORSHeaders 
+            // >=> (mapJson (fun (gemInputModel:GemInputModel) -> Db.createGem gemInputModel.title gemInputModel.text) |> Api.toJson)
+            // >=> request (Api.getResourceFromReq >> resource.Create >> JSON)
+        //path "/api/hello" >=> choose [
+        //    GET  >=> request (fun r -> OK (greetings r.query))
+        //    POST >=> request (fun r -> OK (greetings r.form))
+        //    RequestErrors.NOT_FOUND "Found no handlers" ]
+        pathScan Path.Gems.details 
             (fun id -> OK (sprintf "Post details: %d" id))
 
     ]
