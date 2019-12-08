@@ -5,9 +5,8 @@ const nameof = nameofFactory<GemSaveApiModel>();
 
 export class GemSaveApiModel {
   public id?: number;
-  public type: string;
   public title: string;
-  public link: string;
+  public text: string;
   public moreDetails: string;
   public tagsIds: number[];
   public fileUrl: string;
@@ -15,9 +14,8 @@ export class GemSaveApiModel {
   public mimeType: string;
 
   constructor() {
-    this.type = '';
     this.title = '';
-    this.link = '';
+    this.text = '';
     this.moreDetails = '';
     this.tagsIds = [];
     this.fileUrl = '';
@@ -28,7 +26,7 @@ export class GemSaveApiModel {
   public buildPatchModel(): Array<PatchDescriptorModel<any>> {
     return [
       new PatchDescriptorModel<string>(nameof('title'), this.title),
-      new PatchDescriptorModel<string>(nameof('link'), this.link),
+      new PatchDescriptorModel<string>(nameof('text'), this.text),
       new PatchDescriptorModel<string>(nameof('moreDetails'), this.moreDetails),
       new PatchDescriptorModel<Array<number>>(nameof('tagsIds'), this.tagsIds),
       new PatchDescriptorModel<string>(nameof('fileUrl'), this.fileUrl),

@@ -11,8 +11,8 @@
               Who knows ? Maybe it would be a gem ?
             </legend>
             <div class="pure-control-group">
-              <label for="link">Link, text, anything...</label>
-              <input id="link" type="text" placeholder="" v-model="gemLink" />
+              <label for="text">Link, text, anything...</label>
+              <input id="text" type="text" placeholder="" v-model="gemText" />
               <span class="pure-form-message-inline">Mandatory</span>
             </div>
             <div class="pure-control-group">
@@ -50,13 +50,13 @@ import { GemSaveApiModel } from '../objects/apiModels/GemSaveApiModel';
 export default class AddThingy extends Vue {
   private gemEditionModule = getModule(GemEditionModule);
 
-  private gemLink: string = '';
+  private gemText: string = '';
   private gemTitle: string = '';
 
   created() {}
   createGem() {
     let gemCreationModel = new GemSaveApiModel();
-    gemCreationModel.link = this.gemLink;
+    gemCreationModel.text = this.gemText;
     gemCreationModel.title = this.gemTitle;
     this.gemEditionModule.createGem(gemCreationModel);
   }
