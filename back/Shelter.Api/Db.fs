@@ -37,12 +37,15 @@ let getGems () =
         let id = (dr?Id).Value 
         let title = dr?Title 
         let text = dr?Text 
-        let creationDate = 
-            match dr?CreationDate with 
-            | None -> DateTime.MinValue 
-            | Some x -> DateTime.Parse(x) 
+        let creationDate = dr?CreationDate
         // printfn "Id: ?; Name: %s; Address: %s" name creationDate)
-        { Id=id; Title= title; Text = text; CreationDate= creationDate; }
+        let result = new Gem()
+        result.Id <- id
+        result.Title <- title
+        result.Text <- text
+        result.CreationDate <- creationDate
+        // { Id=id; Title= title; Text = text; CreationDate= creationDate; }
+        result
         )
 
 let createGem (title:string) (text:string) = 
@@ -54,4 +57,6 @@ let createGem (title:string) (text:string) =
 
     let id = execScalar "select seq from sqlite_sequence where name='Gems'" [] |> Option.get
 
-    { Id=id; Title= Some title; Text = Some text; CreationDate= creationDate; }
+    let result = new Gem()
+    result
+    //{ Id=id; Title= Some title; Text = Some text; CreationDate= creationDate; }

@@ -14,20 +14,20 @@ type Tag = {
     Label:string; }
 
 [<DataContract>]
-type Gem = { 
+type Gem() =  
     [<field: DataMember(Name = "id")>]
-    Id:int64; 
+    member val Id:int64 = 0L with get, set 
     [<field: DataMember(Name = "title")>]
-    Title: Option<string>;
+    member val Title:string = String.Empty with get, set 
     [<field: DataMember(Name = "text")>]
-    Text: Option<string>;
+    member val Text:string = String.Empty with get, set 
     //FileType: FileType;
     //FileData: FileData;
     [<field: DataMember(Name = "creationDate")>]
-    CreationDate: DateTime;
+    member val CreationDate: Option<DateTime> = None with get, set 
     //LastUpdateDate: DateTime;
     //Tags: Option<Tag[]>;
-    }
+    
 
 module Say =
     let hello name =
