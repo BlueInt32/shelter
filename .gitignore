@@ -49,3 +49,6 @@ back/shelter.db
 back/shelter.db-journal
 
 asides/
+
+front/.ionide/symbolCache.db
+.ionide/symbolCache.db
