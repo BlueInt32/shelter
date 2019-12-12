@@ -1,0 +1,23 @@
+e_sqlite3.dll 
+	-> C:\Users\Simon\.nuget\packages\sqlitepclraw.lib.e_sqlite3.v110_xp\1.1.7\runtimes\win7-x86\native\e_sqlite3.dll
+	-> C:\Users\Simon\.nuget\packages\sqlprovider\1.1.75\lib\typeproviders\fsharp41\net472\x86\e_sqlite3.dll
+	-> C:\Program Files\dotnet\sdk\NuGetFallbackFolder\sqlitepclraw.lib.e_sqlite3.v110_xp\1.1.7\runtimes\win7-x64\native\e_sqlite3.dll
+	-> C:\Program Files\dotnet\shared\Microsoft.AspNetCore.All\2.1.2\e_sqlite3.dll
+	-> D:\_Prog\Projects\Shelter\back\Shelter.Api\downloaded\sqlitepclraw.lib.e_sqlite3.v110_xp.1.1.14\runtimes\win-x64\native\e_sqlite3.dll
+	-> D:\_Prog\Projects\Shelter\back\Shelter.Api\downloaded\sqlitepclraw.lib.e_sqlite3.v110_xp.1.1.14\runtimes\win8-arm\native\e_sqlite3.dll
+	-> D:\_Prog\Projects\Shelter\back\Shelter.Api\downloaded\sqlitepclraw.lib.e_sqlite3.v110_xp.1.1.14\runtimes\win-x86\native\e_sqlite3.dll
+	-> C:\Users\Simon\.nuget\packages\sqlitepclraw.lib.e_sqlite3\2.0.2\runtimes\win10-x64\nativeassets\uap10.0
+	-> C:\Users\Simon\.nuget\packages\sqlitepclraw.lib.e_sqlite3\2.0.2\runtimes\win10-x86\nativeassets\uap10.0\e_sqlite3.dll
+	-> C:\Users\Simon\.nuget\packages\sqlitepclraw.lib.e_sqlite3\2.0.2\runtimes\win-x86\native\e_sqlite3.dll
+	-> C:\Windows\System32\winsqlite3.dll renamed
+Microsoft.Data.Sqlite.dll 
+	-> C:\Users\Simon\.nuget\packages\microsoft.data.sqlite.core\3.1.0\lib\netstandard2.0\Microsoft.Data.Sqlite.dll
+SQLitePCLRaw.batteries_green.dll -> C:\Users\Simon\.nuget\packages\sqlitepclraw.bundle_green\1.1.7\lib\netstandard1.1\SQLitePCLRaw.batteries_green.dll
+SQLitePCLRaw.batteries_v2.dll -> C:\Users\Simon\.nuget\packages\sqlitepclraw.bundle_green\1.1.7\lib\netstandard1.1\SQLitePCLRaw.batteries_v2.dll
+SQLitePCLRaw.core.dll -> C:\Users\Simon\.nuget\packages\sqlitepclraw.core\1.1.7\lib\netstandard1.1\SQLitePCLRaw.core.dll
+SQLitePCLRaw.provider.e_sqlite3.dll -> C:\Users\Simon\.nuget\packages\sqlitepclraw.provider.e_sqlite3.netstandard11\1.1.7\lib\netstandard1.1\SQLitePCLRaw.provider.e_sqlite3.dll
+
+
+
+Severity	Code	Description	Project	File	Line	Suppression State
+Error	FS3033	The type provider 'FSharp.Data.Sql.SqlTypeProvider' reported an error: Unable to load DLL 'e_sqlite3': The specified module could not be found. (Exception from HRESULT: 0x8007007E), Path: D:\_Prog\Projects\Shelter\back\Shelter.Api\libraries (You are NOT running on x64.)	Shelter.Api	D:\_Prog\Projects\Shelter\back\Shelter.Api\Program.fs	11	Active
