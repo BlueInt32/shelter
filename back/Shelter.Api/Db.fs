@@ -1,57 +1,89 @@
 ﻿module Db
 
 open System
-open System.Collections.Generic
-open System.Data.SQLite
-open Shed.Domain
-open System.Data
+open Microsoft.EntityFrameworkCore
 
-// https://github.com/mausch/FsSql  //
-let databaseFilename = __SOURCE_DIRECTORY__ + @"\..\shelter.db"
-let connectionStringFile = sprintf "Data Source=%s;Version=3;New=False;Compress=True;" databaseFilename  
 
-// type Person = { Name : string; Age : int }
-let openConnection() = 
-    let conn = new System.Data.SQLite.SQLiteConnection(connectionStringFile) 
-    conn.Open() 
-    conn :> IDbConnection 
+// inspired by the article by the bald guy https://www.eelcomulder.nl/2018/03/16/using-entity-framework-core-with-f/
+// github repo : https://github.com/EelcoMulder/EFCoreWithFSharp/tree/master/EFCore.App
+type [<CLIMutable>] Gem = 
+    {   Id: int
+        Title: string
+        Text: string
+        CreationDate: DateTime
+        LastUpdateDate: DateTime
+    }
 
-let connMgr = Sql.withNewConnection openConnection 
-let execScalar sql = Sql.execScalar connMgr sql 
-let execReader sql = Sql.execReader connMgr sql 
-let execReaderf sql = Sql.execReaderF connMgr sql 
-let execNonQueryf sql = Sql.execNonQueryF connMgr sql 
-let execNonQuery sql p = Sql.execNonQuery connMgr sql p |> ignore 
-let exec sql = execNonQuery sql []
-let P = Sql.Parameter.make
+type GemContext = 
+    inherit DbContext
+    new() = { inherit DbContext() }
+    new(options: DbContextOptions<GemContext>) = { inherit DbContext(options) }
 
-let getPostsNumber (): int64 = 
-    // let filteredSql = "select * From Posts " 
-    execScalar "select count(*) from gems" [] |> Option.get 
+    // override __.OnModelCreating modelBuilder = 
+        // let esconvert = ValueConverter<EpisodeStatus, string>((fun v -> v.ToString()), (fun v -> Enum.Parse(typedefof<EpisodeStatus>, v) :?> EpisodeStatus))
+        // modelBuilder.Entity<Gem>().Property(fun e -> e.Status).HasConversion(esconvert) |> ignore
 
-let getGems () = 
-    execReader "select * from gems" [] 
-    |> Seq.ofDataReader
-    |> Seq.map (fun dr -> 
-    // |> Seq.iter (fun dr -> 
-        let id = (dr?Id).Value 
-        let title = dr?Title 
-        let text = dr?Text 
-        let creationDate = 
-            match dr?CreationDate with 
-            | None -> DateTime.MinValue 
-            | Some x -> DateTime.Parse(x) 
-        // printfn "Id: ?; Name: %s; Address: %s" name creationDate)
-        { Id=id; Title= title; Text = text; CreationDate= creationDate; }
-        )
+        //let ssconvert = ValueConverter<SerieStatus, string>((fun v -> v.ToString()), (fun v -> Enum.Parse(typedefof<SerieStatus>, v) :?> SerieStatus))
+        //modelBuilder.Entity<Serie>().Property(fun e -> e.Status).HasConversion(ssconvert) |> ignore      
 
-let createGem (title:string) (text:string) = 
-    let creationDate = DateTime.Now
-    let lastUpdateDate = DateTime.Now
 
-    execNonQuery "insert into Gems (title, text, creationDate, lastUpdateDate) values (@title, @text, @creationDate, @lastUpdateDate)"
-                [P("@title", title); P("@text", text); P("@creationDate", DateTime.Now); P("@lastUpdateDate", DateTime.Now  )] 
+    [<DefaultValue>]
+    val mutable gems:DbSet<Gem>
+    member x.Gems 
+        with get() = x.gems 
+        and set v = x.gems <- v
 
-    let id = execScalar "select seq from sqlite_sequence where name='Gems'" [] |> Option.get
+    //[<DefaultValue>]
+    //val mutable episodes:DbSet<Episode>
+    //member x.Episodes 
+    //    with get() = x.episodes 
+    //    and set v = x.episodes <- v    
 
-    { Id=id; Title= Some title; Text = Some text; CreationDate= creationDate; }
+
+
+let _getGemById (context: GemContext) id =
+    query {
+        for serie in context.Gems do
+            where (serie.Id = id)
+            select serie 
+            exactlyOne
+    } |> (fun x -> if box x = null then None else Some x)
+
+let _getGems (context: GemContext) =
+    query {
+        for serie in context.Gems do
+            select serie 
+    } |> (fun x -> if box x = null then None else Some x)
+
+let addSerieAsync (context: GemContext) (entity: Gem) =
+    async {
+        (context.Gems.AddAsync entity).AsTask () |> Async.AwaitTask |> ignore
+        let! _ = context.SaveChangesAsync true |> Async.AwaitTask
+        return entity
+    }    
+
+let addSerie (context: GemContext) (entity: Gem) =
+    context.Gems.Add(entity) |> ignore
+    context.SaveChanges true |> ignore
+
+
+let configureSqliteContext = 
+    (fun () ->
+        let optionsBuilder = new DbContextOptionsBuilder<GemContext>();
+        let dbPath = __SOURCE_DIRECTORY__ + @"\..\shelter.db;"
+        optionsBuilder.UseSqlite(@"Data Source="+ dbPath)|> ignore
+        new GemContext(optionsBuilder.Options)
+    )
+
+
+
+let getContext = configureSqliteContext()
+let getGemById  = _getGemById getContext
+let getGems  = _getGems getContext
+//let getEpisode = SerieRepository.getEpisode getContext
+//let getEpisodeLinq = SerieRepository.getEpisode getContext
+//let addSerie = SerieRepository.addSerie getContext
+//let addSerieAsync = SerieRepository.addSerieAsync getContext
+//let updateSerie = SerieRepository.updateSerie getContext
+//let deleteSerie = SerieRepository.deleteSerie getContext
+//let getSeriesWithAiredEpisodes = SerieRepository.getSeriesWithAiredEpisodes getContext

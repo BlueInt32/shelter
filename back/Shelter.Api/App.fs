@@ -43,7 +43,7 @@ type GemInputModel =
 let webPart = 
     choose [
         OPTIONS >=> setCORSHeaders >=> OK "CORS approved"
-        path Path.Gems.overview >=> GET >=> warbler (fun _ -> Db.getGems () |> Api.toJson |> OK)
+        path Path.Gems.overview >=> GET >=> warbler (fun _ -> Db.getGems |> Api.toJson |> OK)
         path Path.Gems.creation >=> POST >=> setCORSHeaders 
             // >=> (mapJson (fun (gemInputModel:GemInputModel) -> Db.createGem gemInputModel.title gemInputModel.text) |> Api.toJson)
             // >=> request (Api.getResourceFromReq >> resource.Create >> JSON)
@@ -52,7 +52,7 @@ let webPart =
         //    POST >=> request (fun r -> OK (greetings r.form))
         //    RequestErrors.NOT_FOUND "Found no handlers" ]
         pathScan Path.Gems.details 
-            (fun id -> OK (sprintf "Post details: %d" id))
+            (fun id -> Db.getGemById id |> Api.toJson |> OK)
 
     ]
     >=> Suave.Writers.setMimeType "application/json; charset=utf-8"
