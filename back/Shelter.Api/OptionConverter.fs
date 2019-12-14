@@ -1,6 +1,7 @@
 ﻿module Api
 
 open System
+open System.Text
 open Microsoft.FSharp.Reflection
 open Newtonsoft.Json
 open Newtonsoft.Json.Converters
@@ -44,8 +45,13 @@ let jsonSerializerSettings = new JsonSerializerSettings()
 jsonSerializerSettings.Converters.Add(new OptionConverter())
 jsonSerializerSettings.NullValueHandling <- NullValueHandling.Ignore
 
+let toJsonBytes output = 
+    let stringResult = JsonConvert.SerializeObject(output,jsonSerializerSettings)
+    Encoding.UTF8.GetBytes(stringResult)
+    
 let toJson output = 
     JsonConvert.SerializeObject(output,jsonSerializerSettings)
+    
 let fromJson<'a> json =
   JsonConvert.DeserializeObject(json, typeof<'a>) :?> 'a
 

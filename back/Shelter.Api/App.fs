@@ -3,7 +3,7 @@ open Suave.Successful
 open Suave.Operators
 open Suave.Filters
 open Suave.Json
-open Shed.Domain
+open Shelter.Domain
 open Suave.Utils.Collections
 open Suave.Writers
 open System.Runtime.Serialization
@@ -31,26 +31,19 @@ type GemInputModel =
     text : string 
   }
 
-//let allowCors : WebPart =
-//    choose [
-//        POST >=> setCORSHeaders 
-//    ]
-//let handleCreation request = 
-//    (gemInputModel:GemInputModel)
-//    // Api.fromJson request.
-//    Db.createGem gemInputModel.title gemInputModel.text |> Api.toJson
-//    OK "right"
+let mapJsonAsync (f: 'a -> Async<'b>) =
+  fun (ctx : HttpContext) ->
+    async{
+      let! result = f (fromJson ctx.request.rawForm)
+      return Successful.ok (toJson result ) ctx >>= Writers.setMimeType "application/json"
+    }
+    
 let webPart = 
     choose [
         OPTIONS >=> setCORSHeaders >=> OK "CORS approved"
         path Path.Gems.overview >=> GET >=> warbler (fun _ -> Db.getGems |> Api.toJson |> OK)
         path Path.Gems.creation >=> POST >=> setCORSHeaders 
-            // >=> (mapJson (fun (gemInputModel:GemInputModel) -> Db.createGem gemInputModel.title gemInputModel.text) |> Api.toJson)
-            // >=> request (Api.getResourceFromReq >> resource.Create >> JSON)
-        //path "/api/hello" >=> choose [
-        //    GET  >=> request (fun r -> OK (greetings r.query))
-        //    POST >=> request (fun r -> OK (greetings r.form))
-        //    RequestErrors.NOT_FOUND "Found no handlers" ]
+            >=> (mapJsonWith fromJson Api.toJsonBytes (fun (gemInputModel:GemInputModel) -> Async.RunSynchronously (Db.createGemAsync gemInputModel.title gemInputModel.text)))
         pathScan Path.Gems.details 
             (fun id -> Db.getGemById id |> Api.toJson |> OK)
 

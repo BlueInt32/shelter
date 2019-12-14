@@ -1,4 +1,4 @@
-﻿namespace Shed.Domain
+﻿namespace Shelter.Domain
 
 open System
 open System.Runtime.Serialization
@@ -14,20 +14,35 @@ type Tag = {
     Label:string; }
 
 [<DataContract>]
-type Gem = { 
-    [<field: DataMember(Name = "id")>]
-    Id:int64; 
-    [<field: DataMember(Name = "title")>]
-    Title: Option<string>;
-    [<field: DataMember(Name = "text")>]
-    Text: Option<string>;
-    //FileType: FileType;
-    //FileData: FileData;
-    [<field: DataMember(Name = "creationDate")>]
-    CreationDate: DateTime;
-    //LastUpdateDate: DateTime;
-    //Tags: Option<Tag[]>;
+type [<CLIMutable>] Gem =
+    {
+        [<field: DataMember(Name = "id")>]
+        Id: int
+        [<field: DataMember(Name = "title")>]
+        Title: string
+        [<field: DataMember(Name = "text")>]
+        Text: string
+        [<field: DataMember(Name = "creationDate")>]
+        CreationDate: DateTime
+        [<field: DataMember(Name = "lastUpdateDate")>]
+        LastUpdateDate: DateTime
     }
+    
+//[<DataContract>]
+//type Gem = { 
+//    [<field: DataMember(Name = "id")>]
+//    Id:int64; 
+//    [<field: DataMember(Name = "title")>]
+//    Title: Option<string>;
+//    [<field: DataMember(Name = "text")>]
+//    Text: Option<string>;
+//    //FileType: FileType;
+//    //FileData: FileData;
+//    [<field: DataMember(Name = "creationDate")>]
+//    CreationDate: DateTime;
+//    //LastUpdateDate: DateTime;
+//    //Tags: Option<Tag[]>;
+//    }
 
 module Say =
     let hello name =

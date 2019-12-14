@@ -2,17 +2,11 @@
 
 open System
 open Microsoft.EntityFrameworkCore
-
+open System.Runtime.Serialization
+open Shelter.Domain
 
 // inspired by the article by the bald guy https://www.eelcomulder.nl/2018/03/16/using-entity-framework-core-with-f/
 // github repo : https://github.com/EelcoMulder/EFCoreWithFSharp/tree/master/EFCore.App
-type [<CLIMutable>] Gem = 
-    {   Id: int
-        Title: string
-        Text: string
-        CreationDate: DateTime
-        LastUpdateDate: DateTime
-    }
 
 type GemContext = 
     inherit DbContext
@@ -54,17 +48,21 @@ let _getGems (context: GemContext) =
         for serie in context.Gems do
             select serie 
     } |> (fun x -> if box x = null then None else Some x)
+    
 
-let addSerieAsync (context: GemContext) (entity: Gem) =
+let _createGemAsync (context: GemContext) (gemTitle: string) (gemText: string) =
     async {
+        let entity = { Id= 0; Title = gemTitle; Text = gemText; CreationDate = DateTime.Now; LastUpdateDate = DateTime.Now }
         (context.Gems.AddAsync entity).AsTask () |> Async.AwaitTask |> ignore
         let! _ = context.SaveChangesAsync true |> Async.AwaitTask
         return entity
-    }    
+    }
 
-let addSerie (context: GemContext) (entity: Gem) =
+let _createGem (context: GemContext) (gemTitle: string) (gemText: string) =
+    let entity = { Id= 0; Title = gemTitle; Text = gemText; CreationDate = DateTime.Now; LastUpdateDate = DateTime.Now }
     context.Gems.Add(entity) |> ignore
     context.SaveChanges true |> ignore
+    entity
 
 
 let configureSqliteContext = 
@@ -80,6 +78,8 @@ let configureSqliteContext =
 let getContext = configureSqliteContext()
 let getGemById  = _getGemById getContext
 let getGems  = _getGems getContext
+let createGem = _createGem getContext
+let createGemAsync = _createGemAsync getContext
 //let getEpisode = SerieRepository.getEpisode getContext
 //let getEpisodeLinq = SerieRepository.getEpisode getContext
 //let addSerie = SerieRepository.addSerie getContext
