@@ -6,6 +6,8 @@ open Suave.Filters
 open Suave.Json
 open Shelter.Domain
 open InputModels
+open FSharp.Data.Dapper
+open DbDapper
 
 let config = 
     { defaultConfig with
@@ -16,7 +18,7 @@ let webPart =
     choose [
         OPTIONS >=> setCORSHeaders >=> OK "CORS approved"
         path Path.Gems.overview >=>
-            GET >=> warbler (fun _ -> Db.getGems |> Api.toJson |> OK)
+            GET >=> warbler (fun _ -> Async.RunSynchronously (DbDapper.findByIDs [5;10;16]) |> Api.toJson |> OK)
         path Path.Gems.creation >=>
             POST_CORS 
             >=> mapJsonSbu
@@ -26,5 +28,9 @@ let webPart =
 
     ]
     >=> Suave.Writers.setMimeType "application/json; charset=utf-8"
+
+// fshard-dapper specifics, so that the fields with the Option type are treated like Nullable
+OptionHandler.RegisterTypes()
+
 
 startWebServer config webPart
