@@ -7,9 +7,11 @@
 
   <ItemGroup>
     <Compile Include="OptionConverter.fs" />
+    <Compile Include="InputModels.fs" />
     <Compile Include="Db.fs" />
     <Compile Include="RestFul.fs" />
     <Compile Include="Path.fs" />
+    <Compile Include="HttpUtilities.fs" />
     <Compile Include="App.fs" />
   </ItemGroup>
 

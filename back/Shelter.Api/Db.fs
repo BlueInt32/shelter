@@ -1,9 +1,10 @@
 ﻿module Db
 
 open System
+open System.Diagnostics
 open Microsoft.EntityFrameworkCore
-open System.Runtime.Serialization
 open Shelter.Domain
+open InputModels
 
 // inspired by the article by the bald guy https://www.eelcomulder.nl/2018/03/16/using-entity-framework-core-with-f/
 // github repo : https://github.com/EelcoMulder/EFCoreWithFSharp/tree/master/EFCore.App
@@ -13,12 +14,12 @@ type GemContext =
     new() = { inherit DbContext() }
     new(options: DbContextOptions<GemContext>) = { inherit DbContext(options) }
 
-    // override __.OnModelCreating modelBuilder = 
-        // let esconvert = ValueConverter<EpisodeStatus, string>((fun v -> v.ToString()), (fun v -> Enum.Parse(typedefof<EpisodeStatus>, v) :?> EpisodeStatus))
-        // modelBuilder.Entity<Gem>().Property(fun e -> e.Status).HasConversion(esconvert) |> ignore
-
-        //let ssconvert = ValueConverter<SerieStatus, string>((fun v -> v.ToString()), (fun v -> Enum.Parse(typedefof<SerieStatus>, v) :?> SerieStatus))
-        //modelBuilder.Entity<Serie>().Property(fun e -> e.Status).HasConversion(ssconvert) |> ignore      
+//     override __.OnModelCreating modelBuilder = 
+//         let esconvert = ValueConverter<EpisodeStatus, string>((fun v -> v.ToString()), (fun v -> Enum.Parse(typedefof<EpisodeStatus>, v) :?> EpisodeStatus))
+//         modelBuilder.Entity<Gem>().Property(fun e -> e.Status).HasConversion(esconvert) |> ignore
+//
+//        let ssconvert = ValueConverter<SerieStatus, string>((fun v -> v.ToString()), (fun v -> Enum.Parse(typedefof<SerieStatus>, v) :?> SerieStatus))
+//        modelBuilder.Entity<Serie>().Property(fun e -> e.Status).HasConversion(ssconvert) |> ignore      
 
 
     [<DefaultValue>]
@@ -50,16 +51,33 @@ let _getGems (context: GemContext) =
     } |> (fun x -> if box x = null then None else Some x)
     
 
-let _createGemAsync (context: GemContext) (gemTitle: string) (gemText: string) =
+let _createGemAsync (context: GemContext) (gemInputModel: GemInputModel) =
     async {
-        let entity = { Id= 0; Title = gemTitle; Text = gemText; CreationDate = DateTime.Now; LastUpdateDate = DateTime.Now }
+        let entity = {
+            Id= 0;
+            Title = gemInputModel.title;
+            Text = gemInputModel.text;
+            CreationDate = DateTime.Now;
+            LastUpdateDate = DateTime.Now
+        }
+        let x = new Stopwatch()
+        x.Start()
         (context.Gems.AddAsync entity).AsTask () |> Async.AwaitTask |> ignore
+        Debug.WriteLine(x.ElapsedMilliseconds)
         let! _ = context.SaveChangesAsync true |> Async.AwaitTask
+        Debug.WriteLine(x.ElapsedMilliseconds)
+        x.Stop()
         return entity
     }
 
-let _createGem (context: GemContext) (gemTitle: string) (gemText: string) =
-    let entity = { Id= 0; Title = gemTitle; Text = gemText; CreationDate = DateTime.Now; LastUpdateDate = DateTime.Now }
+let _createGem (context: GemContext) (gemInputModel: GemInputModel)  =
+    let entity = {
+        Id= 0;
+        Title = gemInputModel.title;
+        Text = gemInputModel.text;
+        CreationDate = DateTime.Now;
+        LastUpdateDate = DateTime.Now
+    }
     context.Gems.Add(entity) |> ignore
     context.SaveChanges true |> ignore
     entity
@@ -70,6 +88,7 @@ let configureSqliteContext =
         let optionsBuilder = new DbContextOptionsBuilder<GemContext>();
         let dbPath = __SOURCE_DIRECTORY__ + @"\..\shelter.db;"
         optionsBuilder.UseSqlite(@"Data Source="+ dbPath)|> ignore
+        optionsBuilder.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking) |> ignore
         new GemContext(optionsBuilder.Options)
     )
 
