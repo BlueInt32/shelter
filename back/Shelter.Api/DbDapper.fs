@@ -4,12 +4,12 @@
 open System
 open System.Runtime.Serialization
 open FSharp.Data.Dapper
-open Microsoft.Data.Sqlite
+open System.Data.SQLite
 
 module Connection =
     let mkShared () = 
-        let dbPath = __SOURCE_DIRECTORY__ + @"\..\shelter.db;"
-        let conn = new SqliteConnection ("Data Source=" + dbPath)
+        let dbPath = __SOURCE_DIRECTORY__ + @"\..\shelter.db"
+        let conn = new SQLiteConnection ("Data Source=" + dbPath + ";New=False;Version=3;Compress=True;")
         conn
 
 [<DataContract>]
@@ -51,4 +51,15 @@ module DbDapper =
                 join GemId as gid on
                     g.Id = gid.Value
         """
+    }
+    let CreateGem title text = querySingleAsync<int> {
+        let conn = connectionF ()
+        let cmd = new SQLiteCommand("begin", conn)
+        parameters (dict [
+            "Title", box title; 
+            "Text", box text; 
+            "CreationDate", box DateTime.Now; 
+            "LastUpdateDate", box DateTime.Now])
+        script "insert into Gems (Title, Text, CreationDate, LastUpdateDate) VALUES (@Title, @Text, @CreationDate, @LastUpdateDate);
+                select seq from sqlite_sequence where name='Gems'"
     }
