@@ -15,14 +15,15 @@ let config =
 let webPart = 
     choose [
         OPTIONS >=> setCORSHeaders >=> OK "CORS approved"
+        path Path.Gems.creation >=> POST_CORS >=> mapJsonSbu
+                (fun (gemInputModel:GemInputModel) -> Db.createGem gemInputModel)
         path Path.Gems.overview >=>
             GET >=> warbler (fun _ -> Db.getGems |> Api.toJson |> OK)
-        path Path.Gems.creation >=>
-            POST_CORS 
-            >=> mapJsonSbu
-                (fun (gemInputModel:GemInputModel) -> Async.RunSynchronously (Db.createGemAsync gemInputModel))
-        pathScan Path.Gems.details 
-            (fun id -> Db.getGemById id |> Api.toJson |> OK)
+//        path Path.Gems.creation >=>            POST_CORS 
+//            >=> mapJsonSbu
+//                (fun (gemInputModel:GemInputModel) -> Async.RunSynchronously (Db.createGemAsync gemInputModel))
+//        pathScan Path.Gems.details 
+//            (fun id -> Db.getGemById id |> Api.toJson |> OK)
 
     ]
     >=> Suave.Writers.setMimeType "application/json; charset=utf-8"

@@ -49,3 +49,5 @@ back/shelter.db
 back/shelter.db-journal
 
 asides/
+
+back/shelter_litedb.db
