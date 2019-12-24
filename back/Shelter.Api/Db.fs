@@ -16,12 +16,19 @@ let createGem (inputModel:GemInputModel) =
     try
         use db = new LiteDatabase(liteDbPath, mapper)
         let gems = db.GetCollection<Gem>("gems")
+        let tags = db.GetCollection<Tag>("tags")
+        let tag = {
+            Id = 0;
+            Label = "music" 
+        }
+        tags.Insert(tag) |> ignore
         let newGem = {
             Id = 0;
             Title = inputModel.title;
             Text = inputModel.text;
             CreationDate = System.DateTime.Now;
-            LastUpdateDate = System.DateTime.Now; }
+            LastUpdateDate = System.DateTime.Now;
+            Tags = [tag;] }
         // gems.EnsureIndex(fun x -> x.Title, true) |> ignore
         gems.Insert(newGem) |> ignore
         Success newGem
