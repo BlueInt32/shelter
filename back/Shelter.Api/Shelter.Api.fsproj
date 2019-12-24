@@ -7,10 +7,9 @@
 
   <ItemGroup>
     <Compile Include="Domain.fs" />
-    <Compile Include="ShelterException.fs" />
-    <Compile Include="OptionConverter.fs" />
     <Compile Include="InputModels.fs" />
     <Compile Include="Db.fs" />
+    <Compile Include="OptionConverter.fs" />
     <Compile Include="RestFul.fs" />
     <Compile Include="Path.fs" />
     <Compile Include="HttpUtilities.fs" />

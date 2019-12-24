@@ -24,7 +24,6 @@ let createGem (inputModel:GemInputModel) =
             LastUpdateDate = System.DateTime.Now; }
         // gems.EnsureIndex(fun x -> x.Title, true) |> ignore
         gems.Insert(newGem) |> ignore
-        raise (new System.ArgumentNullException("yolo"))
         Success newGem
     with
         | :? System.ArgumentNullException as ex ->

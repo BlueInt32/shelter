@@ -16,9 +16,9 @@ let webPart =
     choose [
         OPTIONS >=> setCORSHeaders >=> OK "CORS approved"
         path Path.Gems.creation >=> POST_CORS >=> mapJsonSbu
-                (fun (gemInputModel:GemInputModel) -> Db.createGem gemInputModel)
-        path Path.Gems.overview >=>
-            GET >=> warbler (fun _ -> Db.getGems |> Api.toJson |> OK)
+            (fun (gemInputModel:GemInputModel) -> Db.createGem gemInputModel)
+        path Path.Gems.searchForGems >=> POST_CORS >=> mapJsonSbu
+            (fun _ -> Db.getGems)
 //        path Path.Gems.creation >=>            POST_CORS 
 //            >=> mapJsonSbu
 //                (fun (gemInputModel:GemInputModel) -> Async.RunSynchronously (Db.createGemAsync gemInputModel))

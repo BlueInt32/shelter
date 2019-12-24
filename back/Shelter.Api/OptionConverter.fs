@@ -15,7 +15,29 @@ open Suave
 open Suave.Operators
 open Suave.Http
 open Suave.Successful
+open Db
 
+
+type QueryResultConverter() =
+    inherit JsonConverter()
+
+    override x.CanConvert(t) = 
+        // found from https://stackoverflow.com/questions/33522601/deserializing-an-f-discriminated-union-with-protobuf-net
+        // 
+        let successQueryResultType = typeof<Db.QueryResult<_>>.GetNestedType("Success")
+        let canConvert = t.IsGenericType && t.GetGenericTypeDefinition() = successQueryResultType
+        canConvert
+
+    override x.WriteJson(writer, value, serializer) =
+        let value = 
+            if value = null then null
+            else 
+                let _,fields = FSharpValue.GetUnionFields(value, value.GetType())
+                fields.[0]  
+        serializer.Serialize(writer, value)
+
+    override x.ReadJson(reader, t, existingValue, serializer) =        
+        existingValue
 
 type OptionConverter() =
     inherit JsonConverter()
@@ -43,6 +65,7 @@ type OptionConverter() =
 
 let jsonSerializerSettings = new JsonSerializerSettings()
 jsonSerializerSettings.Converters.Add(new OptionConverter())
+jsonSerializerSettings.Converters.Add(new QueryResultConverter())
 jsonSerializerSettings.NullValueHandling <- NullValueHandling.Ignore
 
 let toJsonBytes output = 
