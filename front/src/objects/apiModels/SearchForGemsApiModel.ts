@@ -1,6 +1,6 @@
 import { shelterConfig } from '../../shelterConfig';
 
-export class GemSearchApiModel {
+export class SearchForGemsApiModel {
   public pageSize: number;
   public startIndex: number;
   public sortingProperty: string;

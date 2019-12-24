@@ -1,6 +1,6 @@
 import axios, { AxiosRequestConfig } from 'axios';
 import { buildPatchModifierPayload } from './patchHelper';
-import { GemSearchApiModel } from '@/objects/apiModels/GemSearchApiModel';
+import { SearchForGemsApiModel } from '@/objects/apiModels/SearchForGemsApiModel';
 import { Gem } from '@/objects/Gem';
 import { GemSaveApiModel } from '@/objects/apiModels/GemSaveApiModel';
 import { Tag } from '@/objects/Tag';
@@ -25,10 +25,12 @@ export default class AppService {
     return config;
   };
 
-  public getGems(gemSearchQuery: GemSearchApiModel): Promise<Gem[]> {
+  public searchForGems(
+    searchForGemsApiModel: SearchForGemsApiModel
+  ): Promise<Gem[]> {
     return new Promise((resolve, reject) => {
       axios
-        .post(`${this.serviceRootUrl}/gems/search`, gemSearchQuery)
+        .post(`${this.serviceRootUrl}/gems/search`, searchForGemsApiModel)
         .then(response => {
           resolve(response.data);
         })
