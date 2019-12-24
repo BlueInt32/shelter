@@ -67,6 +67,9 @@ let jsonSerializerSettings = new JsonSerializerSettings()
 jsonSerializerSettings.Converters.Add(new OptionConverter())
 jsonSerializerSettings.Converters.Add(new QueryResultConverter())
 jsonSerializerSettings.NullValueHandling <- NullValueHandling.Ignore
+let defaultContractResolver = new DefaultContractResolver()
+defaultContractResolver.NamingStrategy <- new CamelCaseNamingStrategy()
+jsonSerializerSettings.ContractResolver <- defaultContractResolver
 
 let toJsonBytes output = 
     let stringResult = JsonConvert.SerializeObject(output,jsonSerializerSettings)
