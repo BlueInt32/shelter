@@ -43,6 +43,7 @@ import { Component, Prop, Vue } from 'vue-property-decorator';
 import { getModule } from 'vuex-module-decorators';
 import GemEditionModule from '@/store/gemEdition';
 import { GemSaveApiModel } from '../objects/apiModels/GemSaveApiModel';
+import { notify, NotificationType } from '../services/notificationService';
 
 @Component({
   components: {}
@@ -52,13 +53,15 @@ export default class AddThingy extends Vue {
 
   private gemText: string = '';
   private gemTitle: string = '';
+  private $snotify: any;
 
   created() {}
-  createGem() {
+  async createGem() {
     let gemCreationModel = new GemSaveApiModel();
     gemCreationModel.text = this.gemText;
     gemCreationModel.title = this.gemTitle;
-    this.gemEditionModule.createGem(gemCreationModel);
+    await this.gemEditionModule.createGem(gemCreationModel);
+    notify(this.$snotify, NotificationType.OK, 'Cool post !');
   }
 }
 </script>

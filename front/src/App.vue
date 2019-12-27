@@ -1,5 +1,6 @@
 <template>
   <div id="app">
+    <vue-snotify></vue-snotify>
     <div class="pure-menu pure-menu-horizontal">
       <a href="#" class="pure-menu-heading pure-menu-link">Shelter</a>
       <ul class="pure-menu-list">
@@ -19,6 +20,7 @@
 </template>
 
 <style lang="scss">
+@import './styles/custom.scss';
 @import 'purecss';
 body {
   color: #333;
