@@ -60,8 +60,12 @@ export default class AddThingy extends Vue {
     let gemCreationModel = new GemSaveApiModel();
     gemCreationModel.text = this.gemText;
     gemCreationModel.title = this.gemTitle;
-    await this.gemEditionModule.createGem(gemCreationModel);
-    notify(this.$snotify, NotificationType.OK, 'Cool post !');
+    try {
+      await this.gemEditionModule.createGem(gemCreationModel);
+      notify(this.$snotify, NotificationType.OK, 'Cool post !');
+    } catch (e) {
+      notify(this.$snotify, NotificationType.ERROR, 'Oops ! ' + e.message);
+    }
   }
 }
 </script>
