@@ -49,3 +49,25 @@ let getGems =
              DatabasePathError ex
         | _ ->                    // don't handle any other cases
             reraise()
+
+
+let createTag (inputModel:TagInputModel) =
+    try
+        use db = new LiteDatabase(liteDbPath, mapper)
+        let tags = db.GetCollection<Tag>("tags")
+        let tag = {
+            Id = 0;
+            Label = "music" 
+        }
+        tags.Insert(tag) |> ignore
+        let newTag = {
+            Id = 0;
+            Label = inputModel.label;
+        }
+        tags.Insert(newTag) |> ignore
+        Success newTag
+    with
+        | :? System.ArgumentNullException as ex ->
+             DatabasePathError ex
+        | _ ->                    // don't handle any other cases
+            reraise()
