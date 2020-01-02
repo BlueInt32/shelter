@@ -6,6 +6,7 @@ import { GemSaveApiModel } from '@/objects/apiModels/GemSaveApiModel';
 import { Tag } from '@/objects/Tag';
 import { LoginApiModel } from '@/objects/apiModels/LoginApiModel';
 import { LoginResult } from '@/objects/LoginResult';
+import { SearchForTagsApiModel } from '@/objects/apiModels/SearchForTagsApiModel';
 
 export default class AppService {
   private serviceRootUrl: string;
@@ -102,12 +103,12 @@ export default class AppService {
         });
     });
   }
-  public getTags(text: string): Promise<Tag[]> {
+  public searchForTags(model: SearchForTagsApiModel): Promise<Tag[]> {
     return new Promise((resolve, reject) => {
       axios
         .post(`${this.serviceRootUrl}/tags/search`, {
-          text,
-          limit: text ? 10 : 10000
+          labelSearchText: model.labelSearchText,
+          limit: model.labelSearchText ? 10 : 10000
         })
         .then(response => {
           resolve(response.data);

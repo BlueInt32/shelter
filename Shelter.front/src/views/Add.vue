@@ -13,7 +13,21 @@
             <div class="pure-control-group">
               <label for="text">Link, text, anything...</label>
               <input id="text" type="text" placeholder="" v-model="gemText" />
-              <span class="pure-form-message-inline">Mandatory</span>
+              <span class="pure-form-message-inline">*</span>
+            </div>
+            <div class="pure-control-group">
+              <label for="title">Tags</label>
+              <!-- <TagsMiniList
+                :tagsList="postEditionModule.stagedTags"
+                :keySelector="tag => tag.id"
+                :labelSelector="tag => tag.label"
+                :tagCrossClickHandler="removeStagedTagHandler"
+              />
+              <TagsInputComponent
+                @commit="tagsCommitHandler"
+                :tabindex="2"
+              ></TagsInputComponent> -->
+              <input id="title" type="text" placeholder="" v-model="gemTitle" />
             </div>
             <div class="pure-control-group">
               <label for="title">Title (optional)</label>
