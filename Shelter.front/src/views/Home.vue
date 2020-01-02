@@ -8,7 +8,7 @@
 <script lang="ts">
 // @ is an alias to /src
 import { Component, Prop, Vue } from 'vue-property-decorator';
-import GemsList from '@/components/GemsList.vue';
+import GemsList from '@/views/components/GemsList.vue';
 import { getModule } from 'vuex-module-decorators';
 import GemsDisplayModule from '@/store/gemsDisplay';
 import { SearchForGemsApiModel } from '../objects/apiModels/SearchForGemsApiModel';

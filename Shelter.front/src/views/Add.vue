@@ -12,26 +12,34 @@
             </legend>
             <div class="pure-control-group">
               <label for="text">Link, text, anything...</label>
-              <input id="text" type="text" placeholder="" v-model="gemText" />
+              <input
+                id="text"
+                type="text"
+                placeholder=""
+                v-model="gemText"
+                class="pure-input-2-3"
+              />
+
               <span class="pure-form-message-inline">*</span>
             </div>
             <div class="pure-control-group">
               <label for="title">Tags</label>
-              <!-- <TagsMiniList
-                :tagsList="postEditionModule.stagedTags"
-                :keySelector="tag => tag.id"
-                :labelSelector="tag => tag.label"
-                :tagCrossClickHandler="removeStagedTagHandler"
+              <vue-tags-input
+                class="addTagsInputComponent pure-input-2-3"
+                v-model="tag"
+                :tags="tags"
+                @tags-changed="newTags => (tags = newTags)"
               />
-              <TagsInputComponent
-                @commit="tagsCommitHandler"
-                :tabindex="2"
-              ></TagsInputComponent> -->
-              <input id="title" type="text" placeholder="" v-model="gemTitle" />
             </div>
             <div class="pure-control-group">
               <label for="title">Title (optional)</label>
-              <input id="title" type="text" placeholder="" v-model="gemTitle" />
+              <input
+                id="title"
+                type="text"
+                placeholder=""
+                v-model="gemTitle"
+                class="pure-input-2-3"
+              />
             </div>
             <div class="pure-controls">
               <button
@@ -58,9 +66,12 @@ import { getModule } from 'vuex-module-decorators';
 import GemEditionModule from '@/store/gemEdition';
 import { GemSaveApiModel } from '../objects/apiModels/GemSaveApiModel';
 import { notify, NotificationType } from '../services/notificationService';
+import VueTagsInput from '@johmun/vue-tags-input';
 
 @Component({
-  components: {}
+  components: {
+    VueTagsInput
+  }
 })
 export default class AddThingy extends Vue {
   private gemEditionModule = getModule(GemEditionModule);
@@ -68,6 +79,8 @@ export default class AddThingy extends Vue {
   private gemText: string = '';
   private gemTitle: string = '';
   private $snotify: any;
+  private tag: string = '';
+  private tags: string[] = [];
 
   created() {}
   async createGem() {
@@ -83,3 +96,23 @@ export default class AddThingy extends Vue {
   }
 }
 </script>
+
+<style lang="scss">
+@import '@/styles/custom.scss';
+
+.addTagsInputComponent {
+  display: inline-block;
+}
+.ti-input {
+  border-radius: 4px;
+  box-shadow: inset 0 1px 3px #ddd;
+}
+input[type='text'].ti-new-tag-input {
+  box-shadow: none;
+}
+.vue-tags-input .ti-tag {
+  position: relative;
+  background: $main;
+  color: #283944;
+}
+</style>
