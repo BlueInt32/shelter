@@ -1,3 +1,9 @@
 @import '~vue-snotify/styles/simple';
 
-$main: teal;
+$primary: teal;
+$tagsAndButtonsColor: #fff;
+
+.button-success {
+  color: $tagsAndButtonsColor;
+  background: $primary !important; /* this is a green */
+}

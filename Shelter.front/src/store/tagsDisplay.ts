@@ -20,8 +20,7 @@ const appService = new AppService();
 export default class TagsDisplay extends VuexModule {
   @Action({ rawError: true })
   public async searchForTags(searchForTagsApiModel: SearchForTagsApiModel) {
-    const tags = await appService.searchForTags(searchForTagsApiModel);
-    return tags;
+    return appService.searchForTags(searchForTagsApiModel);
     // // if inputmode is upload, we have to change the model to use base64file
     // const fileinputmodule = getmodule(fileinput);
     // if (fileinputmodule.inputmode === 'upload') {
