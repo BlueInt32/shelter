@@ -15,6 +15,8 @@ let config =
 let gemsCreateHandler = fun (gemInputModel:GemInputModel) -> Db.createGem gemInputModel
 let gemsGetHandler = fun _ -> Db.getGems
 let tagsCreateHandler = fun (tagInputModel:TagInputModel) -> Db.createTag tagInputModel
+let tagsSearchHandler = fun (tagsSearchInputModel:TagsSearchInputModel) -> Db.searchForTags tagsSearchInputModel
+
 let webPart = 
     choose [
         OPTIONS >=> setCORSHeaders >=> OK "CORS approved"
@@ -27,6 +29,9 @@ let webPart =
         path Path.Tags.create 
             >=> POST_CORS >=> mapJsonSbu
             tagsCreateHandler
+        path Path.Tags.search
+            >=> POST_CORS >=> mapJsonSbu
+            tagsSearchHandler
     ]
     >=> Suave.Writers.setMimeType "application/json; charset=utf-8"
 

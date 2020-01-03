@@ -13,4 +13,5 @@ module Gems =
 
 module Tags = 
     let create = "/api/tags"
+    let search = "/api/tags/search"
 

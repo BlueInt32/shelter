@@ -4,6 +4,7 @@ open InputModels
 open LiteDB
 open LiteDB.FSharp
 open Domain
+open System.Linq
 
 let mapper = FSharpBsonMapper()
 let liteDbPath = __SOURCE_DIRECTORY__ + "/../../db/shelter.lite.db"
@@ -67,6 +68,19 @@ let createTag (inputModel:TagInputModel) =
         tags.Insert(newTag) |> ignore
         Success newTag
     with
+        | :? System.ArgumentNullException as ex ->
+             DatabasePathError ex
+        | _ ->                    // don't handle any other cases
+            reraise()
+
+let searchForTags (inputModel:TagsSearchInputModel) =
+    try
+        use db = new LiteDatabase(liteDbPath, mapper)
+        let tags = db.GetCollection<Tag>("tags")
+        let result = tags.Find (fun tag -> tag.Label.StartsWith inputModel.labelSearchText)
+
+        Success (result.Take inputModel.limit)
+    with 
         | :? System.ArgumentNullException as ex ->
              DatabasePathError ex
         | _ ->                    // don't handle any other cases
