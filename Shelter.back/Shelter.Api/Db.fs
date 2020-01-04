@@ -16,22 +16,36 @@ type QueryResult<'a> =
 let createGem (inputModel:GemInputModel) =
     try
         use db = new LiteDatabase(liteDbPath, mapper)
-        let gems = db.GetCollection<Gem>("gems")
-        let tags = db.GetCollection<Tag>("tags")
-        let tag = {
-            Id = 0;
-            Label = "music" 
-        }
-        tags.Insert(tag) |> ignore
+        let dbTags = db.GetCollection<Tag>("tags")
+        let dbGems = db.GetCollection<Gem>("gems")
+        let allTags = dbTags.FindAll ()
+        
+        let getMaybeExistingTag label = 
+            allTags |> Seq.tryFind (fun dbTag -> dbTag.Label = label)
+        
+        let createTag label =
+            let newTag = { Id = 0; Label = label }
+            dbTags.Insert(newTag) |> ignore
+            newTag
+
+        let extractLabel tagInputModel = 
+            tagInputModel.label
+
+        let createOrRetrieveTag label = 
+            match (getMaybeExistingTag label) with
+            | Some existingTag -> existingTag
+            | _ -> createTag label
+
+        let gemsTags = inputModel.tags |> Seq.map extractLabel |> Seq.map createOrRetrieveTag
+
         let newGem = {
             Id = 0;
             Title = inputModel.title;
             Text = inputModel.text;
             CreationDate = System.DateTime.Now;
             LastUpdateDate = System.DateTime.Now;
-            Tags = [tag;] }
-        // gems.EnsureIndex(fun x -> x.Title, true) |> ignore
-        gems.Insert(newGem) |> ignore
+            Tags = List.ofSeq gemsTags }
+        let x = dbGems.Insert(newGem) 
         Success newGem
     with
         | :? System.ArgumentNullException as ex ->
