@@ -22,7 +22,12 @@ const routes = [
   {
     path: '/add',
     name: 'addThingy',
-    component: () => import('../views/Add.vue')
+    component: () => import('../views/AddGem.vue')
+  },
+  {
+    path: '/view/:gemId',
+    name: 'viewGem',
+    component: () => import('../views/ViewGem.vue')
   }
 ];
 

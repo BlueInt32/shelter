@@ -42,4 +42,8 @@ export default class GemsDisplay extends VuexModule {
     // // console.log('go appservice');
     // return appservice.createpost(postmodel);
   }
+  @Action({ rawError: true })
+  public async getGemById(gemId: number) {
+    return new Gem();
+  }
 }

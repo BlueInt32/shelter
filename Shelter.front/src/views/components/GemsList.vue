@@ -2,6 +2,9 @@
   <div class="gemsList">
     <p v-for="gem in gems" :key="gem.id">
       {{ gem.title }} - {{ gem.tags.map(t => t.label).join() }}
+      <router-link :to="{ name: 'viewGem', params: { gemId: gem.id } }"
+        >view</router-link
+      >
     </p>
   </div>
 </template>
