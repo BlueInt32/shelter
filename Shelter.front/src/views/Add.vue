@@ -85,7 +85,7 @@ export default class AddThingy extends Vue {
   private gemTitle: string = '';
   private $snotify: any;
   private tag: string = '';
-  private tags: string[] = [];
+  private tags: any[] = [];
   private autocompleteItems: AutocompleteItem[] = [];
   private debounce: any = null;
 
@@ -94,6 +94,7 @@ export default class AddThingy extends Vue {
     let gemCreationModel = new GemSaveApiModel();
     gemCreationModel.text = this.gemText;
     gemCreationModel.title = this.gemTitle;
+    gemCreationModel.tags = this.tags.map(t => t.text);
     try {
       await this.gemEditionModule.createGem(gemCreationModel);
       notify(this.$snotify, NotificationType.OK, 'Cool post !');

@@ -1,6 +1,8 @@
 <template>
   <div class="gemsList">
-    <p v-for="gem in gems" :key="gem.id">{{ gem.id }} - {{ gem.title }}</p>
+    <p v-for="gem in gems" :key="gem.id">
+      {{ gem.title }} - {{ gem.tags.map(t => t.label).join() }}
+    </p>
   </div>
 </template>
 
