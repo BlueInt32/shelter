@@ -18,7 +18,7 @@ type GemInputModel =
     [<field: DataMember(Name = "text")>]
     text : string 
     [<field: DataMember(Name = "tags")>]
-    tags :TagInputModel[]
+    tags :string[]
   }
 
 [<DataContract>]

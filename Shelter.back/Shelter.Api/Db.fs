@@ -28,15 +28,12 @@ let createGem (inputModel:GemInputModel) =
             dbTags.Insert(newTag) |> ignore
             newTag
 
-        let extractLabel tagInputModel = 
-            tagInputModel.label
-
         let createOrRetrieveTag label = 
             match (getMaybeExistingTag label) with
             | Some existingTag -> existingTag
             | _ -> createTag label
 
-        let gemsTags = inputModel.tags |> Seq.map extractLabel |> Seq.map createOrRetrieveTag
+        let gemsTags = inputModel.tags |> Seq.map createOrRetrieveTag
 
         let newGem = {
             Id = 0;
