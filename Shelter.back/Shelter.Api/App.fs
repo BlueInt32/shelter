@@ -32,6 +32,8 @@ let webPart =
         path Path.Tags.search
             >=> POST_CORS >=> mapJsonSbu
             tagsSearchHandler
+        pathScan Path.Gems.details 
+            (fun id -> Db.getGemById id |> Api.toJson |> OK)
     ]
     >=> Suave.Writers.setMimeType "application/json; charset=utf-8"
 

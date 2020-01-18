@@ -62,6 +62,18 @@ let getGems =
         | _ ->                    // don't handle any other cases
             reraise()
 
+let getGemById gemId =
+    try
+        use db = new LiteDatabase(liteDbPath, mapper)
+        let gems = db.GetCollection<Gem>("gems")
+        let result = gems.Find (fun g -> g.Id = gemId)
+        Success result
+    with 
+        | :? System.ArgumentNullException as ex ->
+             DatabasePathError ex
+        | _ ->                    // don't handle any other cases
+            reraise()
+
 
 let createTag (inputModel:TagInputModel) =
     try

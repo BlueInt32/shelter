@@ -44,6 +44,7 @@ export default class GemsDisplay extends VuexModule {
   }
   @Action({ rawError: true })
   public async getGemById(gemId: number) {
-    return new Gem();
+    const gem = await appService.getGemById(gemId);
+    return gem;
   }
 }

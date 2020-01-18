@@ -1,6 +1,7 @@
 <template>
   <div class="viewGem">
     <h1>{{ gem.title }}</h1>
+    <h2>{{ gem.text }}</h2>
   </div>
 </template>
 
@@ -18,8 +19,10 @@ export default class AddThingy extends Vue {
   private gem: Gem = new Gem();
 
   async created() {
-    this.gem = await this.gemsDisplayModule.getGemById(1);
-    this.gem.title = 'coucou';
+    this.gem = await this.gemsDisplayModule.getGemById(
+      parseInt(this.$route.params.gemId, 10)
+    );
+    console.log(this.gem);
   }
 }
 </script>
