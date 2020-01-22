@@ -3,13 +3,13 @@ from flask_sqlalchemy import SQLAlchemy
 
 app = Flask(__name__)
 
-from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker
 from database_setup import Base, Book
 
 # Connect to Database and create database session
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///books-collection.db'
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
+
 
 # class User(db.Model):
 #     id = db.Column(db.Integer, primary_key=True)
@@ -25,7 +25,6 @@ db = SQLAlchemy(app)
 @app.route('/')
 @app.route('/books')
 def show_books():
-    # db = SQLAlchemy(app)
     books = db.session.query(Book).all()
     return render_template("books.html", books=books)
 
@@ -34,39 +33,39 @@ def show_books():
 @app.route('/books/new/', methods=['GET', 'POST'])
 def new_book():
     if request.method == 'POST':
-        #db = SQLAlchemy(app)
-        newBook = Book(title=request.form['name'], author=request.form['author'], genre=request.form['genre'])
-        db.session.add(newBook)
+        new_book = Book(title=request.form['name'], author=request.form['author'], genre=request.form['genre'])
+        db.session.add(new_book)
         db.session.commit()
         return redirect(url_for('show_books'))
     else:
-        return render_template('newBook.html')
+        return render_template('new_book.html')
 
 
 # This will let us Update our books and save it in our database
 @app.route("/books/<int:book_id>/edit/", methods=['GET', 'POST'])
 def edit_book(book_id):
-    # db = SQLAlchemy(app)
-    editedBook = db.session.query(Book).filter_by(id=book_id).one()
+    edited_book = db.session.query(Book).filter_by(id=book_id).one()
     if request.method == 'POST':
         if request.form['name']:
-            editedBook.title = request.form['name']
+            edited_book.title = request.form['name']
+            edited_book.author = request.form['author']
+            edited_book.genre = request.form['genre']
+            db.session.commit()
             return redirect(url_for('show_books'))
     else:
-        return render_template('editBook.html', book=editedBook)
+        return render_template('edit_book.html', book=edited_book)
 
 
 # This will let us Delete our book
 @app.route('/books/<int:book_id>/delete/', methods=['GET', 'POST'])
 def delete_book(book_id):
-    # db = SQLAlchemy(app)
-    bookToDelete = db.session.query(Book).filter_by(id=book_id).one()
+    book_to_delete = db.session.query(Book).filter_by(id=book_id).one()
     if request.method == 'POST':
-        db.session.delete(bookToDelete)
+        db.session.delete(book_to_delete)
         db.session.commit()
         return redirect(url_for('show_books', book_id=book_id))
     else:
-        return render_template('deleteBook.html', book=bookToDelete)
+        return render_template('delete_book.html', book=book_to_delete)
 
 
 if __name__ == '__main__':
