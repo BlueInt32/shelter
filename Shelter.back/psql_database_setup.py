@@ -1,23 +1,14 @@
-from flask import Flask
+from flask import Flask, jsonify
 from flask_sqlalchemy import SQLAlchemy
 import os
 
 app = Flask(__name__)
 
-
-def get_env_variable(name):
-    try:
-        return os.environ[name]
-    except KeyError:
-        message = "Expected environment variable '{}' not set.".format(name)
-        raise Exception(message)
-
-
 # the values of those depend on your setup
-POSTGRES_URL = get_env_variable("POSTGRES_URL")
-POSTGRES_USER = get_env_variable("POSTGRES_USER")
-POSTGRES_PW = get_env_variable("POSTGRES_PW")
-POSTGRES_DB = get_env_variable("POSTGRES_DB")
+POSTGRES_URL = "127.0.0.1:5432"
+POSTGRES_USER = "Simon"
+POSTGRES_PW = "t2vlYfAMm5VXhvlyhY12fj"
+POSTGRES_DB = "test"
 
 DB_URL = 'postgresql+psycopg2://{user}:{pw}@{url}/{db}'.format(user=POSTGRES_USER, pw=POSTGRES_PW, url=POSTGRES_URL,
                                                                db=POSTGRES_DB)
@@ -35,8 +26,34 @@ class Book(db.Model):
     genre = db.Column(db.String(200), unique=False, nullable=True)
 
 
-@app.cli.command('resetdb')
-def reset_db_command():
+class User(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(200), unique=False, nullable=True)
+    job = db.Column(db.String(200), unique=False, nullable=True)
+
+    def is_authenticated(self):
+        return True
+
+    def is_active(self):
+        return True
+
+    def is_anonymous(self):
+        return False
+
+    def get_id(self):
+        return self.spotify_id
+
+
+@app.route('/user')
+def lolz():
+    user = User(name="Simon", job="developer")
+    db.session.add(user)
+    db.session.commit()
+    return {'id': user.id, 'name': user.name, 'job': user.job}
+
+
+@app.route('/resetdb', methods=['post'])
+def resetdb():
     """Destroys and creates the database + tables."""
 
     from sqlalchemy_utils import database_exists, create_database, drop_database
@@ -50,3 +67,4 @@ def reset_db_command():
     print('Creating tables.')
     db.create_all()
     print('Shiny!')
+    return 'OK'

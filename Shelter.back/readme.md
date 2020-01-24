@@ -14,5 +14,13 @@ Setting up flask with PostgreSQL is done in this [blog post](https://vsupalov.co
 
 
 
+### How to pgAdmin
+
+https://youtu.be/Dd2ej-QKrWY?t=1344
+
+
+
+
+
 
 
