@@ -1,71 +1,96 @@
 from flask import Flask, render_template, request, redirect, url_for
 from flask_sqlalchemy import SQLAlchemy
+from flask_restful import reqparse, Resource, Api, fields, marshal_with
+from server_timing import Timing
+from flask_cors import CORS, cross_origin
+from flask_restful.utils import cors
 
 app = Flask(__name__)
+api = Api(app)
+api.decorators = [cors.crossdomain(origin='*')]
+cors = CORS(app)
+#t = Timing(app, force_debug=True)
+app.config['CORS_HEADERS'] = 'Content-Type'
 
-from database_setup import Base, Book
+POSTGRES_URL = "127.0.0.1:5432"
+POSTGRES_USER = "Simon"
+POSTGRES_PW = "t2vlYfAMm5VXhvlyhY12fj"
+POSTGRES_DB = "shelter"
 
-# Connect to Database and create database session
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///books-collection.db'
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+DB_URL = 'postgresql+psycopg2://{user}:{pw}@{url}/{db}'.format(user=POSTGRES_USER, pw=POSTGRES_PW, url=POSTGRES_URL,
+                                                               db=POSTGRES_DB)
+
+app.config['SQLALCHEMY_DATABASE_URI'] = DB_URL
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False  # silence the deprecation warning
+
 db = SQLAlchemy(app)
 
+parser = reqparse.RequestParser()
+parser.add_argument('title')
 
-# class User(db.Model):
-#     id = db.Column(db.Integer, primary_key=True)
-#     username = db.Column(db.String(80), unique=True, nullable=False)
-#     email = db.Column(db.String(120), unique=True, nullable=False)
-#
-#     def __repr__(self):
-#         return '<User %r>' % self.username
+resource_fields = {
+    'id': fields.Integer,
+    'title': fields.String,
+    'description': fields.String
+}
 
+
+class ElementApi(Resource):
+    @marshal_with(resource_fields)
+    def get(self, element_id):
+        retrieved_element = Element.query.get(element_id)
+        return retrieved_element
+
+    def put(self, element_title):
+        args = parser.parse_args(strict=True)
+        new_element = Element(title=args['title'].title)
+        db.session.add(new_element)
+        db.session.commit()
+        return new_element, 201
+
+
+class ElementsListApi(Resource):
+    @marshal_with(resource_fields)
+    def get(self):
+        #t.start('done and done')
+        elements = db.session.query(Element).all()
+        #t.stop('done and done')
+        return elements
+
+    def post(self):
+        args = parser.parse_args()
+        new_element = Element(title=args['title'], description='le trombonne')
+        db.session.add(new_element)
+        db.session.commit()
+        return new_element.id, 201
+
+
+class Element(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    title = db.Column(db.String(200), unique=False, nullable=False)
+    description = db.Column(db.String(200), unique=False, nullable=True)
+
+
+api.add_resource(ElementsListApi, '/api/elements')
+api.add_resource(ElementApi, '/api/elements/<element_id>')
 
 # landing page that will display all the books in our database
 # This function operate on the Read operation.
-@app.route('/')
-@app.route('/books')
-def show_books():
-    books = db.session.query(Book).all()
-    return render_template("books.html", books=books)
-
-
-# This will let us Create a new book and save it in our database
-@app.route('/books/new/', methods=['GET', 'POST'])
-def new_book():
-    if request.method == 'POST':
-        new_book = Book(title=request.form['name'], author=request.form['author'], genre=request.form['genre'])
-        db.session.add(new_book)
-        db.session.commit()
-        return redirect(url_for('show_books'))
-    else:
-        return render_template('new_book.html')
-
-
-# This will let us Update our books and save it in our database
-@app.route("/books/<int:book_id>/edit/", methods=['GET', 'POST'])
-def edit_book(book_id):
-    edited_book = db.session.query(Book).filter_by(id=book_id).one()
-    if request.method == 'POST':
-        if request.form['name']:
-            edited_book.title = request.form['name']
-            edited_book.author = request.form['author']
-            edited_book.genre = request.form['genre']
-            db.session.commit()
-            return redirect(url_for('show_books'))
-    else:
-        return render_template('edit_book.html', book=edited_book)
-
-
-# This will let us Delete our book
-@app.route('/books/<int:book_id>/delete/', methods=['GET', 'POST'])
-def delete_book(book_id):
-    book_to_delete = db.session.query(Book).filter_by(id=book_id).one()
-    if request.method == 'POST':
-        db.session.delete(book_to_delete)
-        db.session.commit()
-        return redirect(url_for('show_books', book_id=book_id))
-    else:
-        return render_template('delete_book.html', book=book_to_delete)
+# @app.route('/')
+# @app.route('/elements')
+# def show_books():
+#     print(__name__)
+#     elements = db.session.query(Element).all()
+#     return {'items': elements}
+#
+#
+# # This will let us Create a new book and save it in our database
+# @app.route('/elements', methods=['POST'])
+# def create_new_element():
+#     new_element = Element(title=request.form['title'], description=request.form['title'])
+#     db.session.add(new_element)
+#     db.session.commit()
+#     return {'created': new_element}
 
 
 if __name__ == '__main__':

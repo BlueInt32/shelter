@@ -1,33 +1,50 @@
-import sys
-#for creating the mapper code
-from sqlalchemy import Column, ForeignKey, Integer, String
+from flask import Flask, render_template, request, redirect, url_for
+from flask_sqlalchemy import SQLAlchemy
 
-#for configuration and class code
-from sqlalchemy.ext.declarative import declarative_base
+app = Flask(__name__)
 
-#for creating foreign key relationship between the tables
-from sqlalchemy.orm import relationship
+POSTGRES_URL = "127.0.0.1:5432"
+POSTGRES_USER = "Simon"
+POSTGRES_PW = "t2vlYfAMm5VXhvlyhY12fj"
+POSTGRES_DB = "shelter"
 
-#for configuration
-from sqlalchemy import create_engine
+DB_URL = 'postgresql+psycopg2://{user}:{pw}@{url}/{db}'.format(user=POSTGRES_USER, pw=POSTGRES_PW, url=POSTGRES_URL,
+                                                               db=POSTGRES_DB)
 
-#create declarative_base instance
-Base = declarative_base()
+app.config['SQLALCHEMY_DATABASE_URI'] = DB_URL
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False  # silence the deprecation warning
 
-#we'll add classes here
+db = SQLAlchemy(app)
 
-#creates a create_engine instance at the bottom of the file
-engine = create_engine('sqlite:///books-collection.db')
 
-Base.metadata.create_all(engine)
+class Element(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    title = db.Column(db.String(200), unique=False, nullable=False)
+    description = db.Column(db.String(200), unique=False, nullable=True)
 
-# we create the class Book and extend it from the Base Class.
-class Book(Base):
-    __tablename__ = 'book'
 
-    id = Column(Integer, primary_key=True)
-    title = Column(String(250), nullable=False)
-    author = Column(String(250), nullable=False)
-    genre = Column(String(250))
+@app.route('/element')
+def create_element():
+    user = Element(title="Coucou", description="this is a test")
+    db.session.add(user)
+    db.session.commit()
+    return {'id': user.id, 'name': user.name, 'job': user.job}
 
-Base.metadata.create_all(engine)
+
+@app.route('/resetdb', methods=['get'])
+def reset_db():
+    """Destroys and creates the database + tables."""
+
+    from sqlalchemy_utils import database_exists, create_database, drop_database
+    status = ''
+    if database_exists(DB_URL):
+        print('Deleting database.')
+        status += 'delete '
+        drop_database(DB_URL)
+    if not database_exists(DB_URL):
+        print('Creating database.')
+        status += 'create '
+        create_database(DB_URL)
+
+    db.create_all()
+    return 'OK ' + status

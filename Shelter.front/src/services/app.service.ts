@@ -31,7 +31,7 @@ export default class AppService {
   ): Promise<Gem[]> {
     return new Promise((resolve, reject) => {
       axios
-        .post(`${this.serviceRootUrl}/gems/search`, searchForGemsApiModel)
+        .get(`${this.serviceRootUrl}/elements`)
         .then(response => {
           resolve(response.data);
         })
@@ -70,7 +70,7 @@ export default class AppService {
   public getGemById(gemId: number): Promise<Gem> {
     return new Promise((resolve, reject) => {
       axios
-        .get(`${this.serviceRootUrl}/gems/${gemId}`)
+        .get(`${this.serviceRootUrl}/elements/${gemId}`)
         .then(response => {
           resolve(response.data);
         })

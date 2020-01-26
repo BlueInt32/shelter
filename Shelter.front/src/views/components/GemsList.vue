@@ -3,9 +3,9 @@
     <div class="gemsList__item" v-for="gem in gems" :key="gem.id">
       <div class="gemsList__innerBox">
         <h2>{{ gem.title }}</h2>
-        <p class="gemsList__tagsList">
+        <!-- <p class="gemsList__tagsList">
           {{ gem.tags.map(t => t.label).join(', ') }}
-        </p>
+        </p> -->
         <router-link :to="{ name: 'viewGem', params: { gemId: gem.id } }"
           >view</router-link
         >
