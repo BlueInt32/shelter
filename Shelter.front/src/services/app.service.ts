@@ -44,7 +44,7 @@ export default class AppService {
   public createGem(gemCreationApiModel: GemSaveApiModel) {
     return new Promise((resolve, reject) => {
       axios
-        .post(`${this.serviceRootUrl}/gems`, gemCreationApiModel)
+        .post(`${this.serviceRootUrl}/elements`, gemCreationApiModel)
         .then(response => {
           resolve(response.data);
         })
