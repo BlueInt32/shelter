@@ -7,10 +7,10 @@ from flask_restful.utils import cors
 
 app = Flask(__name__)
 api = Api(app)
-api.decorators = [cors.crossdomain(origin='*')]
-cors = CORS(app)
-#t = Timing(app, force_debug=True)
-app.config['CORS_HEADERS'] = 'Content-Type'
+# api.decorators = [cors.crossdomain(origin='*')]
+cors = CORS(app, resources={r"/api/*": {"origins": "*"}})
+# t = Timing(app, force_debug=True)
+# app.config['CORS_HEADERS'] = 'Content-Type'
 
 POSTGRES_URL = "127.0.0.1:5432"
 POSTGRES_USER = "Simon"
