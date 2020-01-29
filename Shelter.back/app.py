@@ -1,16 +1,14 @@
 from flask import Flask, render_template, request, redirect, url_for
+import logging
 from flask_sqlalchemy import SQLAlchemy
 from flask_restful import reqparse, Resource, Api, fields, marshal_with
-from server_timing import Timing
-#from flask_cors import CORS, cross_origin
-from flask_restful.utils import cors
+from flask_cors import CORS, cross_origin
+
+logging.getLogger('flask_cors').level = logging.DEBUG
 
 app = Flask(__name__)
 api = Api(app)
-api.decorators = [cors.crossdomain(origin='*', methods=['GET','POST','PUT','DELETE','OPTIONS'] )]
-#cors = CORS(app, resources={r"*": {"origins": "*"}})
-# t = Timing(app, force_debug=True)
-#app.config['CORS_HEADERS'] = 'Content-Type'
+cors = CORS(app)
 
 POSTGRES_URL = "127.0.0.1:5432"
 POSTGRES_USER = "Simon"
