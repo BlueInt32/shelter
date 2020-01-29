@@ -7,11 +7,11 @@ import {
   Mutation
 } from 'vuex-module-decorators';
 import AppService from '../services/app.service';
-import { Gem } from '@/objects/Gem';
+import { Element } from '@/objects/Element';
 import { Tag } from '@/objects/Tag';
 import { ModalMode } from '@/objects/enums';
-import { GemSaveApiModel } from '@/objects/apiModels/GemSaveApiModel';
-import { SearchForGemsApiModel } from '@/objects/apiModels/SearchForGemsApiModel';
+import { SaveElementApiModel } from '@/objects/apiModels/SaveElementApiModel';
+import { SearchForElementsApiModel } from '@/objects/apiModels/SearchForElementsApiModel';
 import { SearchForTagsApiModel } from '@/objects/apiModels/SearchForTagsApiModel';
 
 const appService = new AppService();

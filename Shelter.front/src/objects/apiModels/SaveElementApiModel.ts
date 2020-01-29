@@ -1,9 +1,9 @@
 import { PatchDescriptorModel } from './PatchDescriptorModel';
 import { nameofFactory } from '../../services/utils';
 
-const nameof = nameofFactory<GemSaveApiModel>();
+const nameof = nameofFactory<SaveElementApiModel>();
 
-export class GemSaveApiModel {
+export class SaveElementApiModel {
   public id?: number;
   public title: string;
   public text: string;

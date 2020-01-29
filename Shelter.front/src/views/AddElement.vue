@@ -1,22 +1,18 @@
 <template>
-  <div class="addThingy">
+  <div class="addElement">
     <div class="pure-g">
       <div class="pure-u-1-5"></div>
       <div class="pure-u-3-5">
-        <h1>Add stuff</h1>
+        <h1>Add an element</h1>
         <form class="pure-form pure-form-aligned">
           <fieldset>
-            <legend>
-              A "thingy" is something you just want to review later. <br />
-              Who knows ? Maybe it would be a gem ?
-            </legend>
             <div class="pure-control-group">
               <label for="text">Link, text, anything...</label>
               <input
                 id="text"
                 type="text"
                 placeholder=""
-                v-model="gemText"
+                v-model="elementText"
                 class="pure-input-2-3"
               />
               <span class="pure-form-message-inline">*</span>
@@ -37,7 +33,7 @@
                 id="title"
                 type="text"
                 placeholder=""
-                v-model="gemTitle"
+                v-model="elementTitle"
                 class="pure-input-2-3"
               />
             </div>
@@ -46,7 +42,7 @@
                 class="pure-button button-success"
                 type="button"
                 value="Add"
-                @click="createGem()"
+                @click="createElement()"
               >
                 Add
               </button>
@@ -63,13 +59,13 @@
 // @ is an alias to /src
 import { Component, Prop, Vue, Watch } from 'vue-property-decorator';
 import { getModule } from 'vuex-module-decorators';
-import GemEditionModule from '@/store/gemEdition';
+import ElementEditionModule from '@/store/elementEdition';
 import TagsDisplayModule from '@/store/tagsDisplay';
-import { GemSaveApiModel } from '@/objects/apiModels/GemSaveApiModel';
+import { SaveElementApiModel } from '@/objects/apiModels/SaveElementApiModel';
 import { AutocompleteItem } from '@/objects/AutocompleteItem';
 import { notify, NotificationType } from '../services/notificationService';
 import VueTagsInput from '@johmun/vue-tags-input';
-import { SearchForGemsApiModel } from '../objects/apiModels/SearchForGemsApiModel';
+import { SearchForElementsApiModel } from '../objects/apiModels/SearchForElementsApiModel';
 import { SearchForTagsApiModel } from '../objects/apiModels/SearchForTagsApiModel';
 
 @Component({
@@ -77,12 +73,12 @@ import { SearchForTagsApiModel } from '../objects/apiModels/SearchForTagsApiMode
     VueTagsInput
   }
 })
-export default class AddThingy extends Vue {
-  private gemEditionModule = getModule(GemEditionModule);
+export default class AddElement extends Vue {
+  private elementEditionModule = getModule(ElementEditionModule);
   private tagsDisplayModule = getModule(TagsDisplayModule);
 
-  private gemText: string = '';
-  private gemTitle: string = '';
+  private elementText: string = '';
+  private elementTitle: string = '';
   private $snotify: any;
   private tag: string = '';
   private tags: any[] = [];
@@ -90,13 +86,13 @@ export default class AddThingy extends Vue {
   private debounce: any = null;
 
   created() {}
-  async createGem() {
-    let gemCreationModel = new GemSaveApiModel();
-    gemCreationModel.text = this.gemText;
-    gemCreationModel.title = this.gemTitle;
-    gemCreationModel.tags = this.tags.map(t => t.text);
+  async createElement() {
+    let elementCreationModel = new SaveElementApiModel();
+    elementCreationModel.text = this.elementText;
+    elementCreationModel.title = this.elementTitle;
+    elementCreationModel.tags = this.tags.map(t => t.text);
     try {
-      await this.gemEditionModule.createGem(gemCreationModel);
+      await this.elementEditionModule.createElement(elementCreationModel);
       notify(this.$snotify, NotificationType.OK, 'Cool post !');
     } catch (e) {
       notify(this.$snotify, NotificationType.ERROR, 'Oops ! ' + e.message);

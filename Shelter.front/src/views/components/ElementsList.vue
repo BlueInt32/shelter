@@ -1,12 +1,17 @@
 <template>
-  <div class="gemsList__container">
-    <div class="gemsList__item" v-for="gem in gems" :key="gem.id">
-      <div class="gemsList__innerBox">
-        <h2>{{ gem.title }}</h2>
-        <!-- <p class="gemsList__tagsList">
-          {{ gem.tags.map(t => t.label).join(', ') }}
+  <div class="elementsList__container">
+    <div
+      class="elementsList__item"
+      v-for="element in elements"
+      :key="element.id"
+    >
+      <div class="elementsList__innerBox">
+        <h2>{{ element.title }}</h2>
+        <!-- <p class="elementsList__tagsList">
+          {{ element.tags.map(t => t.label).join(', ') }}
         </p> -->
-        <router-link :to="{ name: 'viewGem', params: { gemId: gem.id } }"
+        <router-link
+          :to="{ name: 'viewElement', params: { elementId: element.id } }"
           >view</router-link
         >
       </div>
@@ -16,26 +21,26 @@
 
 <script lang="ts">
 import { Component, Prop, Vue } from 'vue-property-decorator';
-import { Gem } from '@/objects/Gem';
+import { Element } from '@/objects/Element';
 
 @Component
-export default class GemsList extends Vue {
+export default class ElementsList extends Vue {
   @Prop() private msg!: string;
-  @Prop() private gems!: Gem[];
+  @Prop() private elements!: Element[];
 
   created() {}
 }
 </script>
 
 <style lang="scss" scoped>
-.gemsList__container {
+.elementsList__container {
   display: flex;
   justify-content: flex-start;
   flex-wrap: wrap;
   align-items: stretch;
   align-content: stretch;
 
-  .gemsList__item {
+  .elementsList__item {
     // height: 70px;
     min-width: 10vw;
     max-width: 40vw;
@@ -51,11 +56,11 @@ export default class GemsList extends Vue {
       font-size: 1.3em;
     }
 
-    .gemsList__innerBox {
+    .elementsList__innerBox {
       padding: 0.3em;
       border: 1px solid gray;
 
-      .gemsList__tagsList {
+      .elementsList__tagsList {
         font-size: 0.8em;
       }
     }

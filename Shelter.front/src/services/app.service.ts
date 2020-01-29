@@ -1,8 +1,8 @@
 import axios, { AxiosRequestConfig } from 'axios';
 import { buildPatchModifierPayload } from './patchHelper';
-import { SearchForGemsApiModel } from '@/objects/apiModels/SearchForGemsApiModel';
-import { Gem } from '@/objects/Gem';
-import { GemSaveApiModel } from '@/objects/apiModels/GemSaveApiModel';
+import { SearchForElementsApiModel } from '@/objects/apiModels/SearchForElementsApiModel';
+import { Element } from '@/objects/Element';
+import { SaveElementApiModel } from '@/objects/apiModels/SaveElementApiModel';
 import { Tag } from '@/objects/Tag';
 import { LoginApiModel } from '@/objects/apiModels/LoginApiModel';
 import { LoginResult } from '@/objects/LoginResult';
@@ -26,9 +26,9 @@ export default class AppService {
     return config;
   };
 
-  public searchForGems(
-    searchForGemsApiModel: SearchForGemsApiModel
-  ): Promise<Gem[]> {
+  public searchForElements(
+    searchForElementsApiModel: SearchForElementsApiModel
+  ): Promise<Element[]> {
     return new Promise((resolve, reject) => {
       axios
         .get(`${this.serviceRootUrl}/elements`)
@@ -41,10 +41,10 @@ export default class AppService {
     });
   }
 
-  public createGem(gemCreationApiModel: GemSaveApiModel) {
+  public createElement(elementCreationApiModel: SaveElementApiModel) {
     return new Promise((resolve, reject) => {
       axios
-        .post(`${this.serviceRootUrl}/elements`, gemCreationApiModel)
+        .post(`${this.serviceRootUrl}/elements`, elementCreationApiModel)
         .then(response => {
           resolve(response.data);
         })
@@ -54,11 +54,14 @@ export default class AppService {
     });
   }
 
-  public updateGem(gemSaveApiModel: GemSaveApiModel) {
-    return new Promise<Gem>((resolve, reject) => {
-      const patchModel = gemSaveApiModel.buildPatchModel();
+  public updateElement(saveElementApiModel: SaveElementApiModel) {
+    return new Promise<Element>((resolve, reject) => {
+      const patchModel = saveElementApiModel.buildPatchModel();
       axios
-        .patch(`${this.serviceRootUrl}/gems/${gemSaveApiModel.id}`, patchModel)
+        .patch(
+          `${this.serviceRootUrl}/elements/${saveElementApiModel.id}`,
+          patchModel
+        )
         .then(response => {
           resolve(response.data);
         })
@@ -67,10 +70,10 @@ export default class AppService {
         });
     });
   }
-  public getGemById(gemId: number): Promise<Gem> {
+  public getElementById(elementId: number): Promise<Element> {
     return new Promise((resolve, reject) => {
       axios
-        .get(`${this.serviceRootUrl}/elements/${gemId}`)
+        .get(`${this.serviceRootUrl}/elements/${elementId}`)
         .then(response => {
           resolve(response.data);
         })
@@ -79,10 +82,10 @@ export default class AppService {
         });
     });
   }
-  public deleteGem(gemId: number) {
+  public deleteElement(elementId: number) {
     return new Promise((resolve, reject) => {
       axios
-        .delete(`${this.serviceRootUrl}/gems/${gemId}`)
+        .delete(`${this.serviceRootUrl}/elements/${elementId}`)
         .then(response => {
           resolve(response.data);
         })

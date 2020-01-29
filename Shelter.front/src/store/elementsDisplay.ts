@@ -1,4 +1,4 @@
-import store from './';
+import store from '.';
 import {
   VuexModule,
   Module,
@@ -7,16 +7,16 @@ import {
   Mutation
 } from 'vuex-module-decorators';
 import AppService from '../services/app.service';
-import { Gem } from '@/objects/Gem';
+import { Element } from '@/objects/Element';
 import { Tag } from '@/objects/Tag';
 import { ModalMode } from '@/objects/enums';
-import { GemSaveApiModel } from '@/objects/apiModels/GemSaveApiModel';
-import { SearchForGemsApiModel } from '@/objects/apiModels/SearchForGemsApiModel';
+import { SaveElementApiModel } from '@/objects/apiModels/SaveElementApiModel';
+import { SearchForElementsApiModel } from '@/objects/apiModels/SearchForElementsApiModel';
 
 const appService = new AppService();
 
-@Module({ dynamic: true, namespaced: true, name: 'gemsDisplay', store })
-export default class GemsDisplay extends VuexModule {
+@Module({ dynamic: true, namespaced: true, name: 'elementsDisplay', store })
+export default class ElementsDisplay extends VuexModule {
   // modalMode : are we adding or editing a post ?
   public modalMode: ModalMode = ModalMode.Add;
   // isEditing is true whenever we have the postEditionModal open (in both Add and Edit modes)
@@ -28,9 +28,13 @@ export default class GemsDisplay extends VuexModule {
   };
 
   @Action({ rawError: true })
-  public async searchForGems(searchForGemsApiModel: SearchForGemsApiModel) {
-    const gems = await appService.searchForGems(searchForGemsApiModel);
-    return gems;
+  public async searchForElements(
+    searchForElementsApiModel: SearchForElementsApiModel
+  ) {
+    const elements = await appService.searchForElements(
+      searchForElementsApiModel
+    );
+    return elements;
     // // if inputmode is upload, we have to change the model to use base64file
     // const fileinputmodule = getmodule(fileinput);
     // if (fileinputmodule.inputmode === 'upload') {
@@ -43,8 +47,8 @@ export default class GemsDisplay extends VuexModule {
     // return appservice.createpost(postmodel);
   }
   @Action({ rawError: true })
-  public async getGemById(gemId: number) {
-    const gem = await appService.getGemById(gemId);
-    return gem;
+  public async getElementById(elementId: number) {
+    const element = await appService.getElementById(elementId);
+    return element;
   }
 }

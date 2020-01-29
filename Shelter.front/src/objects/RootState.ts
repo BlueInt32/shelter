@@ -1,8 +1,8 @@
-import { Gem } from './Gem';
+import { Element } from './Element';
 import { Tag } from './Tag';
 
 export interface RootState {
   version: string;
-  posts: Gem[];
+  posts: Element[];
   tags: Tag[];
 }

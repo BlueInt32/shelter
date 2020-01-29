@@ -1,32 +1,34 @@
 <template>
   <div class="home">
     <!-- <img alt="Vue logo" src="../assets/logo.png" /> -->
-    <GemsList :gems="gems" />
+    <ElementsList :elements="elements" />
   </div>
 </template>
 
 <script lang="ts">
 // @ is an alias to /src
 import { Component, Prop, Vue } from 'vue-property-decorator';
-import GemsList from '@/views/components/GemsList.vue';
+import ElementsList from '@/views/components/ElementsList.vue';
 import { getModule } from 'vuex-module-decorators';
-import GemsDisplayModule from '@/store/gemsDisplay';
-import { SearchForGemsApiModel } from '../objects/apiModels/SearchForGemsApiModel';
+import ElementsDisplayModule from '@/store/elementsDisplay';
+import { SearchForElementsApiModel } from '../objects/apiModels/SearchForElementsApiModel';
 
 @Component({
   components: {
-    GemsList
+    ElementsList
   }
 })
 export default class Home extends Vue {
-  private gems: any = null;
-  private gemsDisplayModule: GemsDisplayModule = getModule(GemsDisplayModule);
+  private elements: any = null;
+  private elementsDisplayModule: ElementsDisplayModule = getModule(
+    ElementsDisplayModule
+  );
   async created() {
     console.log('created');
-    this.gems = await this.gemsDisplayModule.searchForGems(
-      new SearchForGemsApiModel()
+    this.elements = await this.elementsDisplayModule.searchForElements(
+      new SearchForElementsApiModel()
     );
-    console.log('result', this.gems);
+    console.log('result', this.elements);
   }
 }
 </script>

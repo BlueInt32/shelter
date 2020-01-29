@@ -1,4 +1,4 @@
-import store from './';
+import store from '.';
 import {
   VuexModule,
   Module,
@@ -9,10 +9,10 @@ import {
 import AppService from '../services/app.service';
 // import Posts from './posts';
 // import FileInput from './fileInput';
-import { Gem } from '@/objects/Gem';
+import { Element } from '@/objects/Element';
 import { Tag } from '@/objects/Tag';
 import { ModalMode } from '@/objects/enums';
-import { GemSaveApiModel } from '@/objects/apiModels/GemSaveApiModel';
+import { SaveElementApiModel } from '@/objects/apiModels/SaveElementApiModel';
 
 const appService = new AppService();
 
@@ -34,8 +34,8 @@ const tagsUnion = (left: Tag[], right: Tag[]) => {
   });
   return outArray;
 };
-@Module({ dynamic: true, namespaced: true, name: 'gemEdition', store })
-export default class GemEdition extends VuexModule {
+@Module({ dynamic: true, namespaced: true, name: 'elementEdition', store })
+export default class ElementEdition extends VuexModule {
   // modalMode : are we adding or editing a post ?
   public modalMode: ModalMode = ModalMode.Add;
   // isEditing is true whenever we have the postEditionModal open (in both Add and Edit modes)
@@ -47,8 +47,8 @@ export default class GemEdition extends VuexModule {
   };
 
   @Action({ rawError: true })
-  public createGem(gemSaveApiModel: GemSaveApiModel) {
-    appService.createGem(gemSaveApiModel);
+  public createElement(saveElementApiModel: SaveElementApiModel) {
+    appService.createElement(saveElementApiModel);
     // // if inputMode is upload, we have to change the model to use base64File
     // const fileInputModule = getModule(FileInput);
     // if (fileInputModule.inputMode === 'upload') {
@@ -62,7 +62,7 @@ export default class GemEdition extends VuexModule {
   }
 
   @Action({ rawError: true })
-  public updatePost(gemSaveApiModel: GemSaveApiModel) {
+  public updatePost(saveElementApiModel: SaveElementApiModel) {
     // const postsModule = getModule(Posts);
     // // if inputMode is upload, we have to change the model to use base64File
     // const fileInputModule = getModule(FileInput);
@@ -78,9 +78,9 @@ export default class GemEdition extends VuexModule {
   }
 
   @Action({ rawError: true })
-  public deleteGem(gemId: number) {
+  public deleteElement(elementId: number) {
     return new Promise(resolve => {
-      appService.deleteGem(gemId).then(data => {
+      appService.deleteElement(elementId).then(data => {
         resolve(data);
       });
     });

@@ -21,13 +21,13 @@ const routes = [
   },
   {
     path: '/add',
-    name: 'addThingy',
-    component: () => import('../views/AddGem.vue')
+    name: 'addElement',
+    component: () => import('../views/AddElement.vue')
   },
   {
-    path: '/view/:gemId',
-    name: 'viewGem',
-    component: () => import('../views/ViewGem.vue')
+    path: '/view/:elementId',
+    name: 'viewElement',
+    component: () => import('../views/ViewElement.vue')
   }
 ];
 

@@ -1,6 +1,6 @@
 import { Tag } from './Tag';
 
-export class Gem {
+export class Element {
   constructor() {
     this.id = 0;
     this.title = '';
