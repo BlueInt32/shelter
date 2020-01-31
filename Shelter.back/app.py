@@ -40,7 +40,7 @@ element_fields = {
     'text': fields.String,
     # 'creation_date': fields.DateTime,
     # 'update_date': fields.DateTime,
-    'tags': fields.Nested(tag_fields)
+    'tags': fields.List(fields.Nested(tag_fields), attribute='tags_associated')
 }
 
 
@@ -74,7 +74,7 @@ class ElementsListApi(Resource):
             new_element = Element(args['title'], args['text'], new_tags)
             db.session.add(new_element)
             db.session.commit()
-            return new_element.id, 201
+            return new_element, 201
         except:
             print("Unexpected error:", sys.exc_info()[0])
             return 'Error', 400
