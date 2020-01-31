@@ -54,3 +54,4 @@ back/shelter_litedb.db
 db/shelter.lite.db
 Shelter.back.fsharp
 Shelter.back/venv/
+Shelter.back/shelter.log
