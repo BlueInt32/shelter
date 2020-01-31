@@ -7,6 +7,16 @@
         <form class="pure-form pure-form-aligned">
           <fieldset>
             <div class="pure-control-group">
+              <label for="title">Title (optional)</label>
+              <input
+                id="title"
+                type="text"
+                placeholder=""
+                v-model="elementTitle"
+                class="pure-input-2-3"
+              />
+            </div>
+            <div class="pure-control-group">
               <label for="text">Link, text, anything...</label>
               <input
                 id="text"
@@ -25,16 +35,6 @@
                 :tags="tags"
                 :autocomplete-items="autocompleteItems"
                 @tags-changed="update"
-              />
-            </div>
-            <div class="pure-control-group">
-              <label for="title">Title (optional)</label>
-              <input
-                id="title"
-                type="text"
-                placeholder=""
-                v-model="elementTitle"
-                class="pure-input-2-3"
               />
             </div>
             <div class="pure-controls">
