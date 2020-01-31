@@ -8,20 +8,17 @@ import sys
 
 logging.getLogger('flask_cors').level = logging.DEBUG
 
+
 app = Flask(__name__)
+if app.config["ENV"] == "production":
+  	app.config.from_object("config.ProductionConfig")
+else:
+  	app.config.from_object("config.DevelopmentConfig")
+
+print(f'ENV is set to: {app.config["ENV"]}')
+
 api = Api(app)
 cors = CORS(app)
-
-POSTGRES_URL = "127.0.0.1:5432"
-POSTGRES_USER = "Simon"
-POSTGRES_PW = "t2vlYfAMm5VXhvlyhY12fj"
-POSTGRES_DB = "shelter"
-
-DB_URL = 'postgresql+psycopg2://{user}:{pw}@{url}/{db}'.format(user=POSTGRES_USER, pw=POSTGRES_PW, url=POSTGRES_URL,
-                                                               db=POSTGRES_DB)
-
-app.config['SQLALCHEMY_DATABASE_URI'] = DB_URL
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False  # silence the deprecation warning
 
 db = SQLAlchemy(app)
 
