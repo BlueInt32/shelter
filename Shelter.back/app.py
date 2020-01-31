@@ -73,9 +73,10 @@ class ElementsListApi(Resource):
     args = parser.parse_args()
     logging.info('input: {json}'.format(json= args))
     try:
-      all_tags = set(map(lambda t: t.label, Tag.query.all()))
+      already_existing_tags = Tag.query.filter(Tag.label.in_(args.tags or [])).all()
+      already_existing_tags_labels = set(map(lambda t: t.label, already_existing_tags))
       received_tags = set(args.tags or [])
-      new_tags = (received_tags - all_tags)
+      new_tags = (received_tags - already_existing_tags_labels)
       new_element = Element(args['title'], args['text'], [Tag(t) for t in new_tags])
       db.session.add(new_element)
       db.session.commit()
@@ -83,7 +84,6 @@ class ElementsListApi(Resource):
     except:
       print("Unexpected error:", sys.exc_info()[0])
       return 'Error', 400
-
 
 api.add_resource(ElementsListApi, '/api/elements')
 api.add_resource(ElementApi, '/api/elements/<element_id>')
