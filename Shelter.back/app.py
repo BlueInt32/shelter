@@ -73,8 +73,10 @@ class ElementsListApi(Resource):
     args = parser.parse_args()
     logging.info('input: {json}'.format(json= args))
     try:
-      new_tags = [Tag(a) for a in args.tags or []]
-      new_element = Element(args['title'], args['text'], new_tags)
+      all_tags = set(map(lambda t: t.label, Tag.query.all()))
+      received_tags = set(args.tags or [])
+      new_tags = (received_tags - all_tags)
+      new_element = Element(args['title'], args['text'], [Tag(t) for t in new_tags])
       db.session.add(new_element)
       db.session.commit()
       return new_element, 201
