@@ -1,5 +1,8 @@
 <template>
   <div class="elementsList__container">
+    <span class="elementsList__info" v-if="elements.length === 0"
+      >No element yet :(</span
+    >
     <div
       class="elementsList__item"
       v-for="element in elements"
@@ -7,9 +10,6 @@
     >
       <div class="elementsList__innerBox">
         <h2>{{ element.title }}</h2>
-        <!-- <p class="elementsList__tagsList">
-          {{ element.tags.map(t => t.label).join(', ') }}
-        </p> -->
         <router-link
           :to="{ name: 'viewElement', params: { elementId: element.id } }"
           >view</router-link
@@ -33,12 +33,17 @@ export default class ElementsList extends Vue {
 </script>
 
 <style lang="scss" scoped>
+.elementsList__info {
+  font-style: italic;
+  color: #aaa;
+}
 .elementsList__container {
   display: flex;
   justify-content: flex-start;
   flex-wrap: wrap;
   align-items: stretch;
   align-content: stretch;
+  padding: 2em;
 
   .elementsList__item {
     // height: 70px;
