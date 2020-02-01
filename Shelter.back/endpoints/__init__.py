@@ -39,6 +39,12 @@ class ElementApi(Resource):
     db.session.commit()
     return new_element, 201
 
+  def delete(self, element_id):
+    retrieved_element = Element.query.get(element_id)
+    db.session.delete(retrieved_element)
+    db.session.commit()
+    return 204
+
 
 class ElementsListApi(Resource):
   @marshal_with(element_fields)
@@ -68,6 +74,7 @@ class ElementsListApi(Resource):
     except:
       print("Unexpected error:", sys.exc_info()[0])
       return 'Error', 400
+
 
 class TagsSearchApi(Resource):
   @marshal_with(tag_fields)
