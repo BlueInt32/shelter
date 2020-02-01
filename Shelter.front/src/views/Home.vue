@@ -24,11 +24,9 @@ export default class Home extends Vue {
     ElementsDisplayModule
   );
   async created() {
-    console.log('created');
     this.elements = await this.elementsDisplayModule.searchForElements(
       new SearchForElementsApiModel()
     );
-    console.log('result', this.elements);
   }
 }
 </script>

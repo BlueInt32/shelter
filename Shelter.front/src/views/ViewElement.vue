@@ -25,7 +25,6 @@ export default class ViewElement extends Vue {
     this.element = await this.elementsDisplayModule.getElementById(
       parseInt(this.$route.params.elementId, 10)
     );
-    console.log(this.element);
   }
 }
 </script>
