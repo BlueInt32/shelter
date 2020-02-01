@@ -28,6 +28,11 @@ const routes = [
     path: '/view/:elementId',
     name: 'viewElement',
     component: () => import('../views/ViewElement.vue')
+  },
+  {
+    path: '/edit/:elementId',
+    name: 'editElement',
+    component: () => import('../views/EditElement.vue')
   }
 ];
 

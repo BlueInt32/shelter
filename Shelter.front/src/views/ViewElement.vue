@@ -8,6 +8,9 @@
     <ul class="viewElement__tagslist">
       <li v-for="tag in element.tags" :key="tag.id">{{ tag.label }}</li>
     </ul>
+    <button class="pure-button" @click="clickEditHandler">
+      Edit
+    </button>
     <button class="pure-button button-error" @click="clickDeleteHandler">
       Delete
     </button>
@@ -41,6 +44,9 @@ export default class ViewElement extends Vue {
     await this.elementEditionModule.deleteElement(this.element.id);
     notify(this.$snotify, NotificationType.OK, 'Post deleted');
     this.$router.push({ name: 'home' });
+  }
+  async clickEditHandler() {
+    this.$router.push(`/edit/${this.element.id}`);
   }
 }
 </script>
