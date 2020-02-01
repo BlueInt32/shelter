@@ -2,6 +2,9 @@
   <div class="viewElement">
     <h1>{{ element.title }}</h1>
     <h2>{{ element.text }}</h2>
+    <ul>
+      <li v-for="tag in element.tags" :key="tag.id">{{ tag.label }}</li>
+    </ul>
   </div>
 </template>
 
