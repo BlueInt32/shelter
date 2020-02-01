@@ -2,7 +2,10 @@
   <div class="viewElement">
     <h1>{{ element.title }}</h1>
     <h2>{{ element.text }}</h2>
-    <ul>
+    <span class="viewElement__info" v-if="element.tags.length === 0"
+      >No tag</span
+    >
+    <ul class="viewElement__tagslist">
       <li v-for="tag in element.tags" :key="tag.id">{{ tag.label }}</li>
     </ul>
   </div>
@@ -31,4 +34,25 @@ export default class ViewElement extends Vue {
 
 <style lang="scss">
 @import '@/styles/custom.scss';
+.viewElement {
+  padding: 2em;
+}
+
+.viewElement__info {
+  font-style: italic;
+  color: #aaa;
+}
+
+ul.viewElement__tagslist {
+  list-style: none;
+
+  li {
+    display: inline;
+    border-radius: 3px;
+    background: #aaf;
+    color: white;
+    margin: 0px 2px;
+    padding: 2px;
+  }
+}
 </style>
