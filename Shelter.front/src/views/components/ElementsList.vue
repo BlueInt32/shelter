@@ -1,6 +1,6 @@
 <template>
   <div class="elementsList__container">
-    <span class="elementsList__info" v-if="elements.length === 0"
+    <span class="elementsList__info" v-if="!elements || elements.length === 0"
       >No element yet :(</span
     >
     <div
@@ -32,7 +32,7 @@ export default class ElementsList extends Vue {
 }
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
 .elementsList__info {
   font-style: italic;
   color: #aaa;

@@ -8,7 +8,9 @@
     <ul class="viewElement__tagslist">
       <li v-for="tag in element.tags" :key="tag.id">{{ tag.label }}</li>
     </ul>
-    <input type="button" value="Delete" @click="clickDeleteHandler" />
+    <button class="pure-button button-error" @click="clickDeleteHandler">
+      Delete
+    </button>
   </div>
 </template>
 
@@ -45,6 +47,7 @@ export default class ViewElement extends Vue {
 
 <style lang="scss">
 @import '@/styles/custom.scss';
+
 .viewElement {
   padding: 2em;
 }

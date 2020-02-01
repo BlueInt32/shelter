@@ -21,6 +21,7 @@
 <style lang="scss">
 @import './styles/custom.scss';
 @import 'purecss';
+@import '~vue-snotify/styles/simple';
 body {
   color: #333;
 }
