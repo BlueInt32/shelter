@@ -29,7 +29,7 @@ parser.add_argument('tags', action='append')
 class ElementApi(Resource):
   @marshal_with(element_fields)
   def get(self, element_id):
-    retrieved_element = Element.query.get(element_id)
+    retrieved_element = Element.query.get_or_404(element_id)
     return retrieved_element
 
   def put(self, element_title):
@@ -49,9 +49,7 @@ class ElementApi(Resource):
 class ElementsListApi(Resource):
   @marshal_with(element_fields)
   def get(self):
-    # t.start('done and done')
     elements = db.session.query(Element).all()
-    # t.stop('done and done')
     return elements
 
   @marshal_with(element_fields)
