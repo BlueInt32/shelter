@@ -109,10 +109,7 @@ export default class AppService {
   public searchForTags(model: SearchForTagsApiModel): Promise<Tag[]> {
     return new Promise((resolve, reject) => {
       axios
-        .post(`${this.serviceRootUrl}/tags/search`, {
-          labelSearchText: model.labelSearchText,
-          limit: model.labelSearchText ? 10 : 10000
-        })
+        .get(`${this.serviceRootUrl}/tags/search/${model.labelSearchText}`)
         .then(response => {
           resolve(response.data);
         })

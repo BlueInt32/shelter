@@ -68,3 +68,9 @@ class ElementsListApi(Resource):
     except:
       print("Unexpected error:", sys.exc_info()[0])
       return 'Error', 400
+
+class TagsSearchApi(Resource):
+  @marshal_with(tag_fields)
+  def get(self, search_term):
+    results = Tag.query.filter(Tag.label.like(search_term + '%')).all()
+    return results

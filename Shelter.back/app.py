@@ -30,6 +30,7 @@ cors = CORS(app)
 
 api.add_resource(endpoints.ElementsListApi, '/api/elements')
 api.add_resource(endpoints.ElementApi, '/api/elements/<element_id>')
+api.add_resource(endpoints.TagsSearchApi, '/api/tags/search/<search_term>')
 
 if __name__ == '__main__':
   app.debug = True
