@@ -1,7 +1,10 @@
 <template>
-  <div class="home">
-    <!-- <img alt="Vue logo" src="../assets/logo.png" /> -->
-    <ElementsList :elements="elements" />
+  <div>
+    <div id="list" class="home pure-u-1">
+      <!-- <img alt="Vue logo" src="../assets/logo.png" /> -->
+      <ElementsList :elements="elements" />
+    </div>
+    <div class="pure-u"></div>
   </div>
 </template>
 

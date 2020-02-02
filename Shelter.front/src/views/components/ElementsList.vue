@@ -1,21 +1,33 @@
 <template>
-  <div class="elementsList__container">
-    <span class="elementsList__info" v-if="!elements || elements.length === 0"
-      >No element yet :(</span
-    >
+  <div class="">
     <div
-      class="elementsList__item"
+      class="email-item email-item-selected pure-g"
       v-for="element in elements"
       :key="element.id"
     >
-      <div class="elementsList__innerBox">
-        <h2>{{ element.title }}</h2>
-        <router-link
-          :to="{ name: 'viewElement', params: { elementId: element.id } }"
-          >view</router-link
-        >
+      <div class="pure-u">
+        <img
+          width="64"
+          height="64"
+          alt="Tilo Mitra&#x27;s avatar"
+          class="email-avatar"
+          src="img/common/tilo-avatar.png"
+        />
+      </div>
+      <div class="pure-u-3-4">
+        <h5 class="email-name">{{ element.title }}</h5>
+        <h4 class="email-subject">Hello from Toronto</h4>
+        <p class="email-desc">
+          <router-link
+            :to="{ name: 'viewElement', params: { elementId: element.id } }"
+            >view</router-link
+          >
+        </p>
       </div>
     </div>
+    <span class="elementsList__info" v-if="!elements || elements.length === 0"
+      >No element yet :(</span
+    >
   </div>
 </template>
 
