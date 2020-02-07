@@ -4,7 +4,7 @@ import { nameofFactory } from '../../services/utils';
 const nameof = nameofFactory<SaveElementApiModel>();
 
 export class SaveElementApiModel {
-  public id?: number;
+  public id: number | null;
   public title: string;
   public text: string;
   public tags: string[];
@@ -13,6 +13,7 @@ export class SaveElementApiModel {
   // public mimeType: string;
 
   constructor() {
+    this.id = null;
     this.title = '';
     this.text = '';
     this.tags = [];

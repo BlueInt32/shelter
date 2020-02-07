@@ -70,6 +70,22 @@ export default class AppService {
         });
     });
   }
+  public updateElementWithPut(saveElementApiModel: SaveElementApiModel) {
+    return new Promise<Element>((resolve, reject) => {
+      const patchModel = saveElementApiModel.buildPatchModel();
+      axios
+        .put(
+          `${this.serviceRootUrl}/elements/${saveElementApiModel.id}`,
+          saveElementApiModel
+        )
+        .then(response => {
+          resolve(response.data);
+        })
+        .catch(error => {
+          reject(error.response.data.message);
+        });
+    });
+  }
   public getElementById(elementId: number): Promise<Element> {
     return new Promise((resolve, reject) => {
       axios

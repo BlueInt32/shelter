@@ -80,6 +80,7 @@ export default class EditElement extends Vue {
   private elementsDisplayModule = getModule(ElementsDisplayModule);
   private tagsDisplayModule = getModule(TagsDisplayModule);
   private element: Element = new Element();
+  private elementId: number | null = null;
 
   private elementText: string = '';
   private elementTitle: string = '';
@@ -90,21 +91,26 @@ export default class EditElement extends Vue {
   private debounce: any = null;
 
   async created() {
+    this.elementId = parseInt(this.$route.params.elementId, 10);
     this.element = await this.elementsDisplayModule.getElementById(
-      parseInt(this.$route.params.elementId, 10)
+      this.elementId
     );
     this.elementText = this.element.text;
     this.elementTitle = this.element.title;
     this.tags = this.element.tags.map(t => t.label);
   }
   async updateElement() {
+    console.log('here');
     let elementCreationModel = new SaveElementApiModel();
+
+    elementCreationModel.id = this.elementId;
     elementCreationModel.text = this.elementText;
     elementCreationModel.title = this.elementTitle;
     elementCreationModel.tags = this.tags.map(t => t.text);
     try {
       await this.elementEditionModule.updateElement(elementCreationModel);
       notify(this.$snotify, NotificationType.OK, 'Cool post !');
+      this.$router.push(`/view/${this.elementId}`);
     } catch (e) {
       notify(this.$snotify, NotificationType.ERROR, 'Oops ! ' + e.message);
     }

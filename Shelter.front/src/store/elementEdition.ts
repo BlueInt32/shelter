@@ -48,7 +48,7 @@ export default class ElementEdition extends VuexModule {
 
   @Action({ rawError: true })
   public createElement(saveElementApiModel: SaveElementApiModel) {
-    appService.createElement(saveElementApiModel);
+    return appService.createElement(saveElementApiModel);
     // // if inputMode is upload, we have to change the model to use base64File
     // const fileInputModule = getModule(FileInput);
     // if (fileInputModule.inputMode === 'upload') {
@@ -63,6 +63,7 @@ export default class ElementEdition extends VuexModule {
 
   @Action({ rawError: true })
   public updateElement(saveElementApiModel: SaveElementApiModel) {
+    return appService.updateElementWithPut(saveElementApiModel);
     // const postsModule = getModule(Posts);
     // // if inputMode is upload, we have to change the model to use base64File
     // const fileInputModule = getModule(FileInput);

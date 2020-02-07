@@ -21,6 +21,7 @@ element_fields = {
 
 # input parser
 parser = reqparse.RequestParser()
+parser.add_argument('id')
 parser.add_argument('title')
 parser.add_argument('text')
 parser.add_argument('tags', action='append')
@@ -32,12 +33,16 @@ class ElementApi(Resource):
     retrieved_element = Element.query.get_or_404(element_id)
     return retrieved_element
 
-  def put(self, element_title):
+  @marshal_with(element_fields)
+  def put(self, element_id):
+    retrieved_element = Element.query.get_or_404(element_id)
     args = parser.parse_args(strict=True)
-    new_element = Element(args['title'].title)
-    db.session.add(new_element)
+    retrieved_element.title = args['title']
+    retrieved_element.text = args['text']
+    // TODO : handle tags here
+    db.session.add(retrieved_element)
     db.session.commit()
-    return new_element, 201
+    return retrieved_element, 201
 
   def delete(self, element_id):
     retrieved_element = Element.query.get(element_id)
