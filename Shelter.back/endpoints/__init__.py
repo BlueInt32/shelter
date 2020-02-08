@@ -39,7 +39,7 @@ class ElementApi(Resource):
     args = parser.parse_args(strict=True)
     retrieved_element.title = args['title']
     retrieved_element.text = args['text']
-    // TODO : handle tags here
+    # TODO : handle tags here
     db.session.add(retrieved_element)
     db.session.commit()
     return retrieved_element, 201
