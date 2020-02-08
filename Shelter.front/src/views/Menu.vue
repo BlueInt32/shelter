@@ -1,5 +1,5 @@
 <template>
-  <div id="menu" class="pure-u">
+  <div id="menu" class="pure-u" :class="{ active: isMenuOpen }">
     <div class="pure-menu">
       <router-link class="pure-menu-heading" to="/">Shelter</router-link>
 
@@ -16,21 +16,6 @@
         <li class="pure-menu-item">
           <a href="#" class="pure-menu-link">Manage labels</a>
         </li>
-        <!-- <li class="pure-menu-item">
-          <a href="#" class="pure-menu-link"
-            ><span class="email-label-personal"></span>Personal</a
-          >
-        </li>
-        <li class="pure-menu-item">
-          <a href="#" class="pure-menu-link"
-            ><span class="email-label-work"></span>Work</a
-          >
-        </li>
-        <li class="pure-menu-item">
-          <a href="#" class="pure-menu-link"
-            ><span class="email-label-travel"></span>Travel</a
-          >
-        </li> -->
       </ul>
     </div>
   </div>
@@ -38,7 +23,10 @@
 
 <script lang="ts">
 import { Component, Prop, Vue, Watch } from 'vue-property-decorator';
-export default class Menu extends Vue {}
+@Component({})
+export default class Menu extends Vue {
+  @Prop(Boolean) public isMenuOpen: boolean = false;
+}
 </script>
 
 <style></style>
