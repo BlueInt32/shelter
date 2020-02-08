@@ -1,14 +1,14 @@
 <template>
   <div id="menu" class="pure-u">
     <div class="pure-menu">
-      <a class="pure-menu-heading" href="#">Shelter</a>
+      <router-link class="pure-menu-heading" to="/">Shelter</router-link>
 
       <ul class="pure-menu-list">
         <li class="pure-menu-item">
           <router-link to="/add" class="pure-menu-link">Add</router-link>
         </li>
         <li class="pure-menu-item">
-          <router-link to="/" class="pure-menu-link">All elements</router-link>
+          <router-link to="/about" class="pure-menu-link">About</router-link>
           <!-- <a href="#" class="pure-menu-link"
                 >All elements <span class="email-count">(2)</span></a
               > -->
