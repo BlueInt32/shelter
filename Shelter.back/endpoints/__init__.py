@@ -39,8 +39,16 @@ class ElementApi(Resource):
     args = parser.parse_args(strict=True)
     retrieved_element.title = args['title']
     retrieved_element.text = args['text']
+
+    # TODO : améliorer ce code inadmissible :D
+    already_existing_tags = Tag.query.filter(Tag.label.in_(args.tags or [])).all()
+    already_existing_tags_labels = set(map(lambda t: t.label, already_existing_tags))
+    received_tags = set(args.tags or [])
+    new_tags = [Tag(t) for t in (received_tags - already_existing_tags_labels)]
+    all_tags_to_add = set(new_tags) | set(already_existing_tags)
+    retrieved_element.tags_associated = list(all_tags_to_add)
+
     # TODO : handle tags here
-    db.session.add(retrieved_element)
     db.session.commit()
     return retrieved_element, 201
 
