@@ -1,20 +1,20 @@
 <template>
   <div
     id="layout"
-    class="content pure-g"
-    :class="{ active: menuModule.isMenuOpen }"
+    class="content"
+    :class="{ active: menuModule.isMenuOpen, closed: !menuModule.isMenuOpen }"
   >
     <a
-      href="#menu"
+      href="#"
       id="menuLink"
-      class="menu-link pure-u"
+      class="menu-link"
       :class="{ active: menuModule.isMenuOpen }"
       @click="menuLinkClickHandler"
     >
       <span></span>
     </a>
     <Menu :isMenuOpen="menuModule.isMenuOpen" />
-    <router-view :class="{ active: !menuModule.isMenuOpen }" />
+    <router-view class="pure-g" :class="{ active: !menuModule.isMenuOpen }" />
     <vue-snotify />
   </div>
 </template>
