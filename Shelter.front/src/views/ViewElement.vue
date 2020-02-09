@@ -1,5 +1,5 @@
 <template>
-  <div class="viewElement">
+  <div class="viewElement pure-u">
     <h1>{{ element.title }}</h1>
     <h2>{{ element.text }}</h2>
     <span class="viewElement__info" v-if="element.tags.length === 0"

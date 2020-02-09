@@ -86,8 +86,14 @@ export default class AddElement extends Vue {
     elementCreationModel.title = this.elementTitle;
     elementCreationModel.tags = this.tags.map(t => t.text);
     try {
-      await this.elementEditionModule.createElement(elementCreationModel);
+      let data = await this.elementEditionModule.createElement(
+        elementCreationModel
+      );
       notify(this.$snotify, NotificationType.OK, 'Cool post !');
+      this.$router.push({
+        name: 'viewElement',
+        params: { elementId: data.id }
+      });
     } catch (e) {
       notify(this.$snotify, NotificationType.ERROR, 'Oops ! ' + e.message);
     }

@@ -1,56 +1,52 @@
 <template>
-  <div class="editElement">
-    <div class="pure-g">
-      <div class="pure-u-1-5"></div>
-      <div class="pure-u-3-5">
-        <h1>Add an element</h1>
-        <form class="pure-form pure-form-aligned">
-          <fieldset>
-            <div class="pure-control-group">
-              <label for="title">Title (optional)</label>
-              <input
-                id="title"
-                type="text"
-                placeholder=""
-                v-model="elementTitle"
-                class="pure-input-2-3"
-              />
-            </div>
-            <div class="pure-control-group">
-              <label for="text">Link, text, anything...</label>
-              <input
-                id="text"
-                type="text"
-                placeholder=""
-                v-model="elementText"
-                class="pure-input-2-3"
-              />
-              <span class="pure-form-message-inline">*</span>
-            </div>
-            <div class="pure-control-group">
-              <label for="title">Tags</label>
-              <vue-tags-input
-                class="addTagsInputComponent pure-input-2-3"
-                v-model="tag"
-                :tags="tags"
-                :autocomplete-items="autocompleteItems"
-                @tags-changed="update"
-              />
-            </div>
-            <div class="pure-controls">
-              <button
-                class="pure-button button-success"
-                type="button"
-                value="Add"
-                @click="updateElement()"
-              >
-                Update
-              </button>
-            </div>
-          </fieldset>
-        </form>
-      </div>
-      <div class="pure-u-1-5"></div>
+  <div class="editElement pure-u-1">
+    <div class="pure-u-1">
+      <h1>Add an element</h1>
+      <form class="pure-form pure-form-aligned">
+        <fieldset>
+          <div class="pure-control-group">
+            <label for="title">Title (optional)</label>
+            <input
+              id="title"
+              type="text"
+              placeholder=""
+              v-model="elementTitle"
+              class="pure-input-2-3"
+            />
+          </div>
+          <div class="pure-control-group">
+            <label for="text">Link, text, anything...</label>
+            <input
+              id="text"
+              type="text"
+              placeholder=""
+              v-model="elementText"
+              class="pure-input-2-3"
+            />
+            <span class="pure-form-message-inline">*</span>
+          </div>
+          <div class="pure-control-group">
+            <label for="title">Tags</label>
+            <vue-tags-input
+              class="addTagsInputComponent pure-input-2-3"
+              v-model="tag"
+              :tags="tags"
+              :autocomplete-items="autocompleteItems"
+              @tags-changed="update"
+            />
+          </div>
+          <div class="pure-controls">
+            <button
+              class="pure-button button-success"
+              type="button"
+              value="Add"
+              @click="updateElement()"
+            >
+              Update
+            </button>
+          </div>
+        </fieldset>
+      </form>
     </div>
   </div>
 </template>
@@ -70,6 +66,15 @@ import VueTagsInput from '@johmun/vue-tags-input';
 import { SearchForElementsApiModel } from '../objects/apiModels/SearchForElementsApiModel';
 import { SearchForTagsApiModel } from '../objects/apiModels/SearchForTagsApiModel';
 
+class tagInputItem {
+  constructor(text: string) {
+    this.text = text;
+  }
+  public text: string;
+  public style: string;
+  public classes: string;
+}
+
 @Component({
   components: {
     VueTagsInput
@@ -86,7 +91,7 @@ export default class EditElement extends Vue {
   private elementTitle: string = '';
   private $snotify: any;
   private tag: string = '';
-  private tags: any[] = [];
+  private tags: tagInputItem[] = [];
   private autocompleteItems: AutocompleteItem[] = [];
   private debounce: any = null;
 
@@ -97,7 +102,8 @@ export default class EditElement extends Vue {
     );
     this.elementText = this.element.text;
     this.elementTitle = this.element.title;
-    this.tags = this.element.tags.map(t => t.label);
+    this.tags = this.element.tags.map(t => new tagInputItem(t.label));
+    console.log(this.tags);
   }
   async updateElement() {
     console.log('here');
@@ -127,7 +133,8 @@ export default class EditElement extends Vue {
       this.autocompleteItems = mapped;
     }, 300);
   }
-  update(newTags: string[]) {
+  update(newTags: tagInputItems[]) {
+    console.log(newTags);
     this.autocompleteItems = [];
     this.tags = newTags;
   }
