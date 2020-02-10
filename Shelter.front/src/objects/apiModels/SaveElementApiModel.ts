@@ -33,3 +33,12 @@ export class SaveElementApiModel {
     ];
   }
 }
+
+export class SaveElementWithFileApiModel {
+  public json: SaveElementApiModel | null;
+  public file: File | null;
+  constructor(json: SaveElementApiModel | null, file: File | null) {
+    this.json = json;
+    this.file = file;
+  }
+}

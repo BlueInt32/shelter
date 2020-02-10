@@ -35,6 +35,14 @@
           />
         </div>
         <div class="pure-controls">
+          <input
+            type="file"
+            id="file"
+            ref="file"
+            v-on:change="handleFileUpload()"
+          />
+        </div>
+        <div class="pure-controls">
           <button
             class="pure-button button-success"
             type="button"
@@ -55,7 +63,10 @@ import { Component, Prop, Vue, Watch } from 'vue-property-decorator';
 import { getModule } from 'vuex-module-decorators';
 import ElementEditionModule from '@/store/elementEdition';
 import TagsDisplayModule from '@/store/tagsDisplay';
-import { SaveElementApiModel } from '@/objects/apiModels/SaveElementApiModel';
+import {
+  SaveElementApiModel,
+  SaveElementWithFileApiModel
+} from '@/objects/apiModels/SaveElementApiModel';
 import { AutocompleteItem } from '@/objects/AutocompleteItem';
 import { notify, NotificationType } from '../services/notificationService';
 import VueTagsInput from '@johmun/vue-tags-input';
@@ -79,17 +90,20 @@ export default class AddElement extends Vue {
   private tags: any[] = [];
   private autocompleteItems: AutocompleteItem[] = [];
   private debounce: any = null;
+  private pendingFile: File | null = null;
 
-  created() {}
   async createElement() {
     let elementCreationModel = new SaveElementApiModel();
     elementCreationModel.text = this.elementText;
     elementCreationModel.title = this.elementTitle;
     elementCreationModel.tags = this.tags.map(t => t.text);
+    console.log('1');
     try {
+      console.log('2', this.pendingFile);
       let data = await this.elementEditionModule.createElement(
-        elementCreationModel
+        new SaveElementWithFileApiModel(elementCreationModel, this.pendingFile)
       );
+      console.log('3', data);
       notify(this.$snotify, NotificationType.OK, 'Cool post !');
       this.$router.push({
         name: 'viewElement',
@@ -98,6 +112,11 @@ export default class AddElement extends Vue {
     } catch (e) {
       notify(this.$snotify, NotificationType.ERROR, 'Oops ! ' + e.message);
     }
+  }
+
+  handleFileUpload() {
+    // @ts-ignore
+    this.pendingFile = this.$refs.file.files[0];
   }
 
   async initItems() {

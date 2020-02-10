@@ -12,7 +12,10 @@ import AppService from '../services/app.service';
 import { Element } from '@/objects/Element';
 import { Tag } from '@/objects/Tag';
 import { ModalMode } from '@/objects/enums';
-import { SaveElementApiModel } from '@/objects/apiModels/SaveElementApiModel';
+import {
+  SaveElementApiModel,
+  SaveElementWithFileApiModel
+} from '@/objects/apiModels/SaveElementApiModel';
 
 const appService = new AppService();
 
@@ -47,10 +50,8 @@ export default class ElementEdition extends VuexModule {
   };
 
   @Action({ rawError: true })
-  public createElement(
-    saveElementApiModel: SaveElementApiModel
-  ): Promise<Element> {
-    return appService.createElement(saveElementApiModel);
+  public createElement(data: SaveElementWithFileApiModel): Promise<Element> {
+    return appService.createElement(data);
     // // if inputMode is upload, we have to change the model to use base64File
     // const fileInputModule = getModule(FileInput);
     // if (fileInputModule.inputMode === 'upload') {

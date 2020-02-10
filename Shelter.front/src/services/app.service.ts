@@ -2,7 +2,10 @@ import axios, { AxiosRequestConfig } from 'axios';
 import { buildPatchModifierPayload } from './patchHelper';
 import { SearchForElementsApiModel } from '@/objects/apiModels/SearchForElementsApiModel';
 import { Element } from '@/objects/Element';
-import { SaveElementApiModel } from '@/objects/apiModels/SaveElementApiModel';
+import {
+  SaveElementApiModel,
+  SaveElementWithFileApiModel
+} from '@/objects/apiModels/SaveElementApiModel';
 import { Tag } from '@/objects/Tag';
 import { LoginApiModel } from '@/objects/apiModels/LoginApiModel';
 import { LoginResult } from '@/objects/LoginResult';
@@ -41,12 +44,20 @@ export default class AppService {
     });
   }
 
-  public createElement(
-    elementCreationApiModel: SaveElementApiModel
-  ): Promise<Element> {
+  public createElement(data: SaveElementWithFileApiModel): Promise<Element> {
     return new Promise((resolve, reject) => {
+      const json = JSON.stringify(data.json);
+      const blob = new Blob([json], {
+        type: 'application/json'
+      });
+      var formData = new FormData();
+      formData.append('payload', blob);
+      if (data.file) {
+        console.log('file !');
+        formData.append('file', data.file);
+      }
       axios
-        .post(`${this.serviceRootUrl}/elements`, elementCreationApiModel)
+        .post(`${this.serviceRootUrl}/elements`, formData)
         .then(response => {
           resolve(response.data);
         })
