@@ -3,7 +3,9 @@ import logging
 from flask_restful import  Api
 from flask_cors import CORS
 from models import db
-import endpoints
+from endpoints.elements import ElementsListApi
+from endpoints.element_detail import ElementApi
+from endpoints.tags import TagsSearchApi
 
 
 app = Flask(__name__)
@@ -28,9 +30,9 @@ api = Api(app)
 cors = CORS(app)
 
 
-api.add_resource(endpoints.ElementsListApi, '/api/elements')
-api.add_resource(endpoints.ElementApi, '/api/elements/<element_id>')
-api.add_resource(endpoints.TagsSearchApi, '/api/tags/search/<search_term>')
+api.add_resource(ElementsListApi, '/api/elements')
+api.add_resource(ElementApi, '/api/elements/<element_id>')
+api.add_resource(TagsSearchApi, '/api/tags/search/<search_term>')
 
 if __name__ == '__main__':
   app.debug = True
