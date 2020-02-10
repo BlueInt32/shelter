@@ -65,15 +65,7 @@ import { Element } from '@/objects/Element';
 import VueTagsInput from '@johmun/vue-tags-input';
 import { SearchForElementsApiModel } from '../objects/apiModels/SearchForElementsApiModel';
 import { SearchForTagsApiModel } from '../objects/apiModels/SearchForTagsApiModel';
-
-class tagInputItem {
-  constructor(text: string) {
-    this.text = text;
-  }
-  public text: string;
-  public style: string;
-  public classes: string;
-}
+import TagInputItem from '@/objects/TagInputItem';
 
 @Component({
   components: {
@@ -91,7 +83,7 @@ export default class EditElement extends Vue {
   private elementTitle: string = '';
   private $snotify: any;
   private tag: string = '';
-  private tags: tagInputItem[] = [];
+  private tags: TagInputItem[] = [];
   private autocompleteItems: AutocompleteItem[] = [];
   private debounce: any = null;
 
@@ -102,11 +94,9 @@ export default class EditElement extends Vue {
     );
     this.elementText = this.element.text;
     this.elementTitle = this.element.title;
-    this.tags = this.element.tags.map(t => new tagInputItem(t.label));
-    console.log(this.tags);
+    this.tags = this.element.tags.map(t => new TagInputItem(t.label));
   }
   async updateElement() {
-    console.log('here');
     let elementCreationModel = new SaveElementApiModel();
 
     elementCreationModel.id = this.elementId;
@@ -133,8 +123,7 @@ export default class EditElement extends Vue {
       this.autocompleteItems = mapped;
     }, 300);
   }
-  update(newTags: tagInputItems[]) {
-    console.log(newTags);
+  update(newTags: TagInputItem[]) {
     this.autocompleteItems = [];
     this.tags = newTags;
   }

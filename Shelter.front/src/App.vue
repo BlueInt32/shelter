@@ -34,7 +34,6 @@ export default class App extends Vue {
   private menuModule = getModule(MenuModule);
 
   public menuLinkClickHandler() {
-    console.log('top');
     this.menuModule.setMenuOpenState(!this.menuModule.isMenuOpen);
   }
 }

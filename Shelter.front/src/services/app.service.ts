@@ -41,7 +41,9 @@ export default class AppService {
     });
   }
 
-  public createElement(elementCreationApiModel: SaveElementApiModel) {
+  public createElement(
+    elementCreationApiModel: SaveElementApiModel
+  ): Promise<Element> {
     return new Promise((resolve, reject) => {
       axios
         .post(`${this.serviceRootUrl}/elements`, elementCreationApiModel)

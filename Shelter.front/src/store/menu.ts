@@ -12,7 +12,6 @@ export default class Menu extends VuexModule {
   public isMenuOpen: boolean = false;
   @Mutation
   public setMenuOpenState(newState: boolean) {
-    console.log('tip');
     this.isMenuOpen = newState;
   }
 }

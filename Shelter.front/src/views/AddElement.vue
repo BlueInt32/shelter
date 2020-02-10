@@ -61,6 +61,7 @@ import { notify, NotificationType } from '../services/notificationService';
 import VueTagsInput from '@johmun/vue-tags-input';
 import { SearchForElementsApiModel } from '../objects/apiModels/SearchForElementsApiModel';
 import { SearchForTagsApiModel } from '../objects/apiModels/SearchForTagsApiModel';
+import { RawLocation } from 'vue-router';
 
 @Component({
   components: {
@@ -92,7 +93,7 @@ export default class AddElement extends Vue {
       notify(this.$snotify, NotificationType.OK, 'Cool post !');
       this.$router.push({
         name: 'viewElement',
-        params: { elementId: data.id }
+        params: { elementId: data.id.toString() }
       });
     } catch (e) {
       notify(this.$snotify, NotificationType.ERROR, 'Oops ! ' + e.message);
