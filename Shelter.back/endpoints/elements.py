@@ -2,13 +2,9 @@ from flask_restful import reqparse, Resource, Api, fields, marshal_with
 from endpoints.output_fields import element_fields
 from models import db, Element, Tag
 import logging
+import werkzeug
 
 # input parser
-parser = reqparse.RequestParser()
-parser.add_argument('id')
-parser.add_argument('title')
-parser.add_argument('text')
-parser.add_argument('tags', action='append')
 
 class ElementsListApi(Resource):
   @marshal_with(element_fields)
@@ -18,8 +14,20 @@ class ElementsListApi(Resource):
 
   @marshal_with(element_fields)
   def post(self):
+    parser = reqparse.RequestParser()
+    parser.add_argument('id')
+    parser.add_argument('title')
+    parser.add_argument('text')
+    parser.add_argument('tags', action='append')
+    parser.add_argument('image', type=werkzeug.FileStorage, location='files')
+
     args = parser.parse_args()
     logging.info('input: {json}'.format(json= args))
+
+    imageFile = args['image']
+    if imageFile is not None:
+      imageFile.save('coucou.jpg')
+
     try:
 
       # TODO : améliorer ce code inadmissible :D
