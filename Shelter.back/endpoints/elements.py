@@ -6,6 +6,7 @@ import werkzeug
 import sys
 from werkzeug.datastructures import ImmutableMultiDict
 import json
+from services.tags_service import resolve_tags
 
 # input parser
 
@@ -37,27 +38,12 @@ class ElementsListApi(Resource):
 
     if payloadFile is not None:
       parsed = json.loads(payloadFile.read().decode("utf-8"))
-      #print(parsed)
       print(parsed['title'])
-    # args = parser.parse_args(strict=True)
-      # payload = payloadFile.read().decode("utf-8")
-      # payloadFile.save('coucou.json')
-    # if imageFile is not None:
-    #   imageFile.save('coucou.jpg')
 
-    try:
+    tags_associated = resolve_tags(parsed['tags'])
+    new_element = Element(parsed['title'], parsed['text'], tags_associated)
 
-      # TODO : améliorer ce code inadmissible :D
-      already_existing_tags = Tag.query.filter(Tag.label.in_(parsed['tags'] or [])).all()
-      already_existing_tags_labels = set(map(lambda t: t.label, already_existing_tags))
-      received_tags = set(parsed['tags'] or [])
-      new_tags = [Tag(t) for t in (received_tags - already_existing_tags_labels)]
-      all_tags_to_add = set(new_tags) | set(already_existing_tags)
-      new_element = Element(parsed['title'], parsed['text'], list(all_tags_to_add))
+    db.session.add(new_element)
+    db.session.commit()
+    return new_element, 201
 
-      db.session.add(new_element)
-      db.session.commit()
-      return new_element, 201
-    except:
-      print("Unexpected error:", sys.exc_info()[0])
-      return 'Error', 400
