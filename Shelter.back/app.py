@@ -6,6 +6,7 @@ from models import db
 from endpoints.elements import ElementsListApi
 from endpoints.element_detail import ElementApi
 from endpoints.tags import TagsSearchApi
+from flask import got_request_exception
 
 
 app = Flask(__name__)
@@ -29,6 +30,12 @@ print(f'ENV is set to: {app.config["ENV"]}')
 api = Api(app)
 cors = CORS(app)
 
+def log_exception(sender, exception, **extra):
+  """ Log an exception to our logging framework """
+  sender.logger.debug('Got exception during processing: %s', exception)
+  print(exception)
+
+got_request_exception.connect(log_exception, app)
 
 api.add_resource(ElementsListApi, '/api/elements')
 api.add_resource(ElementApi, '/api/elements/<element_id>')
