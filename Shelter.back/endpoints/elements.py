@@ -34,7 +34,8 @@ class ElementsListApi(Resource):
 
     data = dict(reqparse.request.files)
     payloadFile = data['payload'][0]
-    imageFile = data['file'][0]
+    if 'file' in data:
+      imageFile = data['file'][0]
 
     if payloadFile is not None:
       parsed = json.loads(payloadFile.read().decode("utf-8"))
