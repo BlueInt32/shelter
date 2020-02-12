@@ -111,6 +111,9 @@ export default class AppService {
         });
     });
   }
+  public getElementFileUrlById(elementId: number): string {
+    return `${this.serviceRootUrl}/elements/file/${elementId}`;
+  }
   public deleteElement(elementId: number) {
     return new Promise((resolve, reject) => {
       axios

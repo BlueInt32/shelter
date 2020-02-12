@@ -49,6 +49,7 @@ export default class ElementsDisplay extends VuexModule {
   @Action({ rawError: true })
   public async getElementById(elementId: number) {
     const element = await appService.getElementById(elementId);
+    element.fileUrl = appService.getElementFileUrlById(elementId);
     return element;
   }
 }

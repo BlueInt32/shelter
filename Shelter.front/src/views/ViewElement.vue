@@ -8,6 +8,7 @@
     <ul class="viewElement__tagslist">
       <li v-for="tag in element.tags" :key="tag.id">{{ tag.label }}</li>
     </ul>
+    <img :src="element.fileUrl" />
     <button class="pure-button" @click="clickEditHandler">
       Edit
     </button>
@@ -35,9 +36,8 @@ export default class ViewElement extends Vue {
   private $snotify: any;
 
   async created() {
-    this.element = await this.elementsDisplayModule.getElementById(
-      parseInt(this.$route.params.elementId, 10)
-    );
+    const elementId = parseInt(this.$route.params.elementId, 10);
+    this.element = await this.elementsDisplayModule.getElementById(elementId);
   }
 
   async clickDeleteHandler() {
