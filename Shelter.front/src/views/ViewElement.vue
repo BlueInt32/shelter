@@ -1,7 +1,10 @@
 <template>
   <div class="viewElement pure-u">
-    <h1>{{ element.title }}</h1>
-    <h2>{{ element.text }}</h2>
+    <h2>{{ element.title }}</h2>
+    <h3>{{ element.text }}</h3>
+    <p>
+      {{ dateFormatted }}
+    </p>
     <span class="viewElement__info" v-if="element.tags.length === 0"
       >No tag</span
     >
@@ -25,6 +28,7 @@ import ElementsDisplayModule from '@/store/elementsDisplay';
 import ElementEditionModule from '@/store/elementEdition';
 import { Element } from '@/objects/Element';
 import { notify, NotificationType } from '../services/notificationService';
+import dayjs from 'dayjs';
 
 @Component({
   components: {}
@@ -34,10 +38,19 @@ export default class ViewElement extends Vue {
   private elementEditionModule = getModule(ElementEditionModule);
   private element: Element = new Element();
   private $snotify: any;
+  private dateFormatted: string = '';
 
   async created() {
     const elementId = parseInt(this.$route.params.elementId, 10);
     this.element = await this.elementsDisplayModule.getElementById(elementId);
+    const today = dayjs();
+    const formatted = dayjs(this.element.creation_date).format(
+      'le DD/MM/YYYY à HH:mm:ss'
+    );
+    this.dateFormatted = this.element.creation_date;
+    this.dateFormatted = `Created ${today
+      .diff(dayjs(this.element.creation_date))
+      .toString()}ms ago (${formatted})`;
   }
 
   async clickDeleteHandler() {

@@ -7,6 +7,7 @@ export class Element {
     this.text = '';
     this.tags = [];
     this.fileUrl = '';
+    this.creation_date = '';
   }
 
   public id: number;
@@ -14,4 +15,5 @@ export class Element {
   public text: string;
   public tags: Tag[];
   public fileUrl: string;
+  public creation_date: string;
 }
