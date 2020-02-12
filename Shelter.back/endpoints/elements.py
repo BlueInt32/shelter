@@ -43,6 +43,7 @@ class ElementsListApi(Resource):
 
     tags_associated = resolve_tags(parsed['tags'])
     new_element = Element(parsed['title'], parsed['text'], tags_associated)
+    new_element.attached_file = imageFile
 
     db.session.add(new_element)
     db.session.commit()
