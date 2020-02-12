@@ -5,6 +5,7 @@ from flask_cors import CORS
 from models import db
 from endpoints.elements import ElementsListApi
 from endpoints.element_detail import ElementApi
+from endpoints.element_file import ElementFileApi
 from endpoints.tags import TagsSearchApi
 from flask import got_request_exception
 
@@ -39,6 +40,7 @@ got_request_exception.connect(log_exception, app)
 
 api.add_resource(ElementsListApi, '/api/elements')
 api.add_resource(ElementApi, '/api/elements/<element_id>')
+api.add_resource(ElementFileApi, '/api/elements/file/<element_id>')
 api.add_resource(TagsSearchApi, '/api/tags/search/<search_term>')
 
 if __name__ == '__main__':
