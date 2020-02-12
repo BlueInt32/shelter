@@ -4,6 +4,7 @@ from models import db, Element, Tag
 import logging
 import werkzeug
 import sys
+import psycopg2
 from werkzeug.datastructures import ImmutableMultiDict
 import json
 from services.tags_service import resolve_tags
@@ -12,11 +13,6 @@ from services.tags_service import resolve_tags
 
 
 class ElementsListApi(Resource):
-  def parse_utf8(self, bytes, length_size):
-    length = bytes2int(bytes[0:length_size])
-    value = ''.join(['%c' % b for b in bytes[length_size:length_size+length]])
-    return value
-
   @marshal_with(element_fields)
   def get(self):
     elements = db.session.query(Element).all()
@@ -34,8 +30,6 @@ class ElementsListApi(Resource):
 
     data = dict(reqparse.request.files)
     payloadFile = data['payload'][0]
-    if 'file' in data:
-      imageFile = data['file'][0]
 
     if payloadFile is not None:
       parsed = json.loads(payloadFile.read().decode("utf-8"))
@@ -43,7 +37,9 @@ class ElementsListApi(Resource):
 
     tags_associated = resolve_tags(parsed['tags'])
     new_element = Element(parsed['title'], parsed['text'], tags_associated)
-    new_element.attached_file = imageFile
+    if 'file' in data:
+      imageFile = data['file'][0]
+      new_element.attached_file = imageFile.stream.read()
 
     db.session.add(new_element)
     db.session.commit()
