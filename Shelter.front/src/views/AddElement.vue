@@ -97,13 +97,10 @@ export default class AddElement extends Vue {
     elementCreationModel.text = this.elementText;
     elementCreationModel.title = this.elementTitle;
     elementCreationModel.tags = this.tags.map(t => t.text);
-    console.log('1');
     try {
-      console.log('2', this.pendingFile);
       let data = await this.elementEditionModule.createElement(
         new SaveElementWithFileApiModel(elementCreationModel, this.pendingFile)
       );
-      console.log('3', data);
       notify(this.$snotify, NotificationType.OK, 'Cool post !');
       this.$router.push({
         name: 'viewElement',
@@ -115,6 +112,7 @@ export default class AddElement extends Vue {
   }
 
   handleFileUpload() {
+    // TODO : find a way to remove the linter error
     // @ts-ignore
     this.pendingFile = this.$refs.file.files[0];
   }
