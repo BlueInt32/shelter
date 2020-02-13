@@ -65,7 +65,7 @@ export default class ElementEdition extends VuexModule {
   }
 
   @Action({ rawError: true })
-  public updateElement(saveElementApiModel: SaveElementApiModel) {
+  public updateElement(saveElementApiModel: SaveElementWithFileApiModel) {
     return appService.updateElementWithPut(saveElementApiModel);
     // const postsModule = getModule(Posts);
     // // if inputMode is upload, we have to change the model to use base64File

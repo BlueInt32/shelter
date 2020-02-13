@@ -67,12 +67,15 @@ export default class AppService {
     });
   }
 
-  public updateElement(saveElementApiModel: SaveElementApiModel) {
+  public updateElement(saveElementApiModel: SaveElementWithFileApiModel) {
     return new Promise<Element>((resolve, reject) => {
-      const patchModel = saveElementApiModel.buildPatchModel();
+      if (!saveElementApiModel.json) {
+        reject('empty payload');
+      }
+      const patchModel = saveElementApiModel.json.buildPatchModel();
       axios
         .patch(
-          `${this.serviceRootUrl}/elements/${saveElementApiModel.id}`,
+          `${this.serviceRootUrl}/elements/${saveElementApiModel.json.id}`,
           patchModel
         )
         .then(response => {
@@ -83,13 +86,14 @@ export default class AppService {
         });
     });
   }
-  public updateElementWithPut(saveElementApiModel: SaveElementApiModel) {
+  public updateElementWithPut(
+    saveElementApiModel: SaveElementWithFileApiModel
+  ) {
     return new Promise<Element>((resolve, reject) => {
-      const patchModel = saveElementApiModel.buildPatchModel();
       axios
         .put(
-          `${this.serviceRootUrl}/elements/${saveElementApiModel.id}`,
-          saveElementApiModel
+          `${this.serviceRootUrl}/elements/${saveElementApiModel.json.id}`,
+          saveElementApiModel.json
         )
         .then(response => {
           resolve(response.data);

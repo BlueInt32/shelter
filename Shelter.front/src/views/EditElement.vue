@@ -36,6 +36,14 @@
             />
           </div>
           <div class="pure-controls">
+            <input
+              type="file"
+              id="file"
+              ref="file"
+              v-on:change="handleFileUpload()"
+            />
+          </div>
+          <div class="pure-controls">
             <button
               class="pure-button button-success"
               type="button"
@@ -58,7 +66,10 @@ import { getModule } from 'vuex-module-decorators';
 import ElementEditionModule from '@/store/elementEdition';
 import ElementsDisplayModule from '@/store/elementsDisplay';
 import TagsDisplayModule from '@/store/tagsDisplay';
-import { SaveElementApiModel } from '@/objects/apiModels/SaveElementApiModel';
+import {
+  SaveElementApiModel,
+  SaveElementWithFileApiModel
+} from '@/objects/apiModels/SaveElementApiModel';
 import { AutocompleteItem } from '@/objects/AutocompleteItem';
 import { notify, NotificationType } from '../services/notificationService';
 import { Element } from '@/objects/Element';
@@ -86,6 +97,7 @@ export default class EditElement extends Vue {
   private tags: TagInputItem[] = [];
   private autocompleteItems: AutocompleteItem[] = [];
   private debounce: any = null;
+  private pendingFile: File | null = null;
 
   async created() {
     this.elementId = parseInt(this.$route.params.elementId, 10);
@@ -103,8 +115,12 @@ export default class EditElement extends Vue {
     elementCreationModel.text = this.elementText;
     elementCreationModel.title = this.elementTitle;
     elementCreationModel.tags = this.tags.map(t => t.text);
+    const elementUpdateWithFileModel = new SaveElementWithFileApiModel(
+      elementCreationModel,
+      this.pendingFile
+    );
     try {
-      await this.elementEditionModule.updateElement(elementCreationModel);
+      await this.elementEditionModule.updateElement(elementUpdateWithFileModel);
       notify(this.$snotify, NotificationType.OK, 'Cool post !');
       this.$router.push(`/view/${this.elementId}`);
     } catch (e) {
@@ -122,6 +138,11 @@ export default class EditElement extends Vue {
       const mapped = results.map(r => new AutocompleteItem(r.label));
       this.autocompleteItems = mapped;
     }, 300);
+  }
+  handleFileUpload() {
+    // TODO : find a way to remove the linter error
+    // @ts-ignore
+    this.pendingFile = this.$refs.file.files[0];
   }
   update(newTags: TagInputItem[]) {
     this.autocompleteItems = [];
