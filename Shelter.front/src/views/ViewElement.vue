@@ -1,10 +1,10 @@
 <template>
   <div class="viewElement pure-u">
     <h2>{{ element.title }}</h2>
-    <h3>{{ element.text }}</h3>
-    <p>
+    <p>{{ element.text }}</p>
+    <span>
       {{ dateFormatted }}
-    </p>
+    </span>
     <span class="viewElement__info" v-if="element.tags.length === 0"
       >No tag</span
     >

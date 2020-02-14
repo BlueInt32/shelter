@@ -1,6 +1,9 @@
 <template>
-  <div class="pure-u">
-    <h1>Home page</h1>
+  <div>
+    <div id="list" class="home pure-u-1">
+      <ElementsList :elements="elements" />
+    </div>
+    <div class="pure-u"></div>
   </div>
 </template>
 
@@ -16,7 +19,7 @@ import { SearchForElementsApiModel } from '../objects/apiModels/SearchForElement
     ElementsList
   }
 })
-export default class Home extends Vue {
+export default class Browse extends Vue {
   private elements: any = null;
   private elementsDisplayModule: ElementsDisplayModule = getModule(
     ElementsDisplayModule
