@@ -11,7 +11,9 @@
     <ul class="viewElement__tagslist">
       <li v-for="tag in element.tags" :key="tag.id">{{ tag.label }}</li>
     </ul>
-    <img :src="element.fileUrl" />
+    <div class="fileContainer">
+      <img :src="element.fileUrl" />
+    </div>
     <button class="pure-button" @click="clickEditHandler">
       Edit
     </button>
@@ -86,6 +88,11 @@ ul.viewElement__tagslist {
     color: white;
     margin: 0px 2px;
     padding: 2px;
+  }
+}
+.fileContainer {
+  img {
+    max-width: 50vw;
   }
 }
 </style>
