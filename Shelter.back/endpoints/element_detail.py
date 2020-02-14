@@ -2,6 +2,7 @@ from flask_restful import reqparse, Resource, Api, fields, marshal_with
 from endpoints.output_fields import element_fields
 from models import db, Element, Tag
 from services.tags_service import resolve_tags
+import json
 
 
 class ElementApi(Resource):
@@ -12,20 +13,24 @@ class ElementApi(Resource):
 
   @marshal_with(element_fields)
   def put(self, element_id):
-    parser = reqparse.RequestParser()
-    parser.add_argument('id')
-    parser.add_argument('title')
-    parser.add_argument('text')
-    parser.add_argument('tags', action='append')
+    # 1 retrieve both parts of the multipart
+    parts = dict(reqparse.request.files)
+    jsonFile = parts['payload'][0]
 
-    retrieved_element = Element.query.get_or_404(element_id)
-    args = parser.parse_args(strict=True)
-    retrieved_element.title = args['title']
-    retrieved_element.text = args['text']
-    retrieved_element.tags_associated = resolve_tags(args.tags)
+    parsedJson = json.loads(jsonFile.read().decode("utf-8"))
+    print(parsedJson['title'])
+
+    db_element = Element.query.get_or_404(element_id)
+    db_element.title = parsedJson['title']
+    db_element.text = parsedJson['text']
+    db_element.tags_associated = resolve_tags(parsedJson['tags'])
+
+    if 'file' in parts:
+      file = parts['file'][0]
+      db_element.attached_file = file.stream.read()
 
     db.session.commit()
-    return retrieved_element, 201
+    return db_element, 200
 
   def delete(self, element_id):
     retrieved_element = Element.query.get(element_id)

@@ -86,15 +86,20 @@ export default class AppService {
         });
     });
   }
-  public updateElementWithPut(
-    saveElementApiModel: SaveElementWithFileApiModel
-  ) {
+  public updateElementWithPut(data: SaveElementWithFileApiModel) {
     return new Promise<Element>((resolve, reject) => {
+      const json = JSON.stringify(data.json);
+      const blob = new Blob([json], {
+        type: 'application/json'
+      });
+      var formData = new FormData();
+      formData.append('payload', blob);
+      if (data.file) {
+        console.log('file !');
+        formData.append('file', data.file);
+      }
       axios
-        .put(
-          `${this.serviceRootUrl}/elements/${saveElementApiModel.json.id}`,
-          saveElementApiModel.json
-        )
+        .put(`${this.serviceRootUrl}/elements/${data.json.id}`, formData)
         .then(response => {
           resolve(response.data);
         })
