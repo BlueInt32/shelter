@@ -31,7 +31,7 @@ const routes = [
     component: () => import('../views/AddElement.vue')
   },
   {
-    path: '/view/:elementId',
+    path: '/browse/:elementId',
     name: 'viewElement',
     component: () => import('../views/ViewElement.vue')
   },
