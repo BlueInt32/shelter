@@ -1,7 +1,7 @@
 <template>
   <div id="list" class="home pure-u-1">
     <h1>Browse elements</h1>
-    <ElementsList :elements="elements" />
+    <ElementsList :loading="loading" :elements="elements" />
   </div>
 </template>
 
@@ -22,10 +22,15 @@ export default class Browse extends Vue {
   private elementsDisplayModule: ElementsDisplayModule = getModule(
     ElementsDisplayModule
   );
+  private loading: boolean = true;
+
   async created() {
+    console.log('is loading ', this.loading);
     this.elements = await this.elementsDisplayModule.searchForElements(
       new SearchForElementsApiModel()
     );
+    this.loading = false;
+    console.log('is loading ', this.loading);
   }
 }
 </script>

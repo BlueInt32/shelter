@@ -1,6 +1,11 @@
 <template>
   <div class="elementsList__container">
-    <span class="elementsList__info" v-if="!elements || elements.length === 0"
+    <span class="elementsList__loader" v-if="loading"
+      ><i class="fas fa-circle-notch"></i
+    ></span>
+    <span
+      class="elementsList__info"
+      v-if="!loading && (!elements || elements.length === 0)"
       >No element yet :(</span
     >
     <div
@@ -23,10 +28,10 @@
 import { Component, Prop, Vue } from 'vue-property-decorator';
 import { Element } from '@/objects/Element';
 
-@Component
+@Component({})
 export default class ElementsList extends Vue {
-  @Prop() private msg!: string;
   @Prop() private elements!: Element[];
+  @Prop(Boolean) private loading!: boolean;
 
   created() {}
 }

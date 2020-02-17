@@ -21,10 +21,13 @@ export default class Home extends Vue {
   private elementsDisplayModule: ElementsDisplayModule = getModule(
     ElementsDisplayModule
   );
+  private loading: boolean = true;
+
   async created() {
     this.elements = await this.elementsDisplayModule.searchForElements(
       new SearchForElementsApiModel()
     );
+    this.loading = false;
   }
 }
 </script>
