@@ -31,7 +31,7 @@ const routes = [
     component: () => import('../views/AddElement.vue')
   },
   {
-    path: '/add/step2',
+    path: '/add/:type',
     name: 'addElementStep2',
     component: () => import('../views/AddElement.vue')
   },

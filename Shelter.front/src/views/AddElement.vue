@@ -1,6 +1,11 @@
 <template>
   <div class="addElement pure-u-1">
-    <h1>Add element</h1>
+    <h1 v-if="$route.name == 'addElementStep1'">
+      Add an element - Choose the type
+    </h1>
+    <h1 v-if="$route.name == 'addElementStep2'">
+      Add an element - {{ $route.params.type | capitalize }}
+    </h1>
     <AddElementTypePrompt
       v-if="$route.name == 'addElementStep1'"
       :choiceHandler="choiceHandler2"
@@ -64,7 +69,7 @@ export default class AddElement extends Vue {
 
   choiceHandler2(choice: string) {
     // this.creationStep = CreationStep.Form;
-    this.$router.push({ name: 'addElementStep2' });
+    this.$router.push({ name: 'addElementStep2', params: { type: choice } });
   }
 }
 </script>
