@@ -1,7 +1,7 @@
 <template>
   <div class="editElement pure-u-1">
     <div class="pure-u-1">
-      <h1>Add an element</h1>
+      <h1>Edit an element</h1>
       <form class="pure-form pure-form-aligned">
         <fieldset>
           <div class="pure-control-group">
