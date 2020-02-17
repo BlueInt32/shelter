@@ -14,7 +14,10 @@
       <span></span>
     </a>
     <Menu :isMenuOpen="menuModule.isMenuOpen" />
-    <router-view class="pure-g" :class="{ active: !menuModule.isMenuOpen }" />
+    <router-view
+      class="pure-g page-content"
+      :class="{ active: !menuModule.isMenuOpen }"
+    />
     <vue-snotify />
   </div>
 </template>

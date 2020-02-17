@@ -1,9 +1,7 @@
 <template>
-  <div>
-    <div id="list" class="home pure-u-1">
-      <ElementsList :elements="elements" />
-    </div>
-    <div class="pure-u"></div>
+  <div id="list" class="home pure-u-1">
+    <h1>Browse elements</h1>
+    <ElementsList :elements="elements" />
   </div>
 </template>
 

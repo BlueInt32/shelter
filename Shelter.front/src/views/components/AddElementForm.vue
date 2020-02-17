@@ -1,6 +1,5 @@
 <template>
   <div class="addElement pure-u-1">
-    <h1>Add an element</h1>
     <form class="pure-form pure-form-aligned">
       <fieldset>
         <div class="pure-control-group">

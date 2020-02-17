@@ -1,5 +1,6 @@
 <template>
   <div class="addElement pure-u-1">
+    <h1>Add element</h1>
     <AddElementTypePrompt
       v-if="$route.name == 'addElementStep1'"
       :choiceHandler="choiceHandler2"

@@ -1,6 +1,6 @@
 <template>
   <div class="viewElement pure-u">
-    <h2>{{ element.title }}</h2>
+    <h1>{{ element.title }}</h1>
     <p>{{ element.text }}</p>
     <span>
       {{ dateFormatted }}
@@ -68,10 +68,6 @@ export default class ViewElement extends Vue {
 
 <style lang="scss">
 @import '@/styles/custom.scss';
-
-.viewElement {
-  padding: 2em;
-}
 
 .viewElement__info {
   font-style: italic;
