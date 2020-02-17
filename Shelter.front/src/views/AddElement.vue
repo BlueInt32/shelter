@@ -1,59 +1,14 @@
 <template>
   <div class="addElement pure-u-1">
-    <h1>Add an element</h1>
-    <form class="pure-form pure-form-aligned">
-      <fieldset>
-        <div class="pure-control-group">
-          <label for="title">Title (optional)</label>
-          <input
-            id="title"
-            type="text"
-            placeholder=""
-            v-model="elementTitle"
-            class="pure-input-2-3"
-          />
-        </div>
-        <div class="pure-control-group">
-          <label for="text">Link, text, anything...</label>
-          <input
-            id="text"
-            type="text"
-            placeholder=""
-            v-model="elementText"
-            class="pure-input-2-3"
-          />
-          <span class="pure-form-message-inline">*</span>
-        </div>
-        <div class="pure-control-group">
-          <label for="title">Tags</label>
-          <vue-tags-input
-            class="addTagsInputComponent pure-input-2-3"
-            v-model="tag"
-            :tags="tags"
-            :autocomplete-items="autocompleteItems"
-            @tags-changed="update"
-          />
-        </div>
-        <div class="pure-controls">
-          <input
-            type="file"
-            id="file"
-            ref="file"
-            v-on:change="handleFileUpload()"
-          />
-        </div>
-        <div class="pure-controls">
-          <button
-            class="pure-button button-success"
-            type="button"
-            value="Add"
-            @click="createElement()"
-          >
-            Add
-          </button>
-        </div>
-      </fieldset>
-    </form>
+    <AddElementTypePrompt
+      v-if="$route.name == 'addElementStep1'"
+      :choiceHandler="choiceHandler2"
+    ></AddElementTypePrompt>
+    <AddElementForm
+      v-if="$route.name == 'addElementStep2'"
+      :submitHandler="createElement"
+    >
+    </AddElementForm>
   </div>
 </template>
 
@@ -73,34 +28,29 @@ import VueTagsInput from '@johmun/vue-tags-input';
 import { SearchForElementsApiModel } from '../objects/apiModels/SearchForElementsApiModel';
 import { SearchForTagsApiModel } from '../objects/apiModels/SearchForTagsApiModel';
 import { RawLocation } from 'vue-router';
+import { CreationStep } from '@/objects/enums/CreationStep';
+import AddElementTypePrompt from '@/views/components/AddElementTypePrompt.vue';
+import AddElementForm from '@/views/components/AddElementForm.vue';
 
 @Component({
   components: {
-    VueTagsInput
+    VueTagsInput,
+    AddElementTypePrompt,
+    AddElementForm
   }
 })
 export default class AddElement extends Vue {
   private elementEditionModule = getModule(ElementEditionModule);
-  private tagsDisplayModule = getModule(TagsDisplayModule);
 
-  private elementText: string = '';
-  private elementTitle: string = '';
   private $snotify: any;
-  private tag: string = '';
-  private tags: any[] = [];
-  private autocompleteItems: AutocompleteItem[] = [];
-  private debounce: any = null;
-  private pendingFile: File | null = null;
+  private creationStep: CreationStep = CreationStep.PromptType;
+  private creationStepEnum = CreationStep;
 
-  async createElement() {
-    let elementCreationModel = new SaveElementApiModel();
-    elementCreationModel.text = this.elementText;
-    elementCreationModel.title = this.elementTitle;
-    elementCreationModel.tags = this.tags.map(t => t.text);
+  created() {}
+
+  async createElement(model: SaveElementWithFileApiModel) {
     try {
-      let data = await this.elementEditionModule.createElement(
-        new SaveElementWithFileApiModel(elementCreationModel, this.pendingFile)
-      );
+      let data = await this.elementEditionModule.createElement(model);
       notify(this.$snotify, NotificationType.OK, 'Cool post !');
       this.$router.push({
         name: 'viewElement',
@@ -111,30 +61,9 @@ export default class AddElement extends Vue {
     }
   }
 
-  handleFileUpload() {
-    // TODO : find a way to remove the linter error
-    // @ts-ignore
-    this.pendingFile = this.$refs.file.files[0];
-  }
-
-  async initItems() {
-    if (this.tag.length < 2) return;
-    clearTimeout(this.debounce);
-    this.debounce = setTimeout(async () => {
-      let results = await this.tagsDisplayModule.searchForTags(
-        new SearchForTagsApiModel(this.tag)
-      );
-      const mapped = results.map(r => new AutocompleteItem(r.label));
-      this.autocompleteItems = mapped;
-    }, 300);
-  }
-  update(newTags: string[]) {
-    this.autocompleteItems = [];
-    this.tags = newTags;
-  }
-  @Watch('tag')
-  private tagWatcher() {
-    this.initItems();
+  choiceHandler2(choice: string) {
+    // this.creationStep = CreationStep.Form;
+    this.$router.push({ name: 'addElementStep2' });
   }
 }
 </script>

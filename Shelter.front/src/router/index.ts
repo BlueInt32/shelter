@@ -26,9 +26,18 @@ const routes = [
       import(/* webpackChunkName: "about" */ '../views/About.vue')
   },
   {
-    path: '/add',
-    name: 'addElement',
+    path: '/add/step1',
+    name: 'addElementStep1',
     component: () => import('../views/AddElement.vue')
+  },
+  {
+    path: '/add/step2',
+    name: 'addElementStep2',
+    component: () => import('../views/AddElement.vue')
+  },
+  {
+    path: '/add',
+    redirect: '/add/step1'
   },
   {
     path: '/browse/:elementId',

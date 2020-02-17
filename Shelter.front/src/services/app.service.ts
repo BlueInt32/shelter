@@ -53,7 +53,6 @@ export default class AppService {
       var formData = new FormData();
       formData.append('payload', blob);
       if (data.file) {
-        console.log('file !');
         formData.append('file', data.file);
       }
       axios
@@ -95,7 +94,6 @@ export default class AppService {
       var formData = new FormData();
       formData.append('payload', blob);
       if (data.file) {
-        console.log('file !');
         formData.append('file', data.file);
       }
       axios

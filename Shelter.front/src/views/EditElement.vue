@@ -88,7 +88,7 @@ export default class EditElement extends Vue {
   private elementsDisplayModule = getModule(ElementsDisplayModule);
   private tagsDisplayModule = getModule(TagsDisplayModule);
   private element: Element = new Element();
-  private elementId: number | null = null;
+  private elementId: number = 0;
 
   private elementText: string = '';
   private elementTitle: string = '';
@@ -122,7 +122,12 @@ export default class EditElement extends Vue {
     try {
       await this.elementEditionModule.updateElement(elementUpdateWithFileModel);
       notify(this.$snotify, NotificationType.OK, 'Cool post !');
-      this.$router.push(`/view/${this.elementId}`);
+      this.$router.push({
+        name: 'viewElement',
+        params: {
+          elementId: this.elementId.toString()
+        }
+      });
     } catch (e) {
       notify(this.$snotify, NotificationType.ERROR, 'Oops ! ' + e.message);
     }

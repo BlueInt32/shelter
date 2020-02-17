@@ -60,7 +60,6 @@ export default class ElementEdition extends VuexModule {
     //   postModel.mimeType = postModel.mimeType.replace('data:', '');
     //   postModel.fileUrl = '';
     // }
-    // // console.log('go appservice');
     // return appService.createPost(postModel);
   }
 

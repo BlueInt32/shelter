@@ -29,7 +29,6 @@ export default class TagsDisplay extends VuexModule {
     //   postmodel.mimetype = postmodel.mimetype.replace('data:', '');
     //   postmodel.fileurl = '';
     // }
-    // // console.log('go appservice');
     // return appservice.createpost(postmodel);
   }
 }

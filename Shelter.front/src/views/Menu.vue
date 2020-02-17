@@ -12,9 +12,11 @@
         </li>
         <li
           class="pure-menu-item"
-          :class="computeMenuItemSelectedClass(['addElement'])"
+          :class="
+            computeMenuItemSelectedClass(['addElementStep1', 'addElementStep2'])
+          "
         >
-          <router-link to="/add" class="pure-menu-link">Add</router-link>
+          <router-link to="/add/step1" class="pure-menu-link">Add</router-link>
         </li>
         <li
           class="pure-menu-item"
@@ -37,7 +39,6 @@ export default class Menu extends Vue {
   @Prop(Boolean) public isMenuOpen: boolean = false;
 
   computeMenuItemSelectedClass(routeNames: string[]) {
-    console.log(this.$route.name);
     return routeNames.some(r => this.$route.name === r)
       ? { 'pure-menu-selected': true }
       : {};
