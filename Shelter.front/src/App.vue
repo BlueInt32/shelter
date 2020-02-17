@@ -27,6 +27,17 @@ import { getModule } from 'vuex-module-decorators';
 import MenuModule from '@/store/menu';
 import Menu from '@/views/Menu.vue';
 
+// font-awesome dependencies
+import { library } from '@fortawesome/fontawesome-svg-core';
+import { faCircleNotch } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
+library.add(faCircleNotch);
+Vue.component('font-awesome-icon', FontAwesomeIcon);
+Vue.filter('capitalize', function(value: string) {
+  if (!value) return '';
+  value = value.toString();
+  return value.charAt(0).toUpperCase() + value.slice(1);
+});
 @Component({
   components: {
     Menu

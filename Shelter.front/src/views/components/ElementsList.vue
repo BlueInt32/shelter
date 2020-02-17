@@ -1,8 +1,14 @@
 <template>
   <div class="elementsList__container">
-    <span class="elementsList__loader" v-if="loading"
-      ><i class="fas fa-circle-notch"></i
-    ></span>
+    <span class="elementsList__loading" v-if="loading">
+      <!--  -->
+      <font-awesome-icon
+        class="elementsList__loader"
+        icon="circle-notch"
+        spin
+      />
+      Loading elements...
+    </span>
     <span
       class="elementsList__info"
       v-if="!loading && (!elements || elements.length === 0)"
@@ -75,5 +81,21 @@ export default class ElementsList extends Vue {
       }
     }
   }
+}
+.elementsList__loading {
+  display: inline-block;
+  height: 40vh;
+  width: 100%;
+  line-height: 2em;
+  line-height: 40vh;
+  margin: 0 auto;
+  text-align: center;
+}
+.elementsList__loader {
+  position: relative;
+  top: 5px;
+  left: 5px;
+  margin-right: 10px;
+  font-size: 2em;
 }
 </style>

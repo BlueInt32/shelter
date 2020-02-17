@@ -25,12 +25,10 @@ export default class Browse extends Vue {
   private loading: boolean = true;
 
   async created() {
-    console.log('is loading ', this.loading);
     this.elements = await this.elementsDisplayModule.searchForElements(
       new SearchForElementsApiModel()
     );
     this.loading = false;
-    console.log('is loading ', this.loading);
   }
 }
 </script>
