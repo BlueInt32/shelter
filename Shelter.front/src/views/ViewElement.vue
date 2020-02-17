@@ -88,7 +88,7 @@ ul.viewElement__tagslist {
 }
 .fileContainer {
   img {
-    max-width: 50vw;
+    max-width: calc(100vw - 2em);
   }
 }
 </style>
