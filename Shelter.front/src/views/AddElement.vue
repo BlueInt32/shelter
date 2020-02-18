@@ -79,6 +79,7 @@ export default class AddElement extends Vue {
 
 .addTagsInputComponent {
   display: inline-block;
+  max-width: 100%;
 }
 .ti-input {
   border-radius: 4px;

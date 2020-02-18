@@ -16,67 +16,57 @@
       </fieldset>
 
       <!-- IMAGE/VIDEO FORM -->
-      <fieldset
-        class="pure-group"
-        v-if="['video', 'image'].includes($route.params.type)"
-      >
-        <div class="upload-btn-wrapper pure-input-1">
-          <button class="btn button-large">Upload a file</button>
-          <input
-            type="file"
-            name="file"
-            ref="file"
-            v-on:change="handleFileUpload()"
-          />
+      <fieldset v-if="['video', 'image'].includes($route.params.type)">
+        <div class="pure-g">
+          <div class="pure-u-3-4">
+            <input
+              type="text"
+              :placeholder="($route.params.type + ' link') | capitalize"
+              class="pure-input-1"
+            />
+          </div>
+          <div class="pure-u-1-8" :style="{ 'text-align': 'center' }">
+            <label> or </label>
+          </div>
+          <div class="pure-u-1-8">
+            <div class="fileUpload pure-button">
+              <span>Upload</span>
+              <input type="file" class="upload" />
+            </div>
+          </div>
+          <div class="pure-u-1">
+            <input
+              id="title"
+              type="text"
+              placeholder="Title"
+              v-model="elementTitle"
+              class="pure-input-1 pure-u-1"
+            />
+          </div>
+          <div class="pure-u-1">
+            <vue-tags-input
+              id="form-tags-input"
+              class="addTagsInputComponent pure-input-1"
+              v-model="tag"
+              placeholder="Add some tags"
+              :tags="tags"
+              :autocomplete-items="autocompleteItems"
+              @tags-changed="tagsChangedHandler"
+            />
+          </div>
         </div>
-        <!-- <input
-          type="file"
-          id="file"
-          ref="file"
-          v-on:change="handleFileUpload()"
-        /> -->
       </fieldset>
-      <vue-tags-input
-        class="addTagsInputComponent pure-input-1"
-        v-model="tag"
-        :tags="tags"
-        :autocomplete-items="autocompleteItems"
-        @tags-changed="tagsChangedHandler"
-      />
 
-      <fieldset>
-        <div class="pure-control-group">
-          <label for="title">Title (optional)</label>
-          <input
-            id="title"
-            type="text"
-            placeholder=""
-            v-model="elementTitle"
-            class="pure-input-2-3"
-          />
-        </div>
-        <div class="pure-control-group">
-          <label for="text">Link, text, anything...</label>
-          <input
-            id="text"
-            type="text"
-            placeholder=""
-            v-model="elementText"
-            class="pure-input-2-3"
-          />
-          <span class="pure-form-message-inline">*</span>
-        </div>
-        <div class="pure-controls">
-          <button
-            class="pure-button button-success"
-            type="button"
-            value="Add"
-            @click="clickSubmitHandler()"
-          >
-            Add
-          </button>
-        </div>
-      </fieldset>
+      <div class="pure-controls">
+        <button
+          class="pure-button button-success"
+          type="button"
+          value="Add"
+          @click="clickSubmitHandler()"
+        >
+          Add
+        </button>
+      </div>
     </form>
   </div>
 </template>
@@ -153,39 +143,34 @@ export default class AddElementForm extends Vue {
 </script>
 
 <style lang="scss">
-.upload-btn-wrapper {
+#form-tags-input.vue-tags-input {
+  margin: 4px 0;
+  max-width: 100%;
+}
+#form-tags-input .ti-input {
+  padding: 1px 1px 1px 1px;
+}
+#form-tags-input .ti-new-tag-input-wrapper {
+  padding: 3px 5px;
+}
+
+.fileUpload {
   position: relative;
   overflow: hidden;
-  display: inline-block;
-  &:hover {
-    .btn {
-      border: 2px solid #1f8dd6;
-      color: #1f8dd6;
-    }
-  }
-}
-
-.btn {
-  font-size: 110%;
-  // border: 2px solid gray;
-  // color: gray;
-  // background-color: white;
-  // padding: 8px 20px;
-  // border-radius: 8px;
-  // font-size: 20px;
-  // font-weight: bold;
-}
-
-.upload-btn-wrapper input[type='file'] {
-  position: absolute;
-  left: 0;
-  top: 0;
-  opacity: 0;
-  font-size: 100px;
-  height: 100%;
   width: 100%;
-  &:hover {
+  span {
     cursor: pointer;
   }
+}
+.fileUpload input.upload {
+  position: absolute;
+  top: 0;
+  right: 0;
+  margin: 0;
+  padding: 0;
+  font-size: 20px;
+  cursor: pointer;
+  opacity: 0;
+  filter: alpha(opacity=0);
 }
 </style>
