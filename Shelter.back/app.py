@@ -17,6 +17,7 @@ if app.config["ENV"] == "production":
 else:
   app.config.from_object("config.DevelopmentConfig")
 
+
 logging.basicConfig(
   format='%(asctime)s %(message)s',
   filename='shelter.log',
