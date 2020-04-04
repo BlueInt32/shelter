@@ -1,4 +1,5 @@
 $primary: #1f8dd6;
+$primaryHover: #4eb1f3;
 $tagsAndButtonsColor: #fff;
 
 .button-success,
@@ -52,3 +53,8 @@ h3 {
 }
 
 @import './src/styles/menu.scss';
+
+textarea::placeholder,
+input[type='text']::placeholder {
+  color: #c9c9c9;
+}

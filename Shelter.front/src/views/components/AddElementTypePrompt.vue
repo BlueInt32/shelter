@@ -1,24 +1,36 @@
 <template>
-  <div class="typePrompt pure-u-1">
-    <div class="typePrompt__buttonwrapper">
-      <a @click="clickHandler('image')">
-        <font-awesome-icon class="typePrompt__icon" icon="image" />Image
-      </a>
+  <div class="typePrompt pure-u-1 flex-container">
+    <div
+      @click="clickHandler('image')"
+      class="flex-item typePrompt__buttonwrapper"
+    >
+      <div class="flex-item-content">
+        <font-awesome-icon class="typePrompt__icon" icon="image" /> Image
+      </div>
     </div>
-    <div class="typePrompt__buttonwrapper">
-      <a @click="clickHandler('video')">
-        <font-awesome-icon class="typePrompt__icon" icon="video" />Video
-      </a>
+    <div
+      @click="clickHandler('video')"
+      class="flex-item typePrompt__buttonwrapper"
+    >
+      <div class="flex-item-content">
+        <font-awesome-icon class="typePrompt__icon" icon="video" /> Video
+      </div>
     </div>
-    <div class="typePrompt__buttonwrapper">
-      <a @click="clickHandler('text')">
-        <font-awesome-icon class="typePrompt__icon" icon="align-left" />Text
-      </a>
+    <div
+      @click="clickHandler('text')"
+      class="flex-item typePrompt__buttonwrapper"
+    >
+      <div class="flex-item-content">
+        <font-awesome-icon class="typePrompt__icon" icon="align-left" /> Text
+      </div>
     </div>
-    <div class="typePrompt__buttonwrapper">
-      <a @click="clickHandler('link')">
-        <font-awesome-icon class="typePrompt__icon" icon="link" />Link
-      </a>
+    <div
+      @click="clickHandler('link')"
+      class="flex-item typePrompt__buttonwrapper"
+    >
+      <div class="flex-item-content">
+        <font-awesome-icon class="typePrompt__icon" icon="link" /> Link
+      </div>
     </div>
   </div>
 </template>
@@ -37,34 +49,51 @@ export default class AddElementTypePrompt extends Vue {
 </script>
 <style lang="scss">
 @import '@/styles/custom.scss';
-
-.typePrompt__buttonwrapper {
-  position: relative;
-  width: 49%;
-  padding-bottom: 50%;
-  margin: 3px;
-  background: none;
+.flex-container {
+  padding: 0;
+  margin: 0;
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  align-content: flex-start;
 }
-.typePrompt a {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  font-size: 2em;
-  border-radius: 10px;
-  border: 3px solid $primary;
-  background: none;
-  :hover {
-    background-color: $primary;
-    color: white;
+.flex-item {
+  box-sizing: border-box;
+  background: $primary;
+  margin: 5px;
+  color: white;
+  font-weight: bold;
+  font-size: 2rem;
+  text-align: center;
+  flex: 0 0 50%;
+  height: auto;
+  display: flex;
+  border: 3px solid white;
+  padding: 10px;
+  text-align: center;
+  margin: 0 auto;
+  position: relative;
+  cursor: pointer;
+
+  &:hover {
+    background: $primaryHover;
   }
 }
-.typePrompt__icon {
-  position: relative;
-  top: 13px;
-  left: 0px;
-  margin-right: 22px;
-  font-size: 2em;
+.flex-item-content {
+  position: absolute;
+  display: block;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  width: 50%;
+  height: 10%;
+  margin: auto;
+}
+.flex-item:before {
+  content: '';
+  display: inline-block;
+  vertical-align: middle;
+  padding-top: 100%;
 }
 </style>
