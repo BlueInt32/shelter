@@ -52,8 +52,6 @@ export default class AddElement extends Vue {
   private creationStep: CreationStep = CreationStep.PromptType;
   private creationStepEnum = CreationStep;
 
-  created() {}
-
   async createElement(model: SaveElementWithFileApiModel) {
     try {
       let data = await this.elementEditionModule.createElement(model);

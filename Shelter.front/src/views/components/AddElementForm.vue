@@ -23,6 +23,7 @@
               type="text"
               :placeholder="($route.params.type + ' link') | capitalize"
               class="pure-input-1"
+              v-model="elementLink"
             />
           </div>
           <div class="pure-u-1-8" :style="{ 'text-align': 'center' }">
@@ -92,6 +93,7 @@ export default class AddElementForm extends Vue {
   private tagsDisplayModule = getModule(TagsDisplayModule);
   private elementText: string = '';
   private elementTitle: string = '';
+  private elementLink: string = '';
   private tags: any[] = [];
   private pendingFile: File | null = null;
   private autocompleteItems: AutocompleteItem[] = [];
@@ -108,6 +110,7 @@ export default class AddElementForm extends Vue {
     elementCreationModel.text = this.elementText;
     elementCreationModel.title = this.elementTitle;
     elementCreationModel.tags = this.tags.map(t => t.text);
+    elementCreationModel.linkUrl = this.elementLink;
     let modelWithFile = new SaveElementWithFileApiModel(
       elementCreationModel,
       this.pendingFile

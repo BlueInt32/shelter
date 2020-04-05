@@ -8,7 +8,7 @@ export class SaveElementApiModel {
   public title: string;
   public text: string;
   public tags: string[];
-  // public fileUrl: string;
+  public linkUrl: string;
   // public base64File: string;
   // public mimeType: string;
 
@@ -17,7 +17,7 @@ export class SaveElementApiModel {
     this.title = '';
     this.text = '';
     this.tags = [];
-    // this.fileUrl = '';
+    this.linkUrl = '';
     // this.base64File = '';
     // this.mimeType = '';
   }
@@ -26,8 +26,8 @@ export class SaveElementApiModel {
     return [
       new PatchDescriptorModel<string>(nameof('title'), this.title),
       new PatchDescriptorModel<string>(nameof('text'), this.text),
-      new PatchDescriptorModel<Array<string>>(nameof('tags'), this.tags)
-      // new PatchDescriptorModel<string>(nameof('fileUrl'), this.fileUrl),
+      new PatchDescriptorModel<Array<string>>(nameof('tags'), this.tags),
+      new PatchDescriptorModel<string>(nameof('linkUrl'), this.linkUrl)
       // new PatchDescriptorModel<string>(nameof('base64File'), this.base64File),
       // new PatchDescriptorModel<string>(nameof('mimeType'), this.mimeType)
     ];

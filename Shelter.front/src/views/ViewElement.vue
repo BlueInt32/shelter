@@ -1,10 +1,16 @@
 <template>
   <div class="viewElement pure-u">
     <h1>{{ element.title }}</h1>
-    <p>{{ element.text }}</p>
-    <span>
+    <p v-if="element.text">{{ element.text }}</p>
+    <span class="viewElement__date">
       {{ dateFormatted }}
     </span>
+    <button class="pure-button" @click="clickEditHandler">
+      Edit
+    </button>
+    <button class="pure-button button-error" @click="clickDeleteHandler">
+      Delete
+    </button>
     <span class="viewElement__info" v-if="element.tags.length === 0"
       >No tag</span
     >
@@ -14,12 +20,6 @@
     <div class="fileContainer">
       <img :src="element.fileUrl" />
     </div>
-    <button class="pure-button" @click="clickEditHandler">
-      Edit
-    </button>
-    <button class="pure-button button-error" @click="clickDeleteHandler">
-      Delete
-    </button>
   </div>
 </template>
 
@@ -46,13 +46,9 @@ export default class ViewElement extends Vue {
     const elementId = parseInt(this.$route.params.elementId, 10);
     this.element = await this.elementsDisplayModule.getElementById(elementId);
     const today = dayjs();
-    const formatted = dayjs(this.element.creation_date).format(
-      'le DD/MM/YYYY à HH:mm:ss'
+    this.dateFormatted = dayjs(this.element.creation_date).format(
+      'DD/MM/YYYY HH:mm:ss'
     );
-    this.dateFormatted = this.element.creation_date;
-    this.dateFormatted = `Created ${today
-      .diff(dayjs(this.element.creation_date))
-      .toString()}ms ago (${formatted})`;
   }
 
   async clickDeleteHandler() {
@@ -73,17 +69,24 @@ export default class ViewElement extends Vue {
   font-style: italic;
   color: #aaa;
 }
+.viewElement__date {
+  font-size: 0.8em;
+  font-style: italic;
+  color: #aaa;
+}
 
 ul.viewElement__tagslist {
+  margin: 9px 0;
+  padding: 0;
   list-style: none;
 
   li {
     display: inline;
-    border-radius: 3px;
-    background: #aaf;
+    border-radius: 2px;
+    background: $primary;
     color: white;
-    margin: 0px 2px;
-    padding: 2px;
+    margin: 0 2px 0 0;
+    padding: 4px;
   }
 }
 .fileContainer {

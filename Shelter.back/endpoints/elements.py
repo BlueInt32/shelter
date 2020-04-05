@@ -8,7 +8,7 @@ import psycopg2
 from werkzeug.datastructures import ImmutableMultiDict
 import json
 from services.tags_service import resolve_tags
-
+import urllib.request
 # input parser
 
 
@@ -40,8 +40,12 @@ class ElementsListApi(Resource):
     if 'file' in data:
       imageFile = data['file'][0]
       new_element.attached_file = imageFile.stream.read()
+    if parsed['linkUrl'] is not None:
+      # download media
+      response = urllib.request.urlopen(parsed['linkUrl'])
+      data = response.read()
+      new_element.attached_file = data
 
     db.session.add(new_element)
     db.session.commit()
     return new_element, 201
-
