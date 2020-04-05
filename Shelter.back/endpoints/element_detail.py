@@ -3,12 +3,18 @@ from endpoints.output_fields import element_fields
 from models import db, Element, Tag
 from services.tags_service import resolve_tags
 import json
+from dateutil import tz
 
 
 class ElementApi(Resource):
   @marshal_with(element_fields)
   def get(self, element_id):
     retrieved_element = Element.query.get_or_404(element_id)
+    to_zone = tz.tzlocal()
+    from_zone = tz.tzutc()
+    retrieved_element.creation_date = retrieved_element.creation_date.replace(
+        tzinfo=from_zone).astimezone(to_zone)
+
     return retrieved_element
 
   @marshal_with(element_fields)
