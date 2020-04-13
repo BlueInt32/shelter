@@ -4,8 +4,10 @@ from datetime import datetime
 db = SQLAlchemy()
 
 tags = db.Table('tags',
-                db.Column('tag_id', db.Integer, db.ForeignKey('tag.id'), primary_key=True),
-                db.Column('element_id', db.Integer, db.ForeignKey('element.id'), primary_key=True),
+                db.Column('tag_id', db.Integer, db.ForeignKey(
+                    'tag.id'), primary_key=True),
+                db.Column('element_id', db.Integer, db.ForeignKey(
+                    'element.id'), primary_key=True),
                 )
 
 
@@ -25,6 +27,7 @@ class Element(db.Model):
   tags_associated = db.relationship('Tag', secondary=tags, lazy='subquery',
                                     backref=db.backref('elements_associated', lazy=True))
   attached_file = db.Column(db.LargeBinary, nullable=True)
+  attached_thumb = db.Column(db.LargeBinary, nullable=True)
 
   # def __repr__(self):
   #     return '<Element %r>' % self.title

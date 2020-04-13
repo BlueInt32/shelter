@@ -34,6 +34,12 @@ export default class ElementsDisplay extends VuexModule {
     const elements = await appService.searchForElements(
       searchForElementsApiModel
     );
+    elements.forEach(element => {
+      element.fileUrl = appService.getElementFileUrlById(element.id);
+      element.thumbnailUrl = appService.getElementThumbnailFileUrlById(
+        element.id
+      );
+    });
     return elements;
     // // if inputmode is upload, we have to change the model to use base64file
     // const fileinputmodule = getmodule(fileinput);
@@ -49,6 +55,7 @@ export default class ElementsDisplay extends VuexModule {
   public async getElementById(elementId: number) {
     const element = await appService.getElementById(elementId);
     element.fileUrl = appService.getElementFileUrlById(elementId);
+    element.thumbnailUrl = appService.getElementThumbnailFileUrlById(elementId);
     return element;
   }
 }

@@ -9,6 +9,9 @@ from werkzeug.datastructures import ImmutableMultiDict
 import json
 from services.tags_service import resolve_tags
 import urllib.request
+from PIL import Image
+import binascii
+import io
 # input parser
 
 
@@ -40,12 +43,33 @@ class ElementsListApi(Resource):
     if 'file' in data:
       imageFile = data['file'][0]
       new_element.attached_file = imageFile.stream.read()
-    if parsed['linkUrl'] is not None:
+    if parsed['linkUrl'] is not '':
       # download media
       response = urllib.request.urlopen(parsed['linkUrl'])
       data = response.read()
       new_element.attached_file = data
 
+    # thumbnail generation
+
+    if new_element.attached_file is not None:
+      stream = io.BytesIO(new_element.attached_file)
+      im = Image.open(stream)
+      im.thumbnail((128, 128))
+      # im.save(outfile, "JPEG")
+      imgByteArr = io.BytesIO()
+      im.convert('RGB').save(imgByteArr, "JPEG")
+      new_element.attached_thumb = imgByteArr.getvalue()
+
     db.session.add(new_element)
     db.session.commit()
     return new_element, 201
+
+
+# # creating a object
+# image = Image.open(r"C:\Users\System-Pc\Desktop\python.png")
+# MAX_SIZE = (100, 100)
+
+# image.thumbnail(MAX_SIZE)
+
+# db.session.add(new_element)
+# db.session.commit()

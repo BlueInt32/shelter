@@ -25,6 +25,7 @@
           :to="{ name: 'viewElement', params: { elementId: element.id } }"
           >view</router-link
         >
+        <img :src="element.thumbnailUrl" />
       </div>
     </div>
   </div>

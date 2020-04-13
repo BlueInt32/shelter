@@ -54,7 +54,7 @@ export default class ViewElement extends Vue {
   async clickDeleteHandler() {
     await this.elementEditionModule.deleteElement(this.element.id);
     notify(this.$snotify, NotificationType.OK, 'Post deleted');
-    this.$router.push({ name: 'home' });
+    this.$router.push({ name: 'browse' });
   }
   async clickEditHandler() {
     this.$router.push(`/edit/${this.element.id}`);

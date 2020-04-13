@@ -7,6 +7,7 @@ export class Element {
     this.text = '';
     this.tags = [];
     this.fileUrl = '';
+    this.thumbnailUrl = '';
     this.creation_date = '';
   }
 
@@ -15,5 +16,6 @@ export class Element {
   public text: string;
   public tags: Tag[];
   public fileUrl: string;
+  public thumbnailUrl: string;
   public creation_date: string;
 }
