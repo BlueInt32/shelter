@@ -10,6 +10,7 @@ import { Tag } from '@/objects/Tag';
 import { LoginApiModel } from '@/objects/apiModels/LoginApiModel';
 import { LoginResult } from '@/objects/LoginResult';
 import { SearchForTagsApiModel } from '@/objects/apiModels/SearchForTagsApiModel';
+import { FileType } from '@/objects/apiModels/FileType';
 
 export default class AppService {
   private serviceRootUrl: string;
@@ -55,8 +56,11 @@ export default class AppService {
       if (data.file) {
         formData.append('file', data.file);
       }
+      const creationApiType = this.resolveCreationApiSegmentFromFileType(
+        data.fileType
+      );
       axios
-        .post(`${this.serviceRootUrl}/elements`, formData)
+        .post(`${this.serviceRootUrl}/${creationApiType}`, formData)
         .then(response => {
           resolve(response.data);
         })
@@ -64,6 +68,16 @@ export default class AppService {
           reject(error.response.data.message);
         });
     });
+  }
+
+  private resolveCreationApiSegmentFromFileType(fileType: FileType) {
+    switch (fileType) {
+      case FileType.Image:
+        return 'images';
+      case FileType.Video:
+        return 'videos';
+    }
+    return 'elements';
   }
 
   public updateElement(saveElementApiModel: SaveElementWithFileApiModel) {

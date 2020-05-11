@@ -12,30 +12,32 @@ tags = db.Table('tags',
 
 
 class Element(db.Model):
-  def __init__(self, title, text, input_tags):
-    self.title = title
-    self.text = text
-    self.creation_date = datetime.utcnow()
-    self.update_date = datetime.utcnow()
-    self.tags_associated = input_tags
+    def __init__(self, title, text, input_tags, element_type):
+        self.title = title
+        self.text = text
+        self.creation_date = datetime.utcnow()
+        self.update_date = datetime.utcnow()
+        self.tags_associated = input_tags
+        self.type = element_type
 
-  id = db.Column(db.Integer, primary_key=True)
-  title = db.Column(db.String(200), unique=False, nullable=False)
-  text = db.Column(db.String(200), unique=False, nullable=True)
-  creation_date = db.Column(db.DateTime, nullable=False)
-  update_date = db.Column(db.DateTime, nullable=False)
-  tags_associated = db.relationship('Tag', secondary=tags, lazy='subquery',
-                                    backref=db.backref('elements_associated', lazy=True))
-  attached_file = db.Column(db.LargeBinary, nullable=True)
-  attached_thumb = db.Column(db.LargeBinary, nullable=True)
+    id = db.Column(db.Integer, primary_key=True)
+    title = db.Column(db.String(200), unique=False, nullable=False)
+    text = db.Column(db.String(200), unique=False, nullable=True)
+    creation_date = db.Column(db.DateTime, nullable=False)
+    update_date = db.Column(db.DateTime, nullable=False)
+    tags_associated = db.relationship('Tag', secondary=tags, lazy='subquery',
+                                      backref=db.backref('elements_associated', lazy=True))
+    attached_file = db.Column(db.LargeBinary, nullable=True)
+    attached_thumb = db.Column(db.LargeBinary, nullable=True)
+    type = db.Column(db.String(10), unique=False, nullable=False)
 
-  # def __repr__(self):
-  #     return '<Element %r>' % self.title
+    # def __repr__(self):
+    #     return '<Element %r>' % self.title
 
 
 class Tag(db.Model):
-  def __init__(self, label):
-    self.label = label
+    def __init__(self, label):
+        self.label = label
 
-  id = db.Column(db.Integer, primary_key=True)
-  label = db.Column(db.String(200), unique=True, nullable=False)
+    id = db.Column(db.Integer, primary_key=True)
+    label = db.Column(db.String(200), unique=True, nullable=False)

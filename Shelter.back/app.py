@@ -6,6 +6,8 @@ from models import db
 from endpoints.elements import ElementsListApi
 from endpoints.element_detail import ElementApi
 from endpoints.element_file import ElementFileApi, ElementThumbnailFileApi
+from endpoints.videos_api import VideosApi
+from endpoints.images_api import ImagesApi
 from endpoints.tags import TagsSearchApi
 from flask import got_request_exception
 
@@ -13,9 +15,9 @@ from flask import got_request_exception
 app = Flask(__name__)
 
 if app.config["ENV"] == "production":
-  app.config.from_object("config.ProductionConfig")
+    app.config.from_object("config.ProductionConfig")
 else:
-  app.config.from_object("config.DevelopmentConfig")
+    app.config.from_object("config.DevelopmentConfig")
 
 
 logging.basicConfig(
@@ -34,14 +36,16 @@ cors = CORS(app)
 
 
 def log_exception(sender, exception, **extra):
-  """ Log an exception to our logging framework """
-  sender.logger.debug('Got exception during processing: %s', exception)
-  print(exception)
+    """ Log an exception to our logging framework """
+    sender.logger.debug('Got exception during processing: %s', exception)
+    print(exception)
 
 
 got_request_exception.connect(log_exception, app)
 
 api.add_resource(ElementsListApi, '/api/elements')
+api.add_resource(ImagesApi, '/api/images')
+api.add_resource(VideosApi, '/api/videos')
 api.add_resource(ElementApi, '/api/elements/<element_id>')
 api.add_resource(ElementFileApi, '/api/elements/file/<element_id>')
 api.add_resource(ElementThumbnailFileApi,
@@ -49,6 +53,6 @@ api.add_resource(ElementThumbnailFileApi,
 api.add_resource(TagsSearchApi, '/api/tags/search/<search_term>')
 
 if __name__ == '__main__':
-  app.debug = True
-  app.run()
-  # app.run(host='0.0.0.0', port=4996)
+    app.debug = True
+    app.run()
+    # app.run(host='0.0.0.0', port=4996)

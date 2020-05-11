@@ -18,7 +18,14 @@
       <li v-for="tag in element.tags" :key="tag.id">{{ tag.label }}</li>
     </ul>
     <div class="fileContainer">
-      <img :src="element.fileUrl" />
+      <img :src="element.fileUrl" v-if="element.type === 'image'" />
+      <video
+        width="800"
+        controls
+        autoplay
+        :src="element.fileUrl"
+        v-if="element.type === 'video'"
+      />
     </div>
   </div>
 </template>

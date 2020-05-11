@@ -77,6 +77,7 @@ import VueTagsInput from '@johmun/vue-tags-input';
 import { SearchForElementsApiModel } from '../objects/apiModels/SearchForElementsApiModel';
 import { SearchForTagsApiModel } from '../objects/apiModels/SearchForTagsApiModel';
 import TagInputItem from '@/objects/TagInputItem';
+import { FileType } from '@/objects/apiModels/FileType';
 
 @Component({
   components: {
@@ -117,7 +118,8 @@ export default class EditElement extends Vue {
     elementCreationModel.tags = this.tags.map(t => t.text);
     const elementUpdateWithFileModel = new SaveElementWithFileApiModel(
       elementCreationModel,
-      this.pendingFile
+      this.pendingFile,
+      FileType.Video
     );
     try {
       await this.elementEditionModule.updateElement(elementUpdateWithFileModel);

@@ -28,7 +28,6 @@ export default class Browse extends Vue {
     this.elements = await this.elementsDisplayModule.searchForElements(
       new SearchForElementsApiModel()
     );
-    console.log(this.elements);
     this.loading = false;
   }
 }

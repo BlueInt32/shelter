@@ -32,7 +32,13 @@
           <div class="pure-u-1-8">
             <div class="fileUpload pure-button">
               <span>Upload</span>
-              <input type="file" class="upload" />
+              <input
+                type="file"
+                class="upload"
+                id="file"
+                ref="file"
+                v-on:change="handleFileUpload"
+              />
             </div>
           </div>
           <div class="pure-u-1">
@@ -83,6 +89,7 @@ import { AutocompleteItem } from '@/objects/AutocompleteItem';
 import { getModule } from 'vuex-module-decorators';
 import TagsDisplayModule from '@/store/tagsDisplay';
 import { SearchForTagsApiModel } from '@/objects/apiModels/SearchForTagsApiModel';
+import { FileType } from '@/objects/apiModels/FileType';
 
 @Component({
   components: {
@@ -105,6 +112,16 @@ export default class AddElementForm extends Vue {
   ) => void;
 
   created() {}
+
+  resolveFileTypeFromElementType() {
+    switch (this.$route.params.type) {
+      case 'video':
+        return FileType.Video;
+      case 'image':
+        return FileType.Image;
+    }
+    return FileType.None;
+  }
   clickSubmitHandler() {
     let elementCreationModel = new SaveElementApiModel();
     elementCreationModel.text = this.elementText;
@@ -113,13 +130,15 @@ export default class AddElementForm extends Vue {
     elementCreationModel.linkUrl = this.elementLink;
     let modelWithFile = new SaveElementWithFileApiModel(
       elementCreationModel,
-      this.pendingFile
+      this.pendingFile,
+      this.resolveFileTypeFromElementType()
     );
     this.submitHandler(modelWithFile);
   }
 
   handleFileUpload() {
     // TODO : find a way to remove the linter error
+    console.log('hey');
     // @ts-ignore
     this.pendingFile = this.$refs.file.files[0];
   }
