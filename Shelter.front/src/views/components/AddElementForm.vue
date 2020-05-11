@@ -63,6 +63,38 @@
           </div>
         </div>
       </fieldset>
+      <fieldset v-if="['link'].includes($route.params.type)">
+        <div class="pure-g">
+          <div class="pure-u-1">
+            <input
+              id="title"
+              type="text"
+              placeholder="Title"
+              v-model="elementTitle"
+              class="pure-input-1 pure-u-1"
+            />
+          </div>
+          <div class="pure-u-1">
+            <input
+              type="text"
+              :placeholder="$route.params.type | capitalize"
+              class="pure-input-1"
+              v-model="elementLink"
+            />
+          </div>
+          <div class="pure-u-1">
+            <vue-tags-input
+              id="form-tags-input"
+              class="addTagsInputComponent pure-input-1"
+              v-model="tag"
+              placeholder="Add some tags"
+              :tags="tags"
+              :autocomplete-items="autocompleteItems"
+              @tags-changed="tagsChangedHandler"
+            />
+          </div>
+        </div>
+      </fieldset>
 
       <div class="pure-controls">
         <button
@@ -128,12 +160,17 @@ export default class AddElementForm extends Vue {
     elementCreationModel.title = this.elementTitle;
     elementCreationModel.tags = this.tags.map(t => t.text);
     elementCreationModel.linkUrl = this.elementLink;
-    let modelWithFile = new SaveElementWithFileApiModel(
-      elementCreationModel,
-      this.pendingFile,
-      this.resolveFileTypeFromElementType()
-    );
-    this.submitHandler(modelWithFile);
+    const fileType = this.resolveFileTypeFromElementType();
+    if (fileType !== 'link') {
+      let modelWithFile = new SaveElementWithFileApiModel(
+        elementCreationModel,
+        this.pendingFile,
+        fileType
+      );
+      this.submitHandler(modelWithFile);
+    } else {
+      this.submitHandler(elementCreationModel);
+    }
   }
 
   handleFileUpload() {
