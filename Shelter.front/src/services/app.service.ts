@@ -3,14 +3,15 @@ import { buildPatchModifierPayload } from './patchHelper';
 import { SearchForElementsApiModel } from '@/objects/apiModels/SearchForElementsApiModel';
 import { Element } from '@/objects/Element';
 import {
-  SaveElementApiModel,
-  SaveElementWithFileApiModel
+  SaveElementBaseApiModel,
+  SaveElementWithFileApiModel,
+  SaveElementWithLinkApiModel
 } from '@/objects/apiModels/SaveElementApiModel';
 import { Tag } from '@/objects/Tag';
 import { LoginApiModel } from '@/objects/apiModels/LoginApiModel';
 import { LoginResult } from '@/objects/LoginResult';
 import { SearchForTagsApiModel } from '@/objects/apiModels/SearchForTagsApiModel';
-import { FileType } from '@/objects/apiModels/FileType';
+import { ElementType } from '@/objects/apiModels/ElementType';
 
 export default class AppService {
   private serviceRootUrl: string;
@@ -45,9 +46,33 @@ export default class AppService {
     });
   }
 
-  public createElement(data: SaveElementWithFileApiModel): Promise<Element> {
+  public createElementWithLink(
+    data: SaveElementWithLinkApiModel
+  ): Promise<Element> {
     return new Promise((resolve, reject) => {
-      const json = JSON.stringify(data.json);
+      const creationApiType = this.resolveCreationApiSegmentFromElementType(
+        data.elementType
+      );
+      axios
+        .post(`${this.serviceRootUrl}/${creationApiType}`, data)
+        .then(response => {
+          resolve(response.data);
+        })
+        .catch(error => {
+          reject(error.response.data.message);
+        });
+    });
+  }
+
+  public createElementWithFile(
+    data: SaveElementWithFileApiModel
+  ): Promise<Element> {
+    return new Promise((resolve, reject) => {
+      let payloadWithoutFile = Object.assign({}, data);
+      delete payloadWithoutFile.file;
+      delete payloadWithoutFile.elementType;
+
+      const json = JSON.stringify(payloadWithoutFile);
       const blob = new Blob([json], {
         type: 'application/json'
       });
@@ -56,8 +81,8 @@ export default class AppService {
       if (data.file) {
         formData.append('file', data.file);
       }
-      const creationApiType = this.resolveCreationApiSegmentFromFileType(
-        data.fileType
+      const creationApiType = this.resolveCreationApiSegmentFromElementType(
+        data.elementType
       );
       axios
         .post(`${this.serviceRootUrl}/${creationApiType}`, formData)
@@ -70,38 +95,48 @@ export default class AppService {
     });
   }
 
-  private resolveCreationApiSegmentFromFileType(fileType: FileType) {
-    switch (fileType) {
-      case FileType.Image:
-        return 'images';
-      case FileType.Video:
-        return 'videos';
+  private resolveCreationApiSegmentFromElementType(elementType: ElementType) {
+    switch (elementType) {
+      case ElementType.ImageLink:
+        return 'image-links';
+      case ElementType.ImageFile:
+        return 'image-files';
+      case ElementType.VideoLink:
+        return 'video-links';
+      case ElementType.VideoFile:
+        return 'video-files';
+      case ElementType.WebLink:
+        return 'web-links';
     }
     return 'elements';
   }
 
-  public updateElement(saveElementApiModel: SaveElementWithFileApiModel) {
-    return new Promise<Element>((resolve, reject) => {
-      if (!saveElementApiModel.json) {
-        reject('empty payload');
-      }
-      const patchModel = saveElementApiModel.json.buildPatchModel();
-      axios
-        .patch(
-          `${this.serviceRootUrl}/elements/${saveElementApiModel.json.id}`,
-          patchModel
-        )
-        .then(response => {
-          resolve(response.data);
-        })
-        .catch(error => {
-          reject(error.response.data.message);
-        });
-    });
-  }
+  // public updateElement(saveElementApiModel: SaveElementWithFileApiModel) {
+  //   return new Promise<Element>((resolve, reject) => {
+  //     if (!saveElementApiModel) {
+  //       reject('empty payload');
+  //     }
+  //     const patchModel = saveElementApiModel.buildPatchModel();
+  //     axios
+  //       .patch(
+  //         `${this.serviceRootUrl}/elements/${saveElementApiModel.id}`,
+  //         patchModel
+  //       )
+  //       .then(response => {
+  //         resolve(response.data);
+  //       })
+  //       .catch(error => {
+  //         reject(error.response.data.message);
+  //       });
+  //   });
+  // }
   public updateElementWithPut(data: SaveElementWithFileApiModel) {
     return new Promise<Element>((resolve, reject) => {
-      const json = JSON.stringify(data.json);
+      let payloadWithoutFile = Object.assign({}, data);
+      delete payloadWithoutFile.file;
+      delete payloadWithoutFile.elementType;
+
+      const json = JSON.stringify(payloadWithoutFile);
       const blob = new Blob([json], {
         type: 'application/json'
       });
@@ -111,7 +146,7 @@ export default class AppService {
         formData.append('file', data.file);
       }
       axios
-        .put(`${this.serviceRootUrl}/elements/${data.json.id}`, formData)
+        .put(`${this.serviceRootUrl}/elements/${data.id}`, formData)
         .then(response => {
           resolve(response.data);
         })

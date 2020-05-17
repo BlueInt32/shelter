@@ -67,7 +67,7 @@ import ElementEditionModule from '@/store/elementEdition';
 import ElementsDisplayModule from '@/store/elementsDisplay';
 import TagsDisplayModule from '@/store/tagsDisplay';
 import {
-  SaveElementApiModel,
+  SaveElementBaseApiModel,
   SaveElementWithFileApiModel
 } from '@/objects/apiModels/SaveElementApiModel';
 import { AutocompleteItem } from '@/objects/AutocompleteItem';
@@ -77,7 +77,7 @@ import VueTagsInput from '@johmun/vue-tags-input';
 import { SearchForElementsApiModel } from '../objects/apiModels/SearchForElementsApiModel';
 import { SearchForTagsApiModel } from '../objects/apiModels/SearchForTagsApiModel';
 import TagInputItem from '@/objects/TagInputItem';
-import { FileType } from '@/objects/apiModels/FileType';
+import { ElementType } from '@/objects/apiModels/ElementType';
 
 @Component({
   components: {
@@ -110,19 +110,14 @@ export default class EditElement extends Vue {
     this.tags = this.element.tags.map(t => new TagInputItem(t.label));
   }
   async updateElement() {
-    let elementCreationModel = new SaveElementApiModel();
+    let elementModel = new SaveElementWithFileApiModel(this.pendingFile);
+    elementModel.id = this.elementId;
+    elementModel.text = this.elementText;
+    elementModel.title = this.elementTitle;
+    elementModel.tags = this.tags.map(t => t.text);
 
-    elementCreationModel.id = this.elementId;
-    elementCreationModel.text = this.elementText;
-    elementCreationModel.title = this.elementTitle;
-    elementCreationModel.tags = this.tags.map(t => t.text);
-    const elementUpdateWithFileModel = new SaveElementWithFileApiModel(
-      elementCreationModel,
-      this.pendingFile,
-      FileType.Video
-    );
     try {
-      await this.elementEditionModule.updateElement(elementUpdateWithFileModel);
+      await this.elementEditionModule.updateElement(elementModel);
       notify(this.$snotify, NotificationType.OK, 'Cool post !');
       this.$router.push({
         name: 'viewElement',

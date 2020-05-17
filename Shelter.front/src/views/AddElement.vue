@@ -25,8 +25,9 @@ import { getModule } from 'vuex-module-decorators';
 import ElementEditionModule from '@/store/elementEdition';
 import TagsDisplayModule from '@/store/tagsDisplay';
 import {
-  SaveElementApiModel,
-  SaveElementWithFileApiModel
+  SaveElementBaseApiModel,
+  SaveElementWithFileApiModel,
+  SaveElementWithLinkApiModel
 } from '@/objects/apiModels/SaveElementApiModel';
 import { AutocompleteItem } from '@/objects/AutocompleteItem';
 import { notify, NotificationType } from '../services/notificationService';
@@ -52,14 +53,21 @@ export default class AddElement extends Vue {
   private creationStep: CreationStep = CreationStep.PromptType;
   private creationStepEnum = CreationStep;
 
-  async createElement(model: SaveElementWithFileApiModel) {
+  async createElement(model: SaveElementBaseApiModel) {
     try {
-      let data = await this.elementEditionModule.createElement(model);
-      notify(this.$snotify, NotificationType.OK, 'Cool post !');
-      this.$router.push({
-        name: 'viewElement',
-        params: { elementId: data.id.toString() }
-      });
+      let data: any = null;
+      if (model instanceof SaveElementWithFileApiModel) {
+        data = await this.elementEditionModule.createElementWithFile(model);
+      } else if (model instanceof SaveElementWithLinkApiModel) {
+        data = await this.elementEditionModule.createElementWithLink(model);
+      }
+      if (data) {
+        notify(this.$snotify, NotificationType.OK, 'Cool post !');
+        this.$router.push({
+          name: 'viewElement',
+          params: { elementId: data.id.toString() }
+        });
+      }
     } catch (e) {
       notify(this.$snotify, NotificationType.ERROR, 'Oops ! ' + e.message);
     }

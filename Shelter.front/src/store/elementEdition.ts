@@ -13,8 +13,9 @@ import { Element } from '@/objects/Element';
 import { Tag } from '@/objects/Tag';
 import { ModalMode } from '@/objects/enums';
 import {
-  SaveElementApiModel,
-  SaveElementWithFileApiModel
+  SaveElementBaseApiModel,
+  SaveElementWithFileApiModel,
+  SaveElementWithLinkApiModel
 } from '@/objects/apiModels/SaveElementApiModel';
 
 const appService = new AppService();
@@ -50,8 +51,10 @@ export default class ElementEdition extends VuexModule {
   };
 
   @Action({ rawError: true })
-  public createElement(data: SaveElementWithFileApiModel): Promise<Element> {
-    return appService.createElement(data);
+  public createElementWithFile(
+    data: SaveElementWithFileApiModel
+  ): Promise<Element> {
+    return appService.createElementWithFile(data);
     // // if inputMode is upload, we have to change the model to use base64File
     // const fileInputModule = getModule(FileInput);
     // if (fileInputModule.inputMode === 'upload') {
@@ -64,20 +67,15 @@ export default class ElementEdition extends VuexModule {
   }
 
   @Action({ rawError: true })
+  public createElementWithLink(
+    data: SaveElementWithLinkApiModel
+  ): Promise<Element> {
+    return appService.createElementWithLink(data);
+  }
+
+  @Action({ rawError: true })
   public updateElement(saveElementApiModel: SaveElementWithFileApiModel) {
     return appService.updateElementWithPut(saveElementApiModel);
-    // const postsModule = getModule(Posts);
-    // // if inputMode is upload, we have to change the model to use base64File
-    // const fileInputModule = getModule(FileInput);
-    // if (fileInputModule.inputMode === 'upload') {
-    //   [postModel.mimeType, postModel.base64File] = postModel.fileUrl.split(',');
-    //   [postModel.mimeType] = postModel.mimeType.split(';');
-    //   postModel.mimeType = postModel.mimeType.replace('data:', '');
-    //   postModel.fileUrl = '';
-    // }
-    // return appService.updatePost(postModel).then(newPostData => {
-    //   postsModule.updateOneOfThePosts(newPostData);
-    // });
   }
 
   @Action({ rawError: true })

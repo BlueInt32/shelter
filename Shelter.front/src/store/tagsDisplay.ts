@@ -10,7 +10,6 @@ import AppService from '../services/app.service';
 import { Element } from '@/objects/Element';
 import { Tag } from '@/objects/Tag';
 import { ModalMode } from '@/objects/enums';
-import { SaveElementApiModel } from '@/objects/apiModels/SaveElementApiModel';
 import { SearchForElementsApiModel } from '@/objects/apiModels/SearchForElementsApiModel';
 import { SearchForTagsApiModel } from '@/objects/apiModels/SearchForTagsApiModel';
 

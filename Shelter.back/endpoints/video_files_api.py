@@ -8,7 +8,7 @@ import psycopg2
 from werkzeug.datastructures import ImmutableMultiDict
 import json
 from services.tags_service import resolve_tags
-from services.media_service import handle_image
+from services.media_service import handle_video_file
 import urllib.request
 from PIL import Image
 import binascii
@@ -16,7 +16,7 @@ import io
 # input parser
 
 
-class ImagesApi(Resource):
+class VideoFilesApi(Resource):
     @marshal_with(element_fields)
     def get(self):
         elements = db.session.query(Element).all()
@@ -28,7 +28,7 @@ class ImagesApi(Resource):
 
         data = dict(reqparse.request.files)
 
-        new_element = handle_image(data)
+        new_element = handle_video_file(data)
 
         return new_element, 201
 

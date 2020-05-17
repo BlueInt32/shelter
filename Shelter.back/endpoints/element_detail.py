@@ -6,7 +6,7 @@ import json
 from dateutil import tz
 
 
-class ElementApi(Resource):
+class ElementDetailApi(Resource):
     @marshal_with(element_fields)
     def get(self, element_id):
         retrieved_element = Element.query.get_or_404(element_id)

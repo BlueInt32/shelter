@@ -4,10 +4,13 @@ from flask_restful import Api
 from flask_cors import CORS
 from models import db
 from endpoints.elements import ElementsListApi
-from endpoints.element_detail import ElementApi
+from endpoints.element_detail import ElementDetailApi
 from endpoints.element_file import ElementFileApi, ElementThumbnailFileApi
-from endpoints.videos_api import VideosApi
-from endpoints.images_api import ImagesApi
+from endpoints.image_links_api import ImageLinksApi
+from endpoints.image_files_api import ImageFilesApi
+from endpoints.video_links_api import VideoLinksApi
+from endpoints.video_files_api import VideoFilesApi
+from endpoints.web_links_api import WebLinksApi
 from endpoints.tags import TagsSearchApi
 from flask import got_request_exception
 
@@ -44,9 +47,12 @@ def log_exception(sender, exception, **extra):
 got_request_exception.connect(log_exception, app)
 
 api.add_resource(ElementsListApi, '/api/elements')
-api.add_resource(ImagesApi, '/api/images')
-api.add_resource(VideosApi, '/api/videos')
-api.add_resource(ElementApi, '/api/elements/<element_id>')
+api.add_resource(ImageLinksApi, '/api/image-links')
+api.add_resource(ImageFilesApi, '/api/image-files')
+api.add_resource(VideoLinksApi, '/api/video-links')
+api.add_resource(VideoFilesApi, '/api/video-files')
+api.add_resource(WebLinksApi, '/api/web-links')
+api.add_resource(ElementDetailApi, '/api/elements/<element_id>')
 api.add_resource(ElementFileApi, '/api/elements/file/<element_id>')
 api.add_resource(ElementThumbnailFileApi,
                  '/api/elements/thumbnail/<element_id>')

@@ -114,14 +114,15 @@
 import { Component, Prop, Vue, Watch } from 'vue-property-decorator';
 import VueTagsInput from '@johmun/vue-tags-input';
 import {
-  SaveElementApiModel,
-  SaveElementWithFileApiModel
+  SaveElementBaseApiModel,
+  SaveElementWithFileApiModel,
+  SaveElementWithLinkApiModel
 } from '@/objects/apiModels/SaveElementApiModel';
 import { AutocompleteItem } from '@/objects/AutocompleteItem';
 import { getModule } from 'vuex-module-decorators';
 import TagsDisplayModule from '@/store/tagsDisplay';
 import { SearchForTagsApiModel } from '@/objects/apiModels/SearchForTagsApiModel';
-import { FileType } from '@/objects/apiModels/FileType';
+import { ElementType } from '@/objects/apiModels/ElementType';
 
 @Component({
   components: {
@@ -140,37 +141,83 @@ export default class AddElementForm extends Vue {
   private debounce: any = null;
 
   @Prop(Function) private submitHandler!: (
-    model: SaveElementWithFileApiModel
+    model: SaveElementBaseApiModel
   ) => void;
 
   created() {}
 
-  resolveFileTypeFromElementType() {
-    switch (this.$route.params.type) {
-      case 'video':
-        return FileType.Video;
-      case 'image':
-        return FileType.Image;
-    }
-    return FileType.None;
-  }
   clickSubmitHandler() {
-    let elementCreationModel = new SaveElementApiModel();
+    const elementType = this.resolveElementType();
+    let elementCreationModel = null;
+    switch (elementType) {
+      case ElementType.ImageLink:
+        {
+          elementCreationModel = new SaveElementWithLinkApiModel(
+            this.elementLink
+          );
+        }
+        break;
+      case ElementType.ImageFile:
+        {
+          elementCreationModel = new SaveElementWithFileApiModel(
+            this.pendingFile
+          );
+        }
+        break;
+      case ElementType.VideoLink:
+        {
+          elementCreationModel = new SaveElementWithLinkApiModel(
+            this.elementLink
+          );
+        }
+        break;
+      case ElementType.VideoFile:
+        {
+          elementCreationModel = new SaveElementWithFileApiModel(
+            this.pendingFile
+          );
+        }
+        break;
+      case ElementType.WebLink:
+        {
+          elementCreationModel = new SaveElementWithLinkApiModel(
+            this.elementLink
+          );
+        }
+        break;
+    }
+    if (!elementCreationModel) {
+      throw Error('Element type could not be resolved');
+    }
+
+    elementCreationModel.elementType = elementType;
     elementCreationModel.text = this.elementText;
     elementCreationModel.title = this.elementTitle;
     elementCreationModel.tags = this.tags.map(t => t.text);
-    elementCreationModel.linkUrl = this.elementLink;
-    const fileType = this.resolveFileTypeFromElementType();
-    if (fileType !== 'link') {
-      let modelWithFile = new SaveElementWithFileApiModel(
-        elementCreationModel,
-        this.pendingFile,
-        fileType
-      );
-      this.submitHandler(modelWithFile);
-    } else {
-      this.submitHandler(elementCreationModel);
+    this.submitHandler(elementCreationModel);
+  }
+
+  resolveElementType(): ElementType {
+    switch (this.$route.params.type) {
+      case 'video': {
+        if (this.pendingFile && !this.elementLink) {
+          return ElementType.VideoFile;
+        } else {
+          return ElementType.VideoLink;
+        }
+      }
+      case 'image': {
+        if (this.pendingFile && !this.elementLink) {
+          return ElementType.ImageFile;
+        } else {
+          return ElementType.ImageLink;
+        }
+      }
+      case 'link': {
+        return ElementType.WebLink;
+      }
     }
+    return ElementType.None;
   }
 
   handleFileUpload() {
