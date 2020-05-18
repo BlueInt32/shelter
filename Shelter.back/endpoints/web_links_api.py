@@ -8,6 +8,7 @@ import psycopg2
 from werkzeug.datastructures import ImmutableMultiDict
 import json
 from services.tags_service import resolve_tags
+from services.media_service import handle_web_link
 import urllib.request
 from PIL import Image
 import binascii
@@ -24,19 +25,13 @@ class WebLinksApi(Resource):
     @marshal_with(element_fields)
     def post(self):
         parser = reqparse.RequestParser()
+        parser.add_argument('title', type=str, help='Title of the image to download')
+        parser.add_argument('text', type=str, help='Detail text of the image to download')
+        parser.add_argument('linkUrl', type=str, help='Url of the image to download')
+        parser.add_argument('tags', action='append')
 
-        data = dict(reqparse.request.files)
+        args = parser.parse_args()
 
-        new_element = handle_image(data)
+        new_element = handle_web_link(args)
 
         return new_element, 201
-
-
-# # creating a object
-# image = Image.open(r"C:\Users\System-Pc\Desktop\python.png")
-# MAX_SIZE = (100, 100)
-
-# image.thumbnail(MAX_SIZE)
-
-# db.session.add(new_element)
-# db.session.commit()

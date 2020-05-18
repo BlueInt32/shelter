@@ -12,16 +12,18 @@ tags = db.Table('tags',
 
 
 class Element(db.Model):
-    def __init__(self, title, text, input_tags, element_type):
+    def __init__(self, title, text, input_tags, element_type, link):
         self.title = title
         self.text = text
         self.creation_date = datetime.utcnow()
         self.update_date = datetime.utcnow()
         self.tags_associated = input_tags
         self.type = element_type
+        self.link_url = link
 
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(200), unique=False, nullable=False)
+    link_url = db.Column(db.String(500), unique=False, nullable=True)
     text = db.Column(db.String(200), unique=False, nullable=True)
     creation_date = db.Column(db.DateTime, nullable=False)
     update_date = db.Column(db.DateTime, nullable=False)

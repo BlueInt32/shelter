@@ -12,6 +12,15 @@ from config import Config
 import re
 import string
 
+def handle_web_link(request_data):
+    parsed = request_data
+    tags_associated = resolve_tags(parsed['tags'])
+    new_element = Element(
+        parsed['title'], parsed['text'], tags_associated, 'web_link', parsed['linkUrl'])
+    db.session.add(new_element)
+    db.session.commit()
+    return new_element
+
 
 def handle_image_file(request_data):
     payload = request_data['payload'][0]
@@ -22,7 +31,7 @@ def handle_image_file(request_data):
 
     tags_associated = resolve_tags(parsed['tags'])
     new_element = Element(
-        parsed['title'], parsed['text'], tags_associated, 'image')
+        parsed['title'], parsed['text'], tags_associated, 'image', '')
 
     # file uploaded in form
     if 'file' in request_data:
@@ -51,7 +60,7 @@ def handle_image_link(request_data):
 
     tags_associated = resolve_tags(parsed['tags'])
     new_element = Element(
-        parsed['title'], parsed['text'], tags_associated, 'image')
+        parsed['title'], parsed['text'], tags_associated, 'image', parsed['linkUrl'])
 
     if parsed['linkUrl'] != '':
         # download media
@@ -87,7 +96,7 @@ def handle_video_file(request_data):
 
     tags_associated = resolve_tags(parsed['tags'])
     new_element = Element(
-        parsed['title'], parsed['text'], tags_associated, 'video')
+        parsed['title'], parsed['text'], tags_associated, 'video', '')
 
     # file uploaded in form
     if 'file' in request_data:
@@ -132,7 +141,7 @@ def handle_video_link(request_data):
 
     tags_associated = resolve_tags(parsed['tags'])
     new_element = Element(
-        parsed['title'], parsed['text'], tags_associated, 'video')
+        parsed['title'], parsed['text'], tags_associated, 'video', parsed['linkUrl'])
 
     # otherwise file in a link
     if parsed['linkUrl'] != '':
