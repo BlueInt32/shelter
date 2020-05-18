@@ -64,7 +64,7 @@ def handle_image_link(request_data):
     if new_element.attached_file is not None:
         stream = io.BytesIO(new_element.attached_file)
         im = Image.open(stream)
-        im.thumbnail((128, 128))
+        im.thumbnail((500, 500))
         # im.save(outfile, "JPEG")
         imgByteArr = io.BytesIO()
         im.convert('RGB').save(imgByteArr, "JPEG")
