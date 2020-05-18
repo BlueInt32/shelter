@@ -37,13 +37,3 @@ class ImageLinksApi(Resource):
         new_element = handle_image_link(args)
 
         return new_element, 201
-
-
-# # creating a object
-# image = Image.open(r"C:\Users\System-Pc\Desktop\python.png")
-# MAX_SIZE = (100, 100)
-
-# image.thumbnail(MAX_SIZE)
-
-# db.session.add(new_element)
-# db.session.commit()
