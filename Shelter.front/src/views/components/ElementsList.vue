@@ -19,14 +19,13 @@
       v-for="element in elements"
       :key="element.id"
     >
-      <div class="elementsList__innerBox">
-        <h2>{{ element.title }}</h2>
-        <router-link
-          :to="{ name: 'viewElement', params: { elementId: element.id } }"
-          >view</router-link
-        >
+      <router-link
+        class="elementsList__innerBox"
+        :to="{ name: 'viewElement', params: { elementId: element.id } }"
+      >
+        <h4 v-if="element.title" :title="element.title">{{ element.title }}</h4>
         <img :src="element.thumbnailUrl" />
-      </div>
+      </router-link>
     </div>
   </div>
 </template>
@@ -59,23 +58,35 @@ export default class ElementsList extends Vue {
 
   .elementsList__item {
     // height: 70px;
-    min-width: 10vw;
-    max-width: 40vw;
-    min-height: 10vh;
-    min-height: 15vh;
-    padding: 0.3em;
+    overflow: hidden;
+    width: 13vw;
+    height: 15vh;
+    padding: 4px;
 
     p {
       margin: 0.1em;
     }
-    h2 {
+    h4 {
       margin: 0.3em 0;
-      font-size: 1.3em;
+      font-size: 1em;
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
     }
 
     .elementsList__innerBox {
+      display: block;
+      color: inherit;
+      text-decoration: none;
       padding: 0.3em;
-      border: 1px solid gray;
+      height: calc(100% - 8px);
+      text-align: center;
+      background-color: white;
+
+      img {
+        max-height: 100%;
+        max-width: 100%;
+      }
 
       .elementsList__tagsList {
         font-size: 0.8em;
