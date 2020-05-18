@@ -2,7 +2,7 @@ import io
 import binascii
 from PIL import Image
 import urllib.request
-from flask_restful import reqparse, Resource, Api, fields, marshal_with
+from flask_restful import reqparse, Resource, Api, marshal_with
 from endpoints.output_fields import element_fields
 from models import db, Element, Tag
 import logging
@@ -12,10 +12,10 @@ import psycopg2
 from werkzeug.datastructures import ImmutableMultiDict
 import json
 from services.tags_service import resolve_tags
-
+from flask import jsonify
 
 class ElementsListApi(Resource):
-    @marshal_with(element_fields)
     def get(self):
-        elements = db.session.query(Element).all()
-        return elements
+        elements = db.session.query(Element.id, Element.title).all()
+        output = [{'id': el.id, 'title': el.title} for el in elements]
+        return output
