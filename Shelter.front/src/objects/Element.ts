@@ -9,6 +9,7 @@ export class Element {
     this.fileUrl = '';
     this.thumbnailUrl = '';
     this.creation_date = '';
+    this.linkUrl = '';
   }
 
   public id: number;
@@ -18,4 +19,5 @@ export class Element {
   public fileUrl: string;
   public thumbnailUrl: string;
   public creation_date: string;
+  public linkUrl: string;
 }

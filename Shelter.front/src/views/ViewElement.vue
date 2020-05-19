@@ -26,6 +26,13 @@
         :src="element.fileUrl"
         v-if="element.type === 'video'"
       />
+      <a
+        target="_blank"
+        class="viewElement__mainWebLink"
+        :href="element.linkUrl"
+        v-if="element.type === 'web_link'"
+        >{{ element.linkUrl }}</a
+      >
     </div>
   </div>
 </template>
@@ -100,5 +107,9 @@ ul.viewElement__tagslist {
   img {
     max-width: calc(100vw - 2em);
   }
+}
+.viewElement__mainWebLink {
+  color: $linkColor;
+  font-size: 1.3em;
 }
 </style>

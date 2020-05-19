@@ -9,9 +9,9 @@ element_fields = {
     'id': fields.Integer,
     'title': fields.String,
     'text': fields.String,
-    'link_url': fields.String,
-    'creation_date': fields.DateTime(dt_format='iso8601'),
-    'update_date': fields.DateTime(dt_format='iso8601'),
+    'linkUrl': fields.String(attribute='link_url'),
+    'creationDate': fields.DateTime(dt_format='iso8601', attribute='creation_date'),
+    'updateDate': fields.DateTime(dt_format='iso8601', attribute='update_date'),
     'tags': fields.List(fields.Nested(tag_fields), attribute='tags_associated'),
     'type': fields.String
 }

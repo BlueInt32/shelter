@@ -16,6 +16,6 @@ from flask import jsonify
 
 class ElementsListApi(Resource):
     def get(self):
-        elements = db.session.query(Element.id, Element.title).all()
-        output = [{'id': el.id, 'title': el.title} for el in elements]
+        elements = db.session.query(Element.id, Element.title, Element.type, Element.link_url).all()
+        output = [{'id': el.id, 'title': el.title, 'type': el.type, 'linkUrl': el.link_url} for el in elements]
         return output
