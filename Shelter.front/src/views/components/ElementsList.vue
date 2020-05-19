@@ -24,7 +24,8 @@
         :to="{ name: 'viewElement', params: { elementId: element.id } }"
       >
         <h4 v-if="element.title" :title="element.title">{{ element.title }}</h4>
-        <img :src="element.thumbnailUrl" />
+        <img v-if="element.type !== 'web_link'" :src="element.thumbnailUrl" />
+        <span class="elementsList__linkSpan" v-else>{{ element.linkUrl }}</span>
       </router-link>
     </div>
   </div>
@@ -109,5 +110,12 @@ export default class ElementsList extends Vue {
   left: 5px;
   margin-right: 10px;
   font-size: 2em;
+}
+.elementsList__linkSpan {
+  display: inline-block;
+  max-width: calc(100%);
+  text-overflow: clip;
+  overflow: hidden;
+  overflow-wrap: normal;
 }
 </style>
