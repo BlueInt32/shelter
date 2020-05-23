@@ -1,4 +1,5 @@
 import { Tag } from './Tag';
+import { ElementType } from './apiModels/ElementType';
 
 export class Element {
   constructor() {
@@ -10,6 +11,7 @@ export class Element {
     this.thumbnailUrl = '';
     this.creation_date = '';
     this.linkUrl = '';
+    this.type = ElementType.None;
   }
 
   public id: number;
@@ -20,4 +22,5 @@ export class Element {
   public thumbnailUrl: string;
   public creation_date: string;
   public linkUrl: string;
+  public type: ElementType;
 }

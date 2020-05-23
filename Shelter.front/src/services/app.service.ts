@@ -51,7 +51,7 @@ export default class AppService {
   ): Promise<Element> {
     return new Promise((resolve, reject) => {
       const creationApiType = this.resolveCreationApiSegmentFromElementType(
-        data.elementType
+        data.type
       );
       axios
         .post(`${this.serviceRootUrl}/${creationApiType}`, data)
@@ -70,7 +70,7 @@ export default class AppService {
     return new Promise((resolve, reject) => {
       let payloadWithoutFile = Object.assign({}, data);
       delete payloadWithoutFile.file;
-      delete payloadWithoutFile.elementType;
+      delete payloadWithoutFile.type;
 
       const json = JSON.stringify(payloadWithoutFile);
       const blob = new Blob([json], {
@@ -82,7 +82,7 @@ export default class AppService {
         formData.append('file', data.file);
       }
       const creationApiType = this.resolveCreationApiSegmentFromElementType(
-        data.elementType
+        data.type
       );
       axios
         .post(`${this.serviceRootUrl}/${creationApiType}`, formData)
@@ -111,30 +111,11 @@ export default class AppService {
     return 'elements';
   }
 
-  // public updateElement(saveElementApiModel: SaveElementWithFileApiModel) {
-  //   return new Promise<Element>((resolve, reject) => {
-  //     if (!saveElementApiModel) {
-  //       reject('empty payload');
-  //     }
-  //     const patchModel = saveElementApiModel.buildPatchModel();
-  //     axios
-  //       .patch(
-  //         `${this.serviceRootUrl}/elements/${saveElementApiModel.id}`,
-  //         patchModel
-  //       )
-  //       .then(response => {
-  //         resolve(response.data);
-  //       })
-  //       .catch(error => {
-  //         reject(error.response.data.message);
-  //       });
-  //   });
-  // }
-  public updateElementWithPut(data: SaveElementWithFileApiModel) {
+  public updateElementWithFile(data: SaveElementWithFileApiModel) {
     return new Promise<Element>((resolve, reject) => {
       let payloadWithoutFile = Object.assign({}, data);
       delete payloadWithoutFile.file;
-      delete payloadWithoutFile.elementType;
+      delete payloadWithoutFile.type;
 
       const json = JSON.stringify(payloadWithoutFile);
       const blob = new Blob([json], {
@@ -146,7 +127,22 @@ export default class AppService {
         formData.append('file', data.file);
       }
       axios
-        .put(`${this.serviceRootUrl}/elements/${data.id}`, formData)
+        .put(`${this.serviceRootUrl}/elements/${data.id}/file`, formData)
+        .then(response => {
+          resolve(response.data);
+        })
+        .catch(error => {
+          reject(error.response.data.message);
+        });
+    });
+  }
+  public updateElementWithLink(data: SaveElementBaseApiModel) {
+    const creationApiType = this.resolveCreationApiSegmentFromElementType(
+      data.type
+    );
+    return new Promise<Element>((resolve, reject) => {
+      axios
+        .put(`${this.serviceRootUrl}/${creationApiType}/${data.id}`, data)
         .then(response => {
           resolve(response.data);
         })

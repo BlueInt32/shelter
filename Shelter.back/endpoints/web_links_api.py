@@ -8,7 +8,7 @@ import psycopg2
 from werkzeug.datastructures import ImmutableMultiDict
 import json
 from services.tags_service import resolve_tags
-from services.media_service import handle_web_link
+from services.media_service import save_element_with_web_link
 import urllib.request
 from PIL import Image
 import binascii

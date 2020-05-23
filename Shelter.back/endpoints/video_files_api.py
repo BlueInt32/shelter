@@ -8,7 +8,8 @@ import psycopg2
 from werkzeug.datastructures import ImmutableMultiDict
 import json
 from services.tags_service import resolve_tags
-from services.media_service import handle_video_file
+from services.media_service import save_element_with_video_file
+from domain.enums import PersistanceType
 import urllib.request
 from PIL import Image
 import binascii
@@ -28,7 +29,17 @@ class VideoFilesApi(Resource):
 
         data = dict(reqparse.request.files)
 
-        new_element = handle_video_file(data)
+        new_element = save_element_with_video_file(PersistanceType.CREATE, data)
+
+        return new_element, 201
+
+    @marshal_with(element_fields)
+    def put(self, element_id):
+        parser = reqparse.RequestParser()
+
+        data = dict(reqparse.request.files)
+
+        new_element = save_element_with_video_file(PersistanceType.UPDATE, data)
 
         return new_element, 201
 

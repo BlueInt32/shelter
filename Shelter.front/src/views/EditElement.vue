@@ -2,45 +2,49 @@
   <div class="editElement pure-u-1">
     <div class="pure-u-1">
       <h1>Edit an element</h1>
-      <form class="pure-form pure-form-aligned">
+      <form class="pure-form pure-form-stacked">
         <fieldset>
-          <div class="pure-control-group">
-            <label for="title">Title (optional)</label>
+          <div class="pure-u-1">
             <input
               id="title"
               type="text"
-              placeholder=""
+              placeholder="Title"
               v-model="elementTitle"
-              class="pure-input-2-3"
+              class="pure-input-1 pure-u-1"
             />
           </div>
-          <div class="pure-control-group">
-            <label for="text">Link, text, anything...</label>
+          <div class="pure-u-3-4">
             <input
-              id="text"
               type="text"
-              placeholder=""
-              v-model="elementText"
-              class="pure-input-2-3"
+              :placeholder="(elementType + ' link') | capitalize"
+              class="pure-input-1"
+              v-model="elementLinkUrl"
             />
-            <span class="pure-form-message-inline">*</span>
           </div>
-          <div class="pure-control-group">
-            <label for="title">Tags</label>
+          <div class="pure-u-1-8" :style="{ 'text-align': 'center' }">
+            <label> or </label>
+          </div>
+          <div class="pure-u-1-8">
+            <div class="fileUpload pure-button">
+              <span>Upload</span>
+              <input
+                type="file"
+                class="upload"
+                id="file"
+                ref="file"
+                v-on:change="handleFileUpload"
+              />
+            </div>
+          </div>
+          <div class="pure-u-1">
             <vue-tags-input
-              class="addTagsInputComponent pure-input-2-3"
+              id="form-tags-input"
+              class="addTagsInputComponent pure-input-1"
               v-model="tag"
+              placeholder="Add some tags"
               :tags="tags"
               :autocomplete-items="autocompleteItems"
-              @tags-changed="update"
-            />
-          </div>
-          <div class="pure-controls">
-            <input
-              type="file"
-              id="file"
-              ref="file"
-              v-on:change="handleFileUpload()"
+              @tags-changed="tagsChangedHandler"
             />
           </div>
           <div class="pure-controls">
@@ -68,7 +72,8 @@ import ElementsDisplayModule from '@/store/elementsDisplay';
 import TagsDisplayModule from '@/store/tagsDisplay';
 import {
   SaveElementBaseApiModel,
-  SaveElementWithFileApiModel
+  SaveElementWithFileApiModel,
+  SaveElementWithLinkApiModel
 } from '@/objects/apiModels/SaveElementApiModel';
 import { AutocompleteItem } from '@/objects/AutocompleteItem';
 import { notify, NotificationType } from '../services/notificationService';
@@ -93,6 +98,7 @@ export default class EditElement extends Vue {
 
   private elementText: string = '';
   private elementTitle: string = '';
+  private elementLinkUrl: string = '';
   private $snotify: any;
   private tag: string = '';
   private tags: TagInputItem[] = [];
@@ -106,19 +112,34 @@ export default class EditElement extends Vue {
       this.elementId
     );
     this.elementText = this.element.text;
+    this.elementLinkUrl = this.element.linkUrl;
     this.elementTitle = this.element.title;
     this.tags = this.element.tags.map(t => new TagInputItem(t.label));
   }
   async updateElement() {
-    let elementModel = new SaveElementWithFileApiModel(this.pendingFile);
-    elementModel.id = this.elementId;
-    elementModel.text = this.elementText;
-    elementModel.title = this.elementTitle;
-    elementModel.tags = this.tags.map(t => t.text);
+    let elementUpdateModel = new SaveElementBaseApiModel();
+    if (this.pendingFile && !this.elementLinkUrl) {
+      elementUpdateModel = new SaveElementWithFileApiModel(this.pendingFile);
+    } else {
+      elementUpdateModel = new SaveElementWithLinkApiModel(this.elementLinkUrl);
+    }
+    elementUpdateModel.id = this.elementId;
+    elementUpdateModel.text = this.elementText;
+    elementUpdateModel.title = this.elementTitle;
+    elementUpdateModel.tags = this.tags.map(t => t.text);
+    elementUpdateModel.type = this.resolveType();
 
     try {
-      await this.elementEditionModule.updateElement(elementModel);
-      notify(this.$snotify, NotificationType.OK, 'Cool post !');
+      if (elementUpdateModel instanceof SaveElementWithFileApiModel) {
+        await this.elementEditionModule.updateElementWithFile(
+          elementUpdateModel
+        );
+      } else if (elementUpdateModel instanceof SaveElementWithLinkApiModel) {
+        await this.elementEditionModule.updateElementWithLink(
+          elementUpdateModel
+        );
+      }
+      notify(this.$snotify, NotificationType.OK, 'Alright !');
       this.$router.push({
         name: 'viewElement',
         params: {
@@ -129,6 +150,26 @@ export default class EditElement extends Vue {
       notify(this.$snotify, NotificationType.ERROR, 'Oops ! ' + e.message);
     }
   }
+  resolveType(): ElementType {
+    switch (this.elementType) {
+      case 'image_link':
+        return ElementType.ImageLink;
+      case 'image_file':
+        return ElementType.ImageFile;
+      case 'video_link':
+        return ElementType.VideoLink;
+      case 'video_file':
+        return ElementType.VideoFile;
+      case 'web_link':
+        return ElementType.WebLink;
+    }
+    return ElementType.None;
+  }
+
+  tagsChangedHandler(newTags: AutocompleteItem[]) {
+    this.autocompleteItems = [];
+    this.tags = newTags.map(t => new TagInputItem(t.text));
+  }
 
   async initItems() {
     if (this.tag.length < 2) return;
@@ -137,7 +178,11 @@ export default class EditElement extends Vue {
       let results = await this.tagsDisplayModule.searchForTags(
         new SearchForTagsApiModel(this.tag)
       );
-      const mapped = results.map(r => new AutocompleteItem(r.label));
+      const mapped = results.map(r => {
+        return {
+          text: r.label
+        };
+      });
       this.autocompleteItems = mapped;
     }, 300);
   }
@@ -150,6 +195,11 @@ export default class EditElement extends Vue {
     this.autocompleteItems = [];
     this.tags = newTags;
   }
+
+  get elementType(): string {
+    return this.element.type;
+  }
+
   @Watch('tag')
   private tagWatcher() {
     this.initItems();

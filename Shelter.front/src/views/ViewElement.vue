@@ -18,19 +18,19 @@
       <li v-for="tag in element.tags" :key="tag.id">{{ tag.label }}</li>
     </ul>
     <div class="fileContainer">
-      <img :src="element.fileUrl" v-if="element.type === 'image'" />
+      <img :src="element.fileUrl" v-if="baseElementType === 'image'" />
       <video
         width="800"
         controls
         autoplay
         :src="element.fileUrl"
-        v-if="element.type === 'video'"
+        v-if="baseElementType === 'video'"
       />
       <a
         target="_blank"
         class="viewElement__mainWebLink"
         :href="element.linkUrl"
-        v-if="element.type === 'web_link'"
+        v-if="baseElementType === 'web_link'"
         >{{ element.linkUrl }}</a
       >
     </div>
@@ -45,6 +45,7 @@ import ElementEditionModule from '@/store/elementEdition';
 import { Element } from '@/objects/Element';
 import { notify, NotificationType } from '../services/notificationService';
 import dayjs from 'dayjs';
+import { ElementType } from '@/objects/apiModels/ElementType';
 
 @Component({
   components: {}
@@ -72,6 +73,22 @@ export default class ViewElement extends Vue {
   }
   async clickEditHandler() {
     this.$router.push(`/edit/${this.element.id}`);
+  }
+
+  get baseElementType(): string {
+    switch (this.element.type) {
+      case ElementType.ImageLink:
+        return 'image';
+      case ElementType.ImageFile:
+        return 'image';
+      case ElementType.VideoLink:
+        return 'video';
+      case ElementType.VideoFile:
+        return 'video';
+      case ElementType.WebLink:
+        return 'web_link';
+    }
+    return '';
   }
 }
 </script>

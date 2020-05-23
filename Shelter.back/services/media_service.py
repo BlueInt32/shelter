@@ -11,176 +11,164 @@ import os
 from config import Config
 import re
 import string
+from domain.enums import PersistanceType
 
-def handle_web_link(request_data):
-    parsed = request_data
-    tags_associated = resolve_tags(parsed['tags'])
+def build_element(payload, element_type):
+    tags_associated = resolve_tags(payload['tags'])
     new_element = Element(
-        parsed['title'], parsed['text'], tags_associated, 'web_link', parsed['linkUrl'])
-    db.session.add(new_element)
-    db.session.commit()
+        payload['title'], payload['text'], tags_associated, element_type, payload['linkUrl'])
     return new_element
 
+def update_element(payload, existing_element, element_type):
+    tags_associated = resolve_tags(payload['tags'])
+    existing_element.title = payload['title']
+    existing_element.text = payload['text']
+    existing_element.link_url = payload['linkUrl']
+    existing_element.tags = tags_associated
+    existing_element.type = element_type
 
-def handle_image_file(request_data):
-    payload = request_data['payload'][0]
+def persist_element(element, persistance_type):
+    if persistance_type == PersistanceType.CREATE:
+        db.session.add(element)
+    db.session.commit()
 
-    if payload is not None:
-        parsed = json.loads(payload.read().decode("utf-8"))
-        print(parsed['title'])
 
-    tags_associated = resolve_tags(parsed['tags'])
-    new_element = Element(
-        parsed['title'], parsed['text'], tags_associated, 'image', '')
-
-    # file uploaded in form
-    if 'file' in request_data:
-        imageFile = request_data['file'][0]
-        new_element.attached_file = imageFile.stream.read()
-
-    # otherwise file in a link
-
+def generate_thumbnail_for_image(element):
     # thumbnail generation
-
-    if new_element.attached_file is not None:
-        stream = io.BytesIO(new_element.attached_file)
+    if element.attached_file is not None:
+        stream = io.BytesIO(element.attached_file)
         im = Image.open(stream)
         im.thumbnail((128, 128))
-        # im.save(outfile, "JPEG")
         imgByteArr = io.BytesIO()
         im.convert('RGB').save(imgByteArr, "JPEG")
-        new_element.attached_thumb = imgByteArr.getvalue()
+        element.attached_thumb = imgByteArr.getvalue()
 
-    db.session.add(new_element)
-    db.session.commit()
-    return new_element
-
-def handle_image_link(request_data):
-    parsed = request_data
-
-    tags_associated = resolve_tags(parsed['tags'])
-    new_element = Element(
-        parsed['title'], parsed['text'], tags_associated, 'image', parsed['linkUrl'])
-
-    if parsed['linkUrl'] != '':
-        # download media
-        response = urllib.request.urlopen(parsed['linkUrl'])
-        request_data = response.read()
-        new_element.attached_file = request_data
-
-    # thumbnail generation
-
-    if new_element.attached_file is not None:
-        stream = io.BytesIO(new_element.attached_file)
-        im = Image.open(stream)
-        im.thumbnail((500, 500))
-        # im.save(outfile, "JPEG")
-        imgByteArr = io.BytesIO()
-        im.convert('RGB').save(imgByteArr, "JPEG")
-        new_element.attached_thumb = imgByteArr.getvalue()
-
-    db.session.add(new_element)
-    db.session.commit()
-    return new_element
-
-
-def handle_video_file(request_data):
-    payload = request_data['payload'][0]
-    script_dir = os.path.dirname(__file__)
+def generate_thumbnail_for_video(element, youtube_dl_json_output):
     abs_file_path = ''
-    x = None
-
-    if payload is not None:
-        parsed = json.loads(payload.read().decode("utf-8"))
-        print(parsed['title'])
-
-    tags_associated = resolve_tags(parsed['tags'])
-    new_element = Element(
-        parsed['title'], parsed['text'], tags_associated, 'video', '')
-
-    # file uploaded in form
-    if 'file' in request_data:
-        imageFile = request_data['file'][0]
-        new_element.attached_file = imageFile.stream.read()
-        abs_file_path = os.path.join(script_dir, '../tempyoudl/temp.binary')
-        ofile = open(abs_file_path, 'w+b')
-        ofile.write(new_element.attached_file)
-        ofile.close()
-
-    # thumbnail retrieval
-    if x is not None and x.extractor == 'Reddit':
-        response = urllib.request.urlopen(x.thumbnail)
+    if youtube_dl_json_output is not None and youtube_dl_json_output.extractor == 'Reddit':
+        response = urllib.request.urlopen(youtube_dl_json_output.thumbnail)
         request_data = response.read()
-        new_element.attached_thumb = request_data
+        element.attached_thumb = request_data
     else:
-        # x.extractor == 'Gfycat' or x.extractor == 'Imgur':
-        print(Config.ffmpeg_path)
+        # file upload OR 'Gfycat' link 'Imgur' link
         template_call = Template(
             "$ffmpeg_path -y -i \"$input_path\" -ss 00:00:00.000 -vframes 1 -filter:v scale=\"-1:300\" tempyoudl/temp.jpg")
         call = template_call.substitute(
             ffmpeg_path=Config.ffmpeg_path,
             input_path=abs_file_path)
-        print(call)
         subprocess.run(call)
         in_file = open("tempyoudl/temp.jpg", "rb")
 
-        new_element.attached_thumb = in_file.read()
+        element.attached_thumb = in_file.read()
         in_file.close()
         os.remove(abs_file_path)
         os.remove("tempyoudl/temp.jpg")
 
-    db.session.add(new_element)
-    db.session.commit()
+
+def save_element_with_image_file(persistanceType, request_data):
+    parsed_payload = request_data['payload'][0]
+
+    if parsed_payload is not None:
+        payload = json.loads(parsed_payload.read().decode("utf-8"))
+
+    element_type = 'image_file'
+    if persistanceType == PersistanceType.CREATE:
+        element = build_element(payload, element_type)
+    else:
+        element = Element.query.get_or_404(payload.id)
+        update_element(payload, element, element_type)
+
+    # file uploaded in form
+    if 'file' in request_data:
+        imageFile = request_data['file'][0]
+        element.attached_file = imageFile.stream.read()
+
+    generate_thumbnail_for_image(element)
+
+    element = persist_element(element, persistanceType)
+    return element
+
+def save_element_with_image_link(persistanceType, payload):
+    element_type = 'image_link'
+    if persistanceType == PersistanceType.CREATE:
+        element = build_element(payload, element_type)
+    else:
+        element = Element.query.get_or_404(payload.id)
+        update_element(payload, element, element_type)
+
+    if payload['linkUrl'] != '':
+        response = urllib.request.urlopen(payload['linkUrl'])
+        request_data = response.read()
+        element.attached_file = request_data
+
+    generate_thumbnail_for_image(element)
+
+    new_element = persist_element(element, persistanceType)
     return new_element
 
-def handle_video_link(request_data):
-    parsed = request_data
+def save_element_with_video_file(persistanceType, request_data):
+    parsed_payload = request_data['payload'][0]
     script_dir = os.path.dirname(__file__)
     abs_file_path = ''
-    x = None
+    payload = json.loads(parsed_payload.read().decode("utf-8"))
 
-    tags_associated = resolve_tags(parsed['tags'])
-    new_element = Element(
-        parsed['title'], parsed['text'], tags_associated, 'video', parsed['linkUrl'])
+    element_type = 'video_file'
+    if persistanceType == PersistanceType.CREATE:
+        element = build_element(payload, element_type)
+    else:
+        element = Element.query.get_or_404(payload.id)
+        update_element(payload, element, element_type)
 
-    # otherwise file in a link
-    if parsed['linkUrl'] != '':
+    # file uploaded in form
+    if 'file' in request_data:
+        imageFile = request_data['file'][0]
+        element.attached_file = imageFile.stream.read()
+        abs_file_path = os.path.join(script_dir, '../tempyoudl/temp.binary')
+        ofile = open(abs_file_path, 'w+b')
+        ofile.write(element.attached_file)
+        ofile.close()
+
+    generate_thumbnail_for_video(element, None)
+    persist_element(element, persistanceType)
+    return element
+
+def save_element_with_video_link(persistanceType, payload):
+    script_dir = os.path.dirname(__file__)
+    youtube_dl_json_output = None
+
+    element_type = 'video_link'
+    if persistanceType == PersistanceType.CREATE:
+        element = build_element(payload, element_type)
+    else:
+        element = Element.query.get_or_404(payload.id)
+        update_element(payload, element, element_type)
+
+    if payload['linkUrl'] != '':
         # get reddit video info
         out = subprocess.check_output(
-            [Config.youtube_dl_path, parsed['linkUrl'], "-j"])
-        x = json.loads(out, object_hook=lambda d: Namespace(**d))
+            [Config.youtube_dl_path, payload['linkUrl'], "-j"])
+        youtube_dl_json_output = json.loads(out, object_hook=lambda d: Namespace(**d))
         t = Template('../tempyoudl/$title.$ext')
-        clean_title = re.sub(r'\W+', '', x.title)
+        clean_title = re.sub(r'\W+', '', youtube_dl_json_output.title)
         rel_file_path = t.substitute(title=clean_title, ext='mkv')
         abs_file_path = os.path.join(
             script_dir, t.substitute(title=clean_title, ext='mkv'))
         subprocess.run(
-            [Config.youtube_dl_path, parsed['linkUrl'], "-o", abs_file_path, "--merge-output-format", "mkv"])
+            [Config.youtube_dl_path, payload['linkUrl'], "-o", abs_file_path, "--merge-output-format", "mkv"])
         in_file = open(abs_file_path, "rb")
-        new_element.attached_file = in_file.read()
+        element.attached_file = in_file.read()
 
-    # thumbnail retrieval
-    if x is not None and x.extractor == 'Reddit':
-        response = urllib.request.urlopen(x.thumbnail)
-        request_data = response.read()
-        new_element.attached_thumb = request_data
+    generate_thumbnail_for_video(element, youtube_dl_json_output)
+    persist_element(element, persistanceType)
+    return element
+
+def save_element_with_web_link(persistanceType, payload):
+    element_type = 'web_link'
+    if persistanceType == PersistanceType.CREATE:
+        element = build_element(payload, element_type)
     else:
-        # x.extractor == 'Gfycat' or x.extractor == 'Imgur':
-        print(Config.ffmpeg_path)
-        template_call = Template(
-            "$ffmpeg_path -y -i \"$input_path\" -ss 00:00:00.000 -vframes 1 -filter:v scale=\"-1:300\" tempyoudl/temp.jpg")
-        call = template_call.substitute(
-            ffmpeg_path=Config.ffmpeg_path,
-            input_path=abs_file_path)
-        print(call)
-        subprocess.run(call)
-        in_file = open("tempyoudl/temp.jpg", "rb")
+        element = Element.query.get_or_404(payload.id)
+        update_element(payload, element, element_type)
 
-        new_element.attached_thumb = in_file.read()
-        in_file.close()
-        os.remove(abs_file_path)
-        os.remove("tempyoudl/temp.jpg")
-
-    db.session.add(new_element)
-    db.session.commit()
+    new_element = persist_element(element, PersistanceType.CREATE)
     return new_element

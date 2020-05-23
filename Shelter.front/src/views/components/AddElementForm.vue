@@ -190,7 +190,7 @@ export default class AddElementForm extends Vue {
       throw Error('Element type could not be resolved');
     }
 
-    elementCreationModel.elementType = elementType;
+    elementCreationModel.type = elementType;
     elementCreationModel.text = this.elementText;
     elementCreationModel.title = this.elementTitle;
     elementCreationModel.tags = this.tags.map(t => t.text);
@@ -222,7 +222,6 @@ export default class AddElementForm extends Vue {
 
   handleFileUpload() {
     // TODO : find a way to remove the linter error
-    console.log('hey');
     // @ts-ignore
     this.pendingFile = this.$refs.file.files[0];
   }
@@ -237,7 +236,11 @@ export default class AddElementForm extends Vue {
       let results = await this.tagsDisplayModule.searchForTags(
         new SearchForTagsApiModel(this.tag)
       );
-      const mapped = results.map(r => new AutocompleteItem(r.label));
+      const mapped = results.map(r => {
+        return {
+          text: r.label
+        };
+      });
       this.autocompleteItems = mapped;
     }, 300);
   }

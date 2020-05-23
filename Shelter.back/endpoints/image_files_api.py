@@ -8,7 +8,8 @@ import psycopg2
 from werkzeug.datastructures import ImmutableMultiDict
 import json
 from services.tags_service import resolve_tags
-from services.media_service import handle_image_file
+from services.media_service import save_element_with_image_file
+from domain.enums import PersistanceType
 import urllib.request
 from PIL import Image
 import binascii
@@ -28,16 +29,17 @@ class ImageFilesApi(Resource):
 
         data = dict(reqparse.request.files)
 
-        new_element = handle_image_file(data)
+        new_element = save_element_with_image_file(PersistanceType.CREATE, data)
 
         return new_element, 201
 
+    @marshal_with(element_fields)
+    def put(self, element_id):
+        parser = reqparse.RequestParser()
 
-# # creating a object
-# image = Image.open(r"C:\Users\System-Pc\Desktop\python.png")
-# MAX_SIZE = (100, 100)
+        data = dict(reqparse.request.files)
+        data['id'] = element_id
 
-# image.thumbnail(MAX_SIZE)
+        element = save_element_with_image_file(PersistanceType.UPDATE, data)
 
-# db.session.add(new_element)
-# db.session.commit()
+        return element, 201

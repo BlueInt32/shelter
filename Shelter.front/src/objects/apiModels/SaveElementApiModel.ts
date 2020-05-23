@@ -10,14 +10,14 @@ export class SaveElementBaseApiModel {
   public title: string;
   public text: string;
   public tags: string[];
-  public elementType: ElementType;
+  public type: ElementType;
 
   constructor() {
     this.id = null;
     this.title = '';
     this.text = '';
     this.tags = [];
-    this.elementType = ElementType.None;
+    this.type = ElementType.None;
   }
 
   public buildPatchModel(): Array<PatchDescriptorModel<any>> {

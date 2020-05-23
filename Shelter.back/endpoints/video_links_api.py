@@ -8,7 +8,8 @@ import psycopg2
 from werkzeug.datastructures import ImmutableMultiDict
 import json
 from services.tags_service import resolve_tags
-from services.media_service import handle_video_link
+from services.media_service import save_element_with_video_link
+from domain.enums import PersistanceType
 import urllib.request
 from PIL import Image
 import binascii
@@ -32,6 +33,20 @@ class VideoLinksApi(Resource):
 
         args = parser.parse_args()
 
-        new_element = handle_video_link(args)
+        new_element = save_element_with_video_link(PersistanceType.CREATE, args)
 
         return new_element, 201
+
+    @marshal_with(element_fields)
+    def put(self, element_id):
+        parser = reqparse.RequestParser()
+        parser.add_argument('title', type=str, help='Title of the image to download')
+        parser.add_argument('text', type=str, help='Detail text of the image to download')
+        parser.add_argument('linkUrl', type=str, help='Url of the image to download')
+        parser.add_argument('tags', action='append')
+
+        args = parser.parse_args()
+
+        element = save_element_with_video_link(PersistanceType.UPDATE, args)
+
+        return element, 201

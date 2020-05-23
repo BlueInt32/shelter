@@ -1,6 +1,3 @@
-export class AutocompleteItem {
+export interface AutocompleteItem {
   text: string;
-  constructor(text: string) {
-    this.text = text;
-  }
 }

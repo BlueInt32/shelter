@@ -74,8 +74,17 @@ export default class ElementEdition extends VuexModule {
   }
 
   @Action({ rawError: true })
-  public updateElement(saveElementApiModel: SaveElementWithFileApiModel) {
-    return appService.updateElementWithPut(saveElementApiModel);
+  public updateElementWithFile(
+    saveElementApiModel: SaveElementWithFileApiModel
+  ) {
+    return appService.updateElementWithFile(saveElementApiModel);
+  }
+
+  @Action({ rawError: true })
+  public updateElementWithLink(
+    saveElementApiModel: SaveElementWithLinkApiModel
+  ) {
+    return appService.updateElementWithLink(saveElementApiModel);
   }
 
   @Action({ rawError: true })
@@ -117,15 +126,6 @@ export default class ElementEdition extends VuexModule {
     this.isEditing = false;
   }
 
-  @Mutation
-  public setEditionModalOpenState(newState: boolean) {
-    this.isEditing = newState;
-    this.isPristine = true;
-  }
-  @Mutation
-  public setModalMode(newMode: ModalMode) {
-    this.modalMode = newMode;
-  }
   @Mutation
   public setModelDirty() {
     this.isPristine = false;
