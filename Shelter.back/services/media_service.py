@@ -15,8 +15,12 @@ from domain.enums import PersistanceType
 
 def build_element(payload, element_type):
     tags_associated = resolve_tags(payload['tags'])
+    link_url = ''
+    if hasattr(payload, 'linkUrl'):
+        link_url = payload['linkUrl']
+
     new_element = Element(
-        payload['title'], payload['text'], tags_associated, element_type, '')
+        payload['title'], payload['text'], tags_associated, element_type, link_url)
     return new_element
 
 def update_element(payload, existing_element, element_type):
