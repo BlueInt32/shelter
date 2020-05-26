@@ -27,7 +27,10 @@ def update_element(payload, existing_element, element_type):
     tags_associated = resolve_tags(payload['tags'])
     existing_element.title = payload['title']
     existing_element.text = payload['text']
-    existing_element.link_url = payload['linkUrl']
+    link_url = ''
+    if hasattr(payload, 'linkUrl'):
+        link_url = payload['linkUrl']
+    existing_element.link_url = link_url
     existing_element.tags = tags_associated
     existing_element.type = element_type
 
@@ -80,7 +83,7 @@ def save_element_with_image_file(persistanceType, request_data):
     if persistanceType == PersistanceType.CREATE:
         element = build_element(payload, element_type)
     else:
-        element = Element.query.get_or_404(payload.id)
+        element = Element.query.get_or_404(payload['id'])
         update_element(payload, element, element_type)
 
     # file uploaded in form
@@ -121,7 +124,7 @@ def save_element_with_video_file(persistanceType, request_data):
     if persistanceType == PersistanceType.CREATE:
         element = build_element(payload, element_type)
     else:
-        element = Element.query.get_or_404(payload.id)
+        element = Element.query.get_or_404(payload['id'])
         update_element(payload, element, element_type)
 
     # file uploaded in form

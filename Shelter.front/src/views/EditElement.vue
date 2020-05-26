@@ -120,7 +120,7 @@ export default class EditElement extends Vue {
   }
   async updateElement() {
     let elementUpdateModel = new SaveElementBaseApiModel();
-    if (this.pendingFile && !this.elementLinkUrl) {
+    if (this.pendingFile) {
       elementUpdateModel = new SaveElementWithFileApiModel(this.pendingFile);
     } else {
       elementUpdateModel = new SaveElementWithLinkApiModel(this.elementLinkUrl);

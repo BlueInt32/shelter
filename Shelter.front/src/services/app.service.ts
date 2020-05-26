@@ -126,8 +126,11 @@ export default class AppService {
       if (data.file) {
         formData.append('file', data.file);
       }
+      const creationApiType = this.resolveCreationApiSegmentFromElementType(
+        data.type
+      );
       axios
-        .put(`${this.serviceRootUrl}/elements/${data.id}/file`, formData)
+        .put(`${this.serviceRootUrl}/${creationApiType}/${data.id}`, formData)
         .then(response => {
           resolve(response.data);
         })
