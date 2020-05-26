@@ -74,6 +74,7 @@ export default class AddElementTypePrompt extends Vue {
   margin: 0 auto;
   position: relative;
   cursor: pointer;
+  max-height: 40vh;
 
   &:hover {
     background: $primaryHover;
