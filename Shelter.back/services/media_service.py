@@ -16,7 +16,7 @@ from domain.enums import PersistanceType
 def build_element(payload, element_type):
     tags_associated = resolve_tags(payload['tags'])
     new_element = Element(
-        payload['title'], payload['text'], tags_associated, element_type, payload['linkUrl'])
+        payload['title'], payload['text'], tags_associated, element_type, '')
     return new_element
 
 def update_element(payload, existing_element, element_type):
@@ -86,7 +86,7 @@ def save_element_with_image_file(persistanceType, request_data):
 
     generate_thumbnail_for_image(element)
 
-    element = persist_element(element, persistanceType)
+    persist_element(element, persistanceType)
     return element
 
 def save_element_with_image_link(persistanceType, payload):
