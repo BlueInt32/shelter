@@ -18,8 +18,13 @@
       <li v-for="tag in element.tags" :key="tag.id">{{ tag.label }}</li>
     </ul>
     <div class="fileContainer">
-      <img :src="element.fileUrl" v-if="baseElementType === 'image'" />
+      <img
+        :src="element.fileUrl"
+        v-if="baseElementType === 'image'"
+        class="viewElement__mainMedia"
+      />
       <video
+        class="viewElement__mainMedia"
         width="800"
         controls
         autoplay
@@ -124,6 +129,9 @@ ul.viewElement__tagslist {
   img {
     max-width: calc(100vw - 2em);
   }
+}
+.viewElement__mainMedia {
+  max-height: 75vh;
 }
 .viewElement__mainWebLink {
   color: $linkColor;
