@@ -192,10 +192,16 @@ export default class EditElement extends Vue {
     }, 300);
   }
   handleFileUpload() {
-    // TODO : find a way to remove the linter error
-    // @ts-ignore
-    this.pendingFile = this.$refs.file.files[0];
+    this.pendingFile = this.uploadedFileContainer.files[0];
+    if (this.pendingFile) {
+      this.elementLinkUrl = this.pendingFile.name;
+    }
   }
+
+  get uploadedFileContainer(): any {
+    return this.$refs.file as any;
+  }
+
   update(newTags: TagInputItem[]) {
     this.autocompleteItems = [];
     this.tags = newTags;
@@ -230,5 +236,16 @@ input[type='text'].ti-new-tag-input {
   position: relative;
   background: $primary;
   color: $tagsAndButtonsColor;
+}
+.upload {
+  position: absolute;
+  top: 0;
+  right: 0;
+  margin: 0;
+  padding: 0;
+  font-size: 20px;
+  cursor: pointer;
+  opacity: 0;
+  filter: alpha(opacity=0);
 }
 </style>

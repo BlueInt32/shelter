@@ -223,9 +223,11 @@ export default class AddElementForm extends Vue {
   }
 
   handleFileUpload() {
-    // TODO : find a way to remove the linter error
-    // @ts-ignore
-    this.pendingFile = this.$refs.file.files[0];
+    this.pendingFile = this.uploadedFileContainer.files[0];
+  }
+
+  get uploadedFileContainer(): any {
+    return this.$refs.file as any;
   }
   tagsChangedHandler(newTags: string[]) {
     this.autocompleteItems = [];
