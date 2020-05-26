@@ -6,7 +6,8 @@
 	],
 	"settings": {
 		"search.exclude": {
-			"**/venv": true
+			"**/venv": true,
+			"shelter.log": true
 		}
 	}
 }
