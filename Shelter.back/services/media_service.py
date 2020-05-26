@@ -43,9 +43,10 @@ def generate_thumbnail_for_image(element):
         im.convert('RGB').save(imgByteArr, "JPEG")
         element.attached_thumb = imgByteArr.getvalue()
 
-def generate_thumbnail_for_video(element, youtube_dl_json_output):
-    abs_file_path = ''
-    if youtube_dl_json_output is not None and youtube_dl_json_output.extractor == 'Reddit':
+def generate_thumbnail_for_video(element, youtube_dl_json_output, original_media_abs_path):
+    if youtube_dl_json_output is not None \
+       and youtube_dl_json_output.extractor == 'Reddit' \
+       and hasattr(youtube_dl_json_output, 'thumbnail'):
         response = urllib.request.urlopen(youtube_dl_json_output.thumbnail)
         request_data = response.read()
         element.attached_thumb = request_data
@@ -55,13 +56,13 @@ def generate_thumbnail_for_video(element, youtube_dl_json_output):
             "$ffmpeg_path -y -i \"$input_path\" -ss 00:00:00.000 -vframes 1 -filter:v scale=\"-1:300\" tempyoudl/temp.jpg")
         call = template_call.substitute(
             ffmpeg_path=Config.ffmpeg_path,
-            input_path=abs_file_path)
+            input_path=original_media_abs_path)
         subprocess.run(call)
         in_file = open("tempyoudl/temp.jpg", "rb")
 
         element.attached_thumb = in_file.read()
         in_file.close()
-        os.remove(abs_file_path)
+        os.remove(original_media_abs_path)
         os.remove("tempyoudl/temp.jpg")
 
 
@@ -128,7 +129,7 @@ def save_element_with_video_file(persistanceType, request_data):
         ofile.write(element.attached_file)
         ofile.close()
 
-    generate_thumbnail_for_video(element, None)
+    generate_thumbnail_for_video(element, None, abs_file_path)
     persist_element(element, persistanceType)
     return element
 
@@ -157,8 +158,9 @@ def save_element_with_video_link(persistanceType, payload):
             [Config.youtube_dl_path, payload['linkUrl'], "-o", abs_file_path, "--merge-output-format", "mkv"])
         in_file = open(abs_file_path, "rb")
         element.attached_file = in_file.read()
+        in_file.close()
 
-    generate_thumbnail_for_video(element, youtube_dl_json_output)
+    generate_thumbnail_for_video(element, youtube_dl_json_output, abs_file_path)
     persist_element(element, persistanceType)
     return element
 
