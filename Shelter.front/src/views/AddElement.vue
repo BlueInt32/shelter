@@ -13,6 +13,7 @@
     <AddElementForm
       v-if="$route.name == 'addElementStep2'"
       :submitHandler="createElement"
+      :is-disabled="isDisabled"
     >
     </AddElementForm>
   </div>
@@ -48,19 +49,21 @@ import AddElementForm from '@/views/components/AddElementForm.vue';
 })
 export default class AddElement extends Vue {
   private elementEditionModule = getModule(ElementEditionModule);
-
   private $snotify: any;
   private creationStep: CreationStep = CreationStep.PromptType;
   private creationStepEnum = CreationStep;
+  private isDisabled: boolean = false;
 
   async createElement(model: SaveElementBaseApiModel) {
     try {
       let data: any = null;
+      this.isDisabled = true;
       if (model instanceof SaveElementWithFileApiModel) {
         data = await this.elementEditionModule.createElementWithFile(model);
       } else if (model instanceof SaveElementWithLinkApiModel) {
         data = await this.elementEditionModule.createElementWithLink(model);
       }
+      this.isDisabled = false;
       if (data) {
         notify(this.$snotify, NotificationType.OK, 'Cool post !');
         this.$router.push({

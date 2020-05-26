@@ -102,6 +102,7 @@
           type="button"
           value="Add"
           @click="clickSubmitHandler()"
+          :disabled="isDisabled"
         >
           Add
         </button>
@@ -143,6 +144,7 @@ export default class AddElementForm extends Vue {
   @Prop(Function) private submitHandler!: (
     model: SaveElementBaseApiModel
   ) => void;
+  @Prop(Boolean) private isDisabled!: boolean;
 
   created() {}
 

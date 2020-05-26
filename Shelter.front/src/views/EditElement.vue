@@ -53,6 +53,7 @@
               type="button"
               value="Add"
               @click="updateElement()"
+              :disabled="isDisabled"
             >
               Update
             </button>
@@ -105,6 +106,7 @@ export default class EditElement extends Vue {
   private autocompleteItems: AutocompleteItem[] = [];
   private debounce: any = null;
   private pendingFile: File | null = null;
+  private isDisabled: boolean = false;
 
   async created() {
     this.elementId = parseInt(this.$route.params.elementId, 10);
@@ -129,6 +131,7 @@ export default class EditElement extends Vue {
     elementUpdateModel.tags = this.tags.map(t => t.text);
     elementUpdateModel.type = this.resolveType();
 
+    this.isDisabled = true;
     try {
       if (elementUpdateModel instanceof SaveElementWithFileApiModel) {
         await this.elementEditionModule.updateElementWithFile(
@@ -148,6 +151,8 @@ export default class EditElement extends Vue {
       });
     } catch (e) {
       notify(this.$snotify, NotificationType.ERROR, 'Oops ! ' + e.message);
+    } finally {
+      this.isDisabled = false;
     }
   }
   resolveType(): ElementType {
