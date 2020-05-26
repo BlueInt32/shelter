@@ -42,13 +42,3 @@ class VideoFilesApi(Resource):
         new_element = save_element_with_video_file(PersistanceType.UPDATE, data)
 
         return new_element, 201
-
-
-# # creating a object
-# image = Image.open(r"C:\Users\System-Pc\Desktop\python.png")
-# MAX_SIZE = (100, 100)
-
-# image.thumbnail(MAX_SIZE)
-
-# db.session.add(new_element)
-# db.session.commit()
