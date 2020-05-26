@@ -46,6 +46,7 @@ class VideoLinksApi(Resource):
         parser.add_argument('tags', action='append')
 
         args = parser.parse_args()
+        args['id'] = element_id
 
         element = save_element_with_video_link(PersistanceType.UPDATE, args)
 
